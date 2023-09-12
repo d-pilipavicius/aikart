@@ -88,3 +88,6 @@ npm test
 
 3. **Separate CMD Window for Server**
    - This is expected behavior when running both the frontend and backend through a single command. The separate window hosts a development proxy for rerouting requests from the frontend to the backend.
+
+4. **The current working directory does not contain a project or solution file**
+   - Make sure you've navigated to the correct project folder "\aiKart"
