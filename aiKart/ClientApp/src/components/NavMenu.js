@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addDeck } from "../features/deck/decksSlice";
+import { useDispatch } from "react-redux";
+import { addDeck } from "../app/state/deck/decksSlice";
 import {
   Collapse,
   Navbar,
@@ -9,15 +9,9 @@ import {
   NavItem,
   NavLink,
   Button,
-  Form,
-  Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-
+import CreateDeckModal from "./deck/CreateDeckModal";
 import "./NavMenu.css";
 
 const NavMenu = () => {
@@ -36,8 +30,8 @@ const NavMenu = () => {
     setShowCreateDeckForm(!showCreateDeckForm);
   };
 
-  const saveDeck = (e) => {
-    e.preventDefault();
+  const saveDeck = (event) => {
+    event.preventDefault();
     if (newDeckName && newDeckDescription) {
       dispatch(addDeck({ name: newDeckName, description: newDeckDescription }));
       setNewDeckName("");
@@ -76,36 +70,15 @@ const NavMenu = () => {
             </NavItem>
           </ul>
         </Collapse>
-        <Modal isOpen={showCreateDeckForm} toggle={toggleCreateDeckForm}>
-          <ModalHeader toggle={toggleCreateDeckForm}>
-            Create New Deck
-          </ModalHeader>
-          <ModalBody>
-            <Form onSubmit={saveDeck}>
-              <Input
-                type="text"
-                placeholder="Deck Name"
-                value={newDeckName}
-                onChange={(e) => setNewDeckName(e.target.value)}
-              />
-              <Input
-                type="text"
-                placeholder="Deck Description"
-                value={newDeckDescription}
-                onChange={(e) => setNewDeckDescription(e.target.value)}
-                className="mt-2"
-              />
-            </Form>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="success" onClick={saveDeck}>
-              Save
-            </Button>
-            <Button color="secondary" onClick={toggleCreateDeckForm}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </Modal>
+        <CreateDeckModal
+          isOpen={showCreateDeckForm}
+          toggle={toggleCreateDeckForm}
+          saveDeck={saveDeck}
+          newDeckName={newDeckName}
+          setNewDeckName={setNewDeckName}
+          newDeckDescription={newDeckDescription}
+          setNewDeckDescription={setNewDeckDescription}
+        />
       </Navbar>
     </header>
   );

@@ -4,7 +4,7 @@ import AppRoutes from './AppRoutes';
 import { Layout } from './components/Layout';
 import './custom.css';
 import { Provider } from 'react-redux';
-import store from './app/store';
+import store from './app/state/store';
 
 export default class App extends Component {
   static displayName = App.name;
