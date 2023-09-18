@@ -7,35 +7,47 @@ import {
   deleteCardFromDeck,
 } from "../../app/state/deck/decksSlice";
 import AddCardModal from "../card/AddCardModal";
+import EditCardModal from "../card/EditCardModal";
 import { Card, CardBody, CardTitle, CardText, Button } from "reactstrap";
 
 const DeckView = () => {
   const dispatch = useDispatch();
   const { deckName } = useParams();
   const [showModal, setShowModal] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingCard, setEditingCard] = useState(null);
+
   const deck = useSelector((state) =>
     state.decks.decks.find((deck) => deck.name === deckName)
   );
 
-  const toggleModal = () => {
+  const toggleAddModal = () => {
     setShowModal(!showModal);
+  };
+
+  const toggleEditModal = () => {
+    setEditModalOpen(!editModalOpen);
   };
 
   const addCard = (question, answer) => {
     dispatch(addCardToDeck({ deckName, card: { question, answer } }));
-    toggleModal();
+    toggleAddModal();
   };
 
-  const editCard = (cardIndex) => {
-    const newQuestion = prompt("New question:", deck.cards[cardIndex].question);
-    const newAnswer = prompt("New answer:", deck.cards[cardIndex].answer);
+  const editCard = (index, question, answer) => {
     dispatch(
       editCardInDeck({
         deckName,
-        cardIndex,
-        newCard: { question: newQuestion, answer: newAnswer },
+        cardIndex: index,
+        newCard: { question, answer },
       })
     );
+    toggleEditModal();
+  };
+
+  const openEditModal = (index, card) => {
+    setEditingCard({ index, ...card });
+    setEditModalOpen(true);
   };
 
   const deleteCard = (cardIndex) => {
@@ -47,25 +59,21 @@ const DeckView = () => {
   return (
     <div>
       <h2 className="text-dark mb-3">{deckName}</h2>
-      <button className="btn btn-primary mb-3" onClick={toggleModal}>
+      <button className="btn btn-primary mb-3" onClick={toggleAddModal}>
         Add Card
       </button>
       {deck &&
         deck.cards.map((card, index) => (
           <Card key={index} className="mb-3">
             <CardBody>
-              <CardTitle tag="h5" className="mb-2">
-                Question
-              </CardTitle>
-              <CardText className="mb-3">{card.question}</CardText>
-              <CardTitle tag="h5" className="mb-2">
-                Answer
-              </CardTitle>
-              <CardText className="mb-3">{card.answer}</CardText>
+              <CardTitle tag="h5">Question</CardTitle>
+              <CardText>{card.question}</CardText>
+              <CardTitle tag="h5">Answer</CardTitle>
+              <CardText>{card.answer}</CardText>
               <Button
                 style={{ marginRight: "1rem" }}
                 color="warning"
-                onClick={() => editCard(index)}
+                onClick={() => openEditModal(index, card)}
               >
                 Edit
               </Button>
@@ -77,12 +85,17 @@ const DeckView = () => {
         ))}
       <AddCardModal
         showModal={showModal}
-        toggleModal={toggleModal}
+        toggleModal={toggleAddModal}
         addCard={addCard}
+      />
+      <EditCardModal
+        isOpen={editModalOpen}
+        toggle={toggleEditModal}
+        card={editingCard}
+        editCard={editCard}
       />
     </div>
   );
-
 };
 
 export default DeckView;

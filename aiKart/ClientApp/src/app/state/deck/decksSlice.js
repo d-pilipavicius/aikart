@@ -11,6 +11,18 @@ export const decksSlice = createSlice({
       const { name, description } = action.payload;
       state.decks.push({ name, description, cards: [] });
     },
+    editDeck: (state, action) => {
+      const { deckName, newName, newDescription } = action.payload;
+      const deckIndex = state.decks.findIndex((deck) => deck.name === deckName);
+      if (deckIndex > -1) {
+        state.decks[deckIndex].name = newName;
+        state.decks[deckIndex].description = newDescription;
+      }
+    },
+    deleteDeck: (state, action) => {
+      const deckName = action.payload;
+      state.decks = state.decks.filter((deck) => deck.name !== deckName);
+    },
     addCardToDeck: (state, action) => {
       const { deckName, card } = action.payload;
       const deck = state.decks.find((deck) => deck.name === deckName);
@@ -35,5 +47,5 @@ export const decksSlice = createSlice({
   },
 });
 
-export const { addDeck, addCardToDeck, editCardInDeck, deleteCardFromDeck } = decksSlice.actions;
+export const { addDeck, editDeck, deleteDeck, addCardToDeck, editCardInDeck, deleteCardFromDeck } = decksSlice.actions;
 export default decksSlice.reducer;
