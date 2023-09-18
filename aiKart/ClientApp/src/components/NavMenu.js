@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addDeck } from "../features/deck/decksSlice";
+import { addDeck } from "../app/state/deck/decksSlice";
 import {
   Collapse,
   Navbar,

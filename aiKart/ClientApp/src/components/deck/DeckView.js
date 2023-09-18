@@ -5,7 +5,7 @@ import {
   addCardToDeck,
   editCardInDeck,
   deleteCardFromDeck,
-} from "../../features/deck/decksSlice";
+} from "../../app/state/deck/decksSlice";
 import AddCardModal from "../card/AddCardModal";
 import { Card, CardBody, CardTitle, CardText, Button } from "reactstrap";
 

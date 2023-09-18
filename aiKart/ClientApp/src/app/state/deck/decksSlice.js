@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CardStatus } from "../card/CardStatus";
+import { CardStatus } from "../../../features/card/CardStatus";
 
 export const decksSlice = createSlice({
   name: "decks",

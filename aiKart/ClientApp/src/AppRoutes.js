@@ -1,5 +1,5 @@
 import { Home } from "./components/Home";
-import ManageDecks from "./features/deck/ManageDecks";
+import ManageDecks from "./components/deck/ManageDecks";
 import DeckView from "./components/deck/DeckView"; 
 const AppRoutes = [
   {
