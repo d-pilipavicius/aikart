@@ -23,14 +23,12 @@ public class DataContext : DbContext
         modelBuilder.Entity<Deck>()
             .HasMany(deck => deck.Cards)
             .WithOne(card => card.Deck)
-            .HasForeignKey(card => card.DeckId)
-            .IsRequired();
+            .HasForeignKey(card => card.DeckId);
 
         modelBuilder.Entity<Card>()
             .HasOne(card => card.Deck)
             .WithMany(deck => deck.Cards)
-            .HasForeignKey(card => card.DeckId)
-            .IsRequired();
+            .HasForeignKey(card => card.DeckId);
     }
 
 }
