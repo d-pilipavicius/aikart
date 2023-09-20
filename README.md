@@ -39,6 +39,32 @@ Navigate to the `ClientApp` folder within your project directory and run:
 npm install
 ```
 
+### 4. Connect to your database
+
+Create a separate JSON file named `dbconnection.json` and place it in your project directory. 
+
+This file should contain your connection string:
+
+```json
+{
+  "ConnectionStrings": {
+      "DefaultConnection" : "Host=database_hostname; Port=port_num; Database=database_name; Username=database_username; Password=password"
+   }
+}
+```
+
+Install the tools
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+Create tables in the database
+
+```bash
+dotnet ef database update
+```
+
 ## How to Run
 
 ### Backend
