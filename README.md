@@ -41,9 +41,17 @@ npm install
 
 ### 4. Connect to your database
 
-Modify `DefaultConnection` values in `/aikart/aikart/appsettings.json` to link your postgreSQL database
+Create a separate JSON file named `dbconnection.json` and place it in your project directory. 
 
-`"DefaultConnection" : "Host=database_hostname;Port=port_num;Database=database_name;Username=database_username;Password=password"`
+This file should contain your connection string:
+
+```json
+{
+  "ConnectionStrings": {
+      "DefaultConnection" : "Host=database_hostname; Port=port_num; Database=database_name; Username=database_username; Password=password"
+   }
+}
+```
 
 Install the tools
 
