@@ -1,4 +1,4 @@
-namespace aikart.States;
+namespace aiKart.States;
 public enum CardState
 {
     Answered,

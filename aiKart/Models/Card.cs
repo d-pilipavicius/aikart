@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using aikart.States;
+using aiKart.States;
 
 namespace aiKart.Models;
 public class Card
