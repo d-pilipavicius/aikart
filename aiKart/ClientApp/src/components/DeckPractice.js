@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useSelector } from "react-redux"
 import { useParams, useNavigate} from "react-router-dom"
-import CardView from "./CardView"
+import CardView from "./card/CardView"
 import { Button, Container } from "reactstrap"
 
 
@@ -17,7 +17,11 @@ const DeckPractice = () => {
 
     return (
         <div>
-            {currentCardObject && <CardView card={currentCardObject}/>}
+            {currentCardObject &&
+                <div style={{ cursor: "pointer" }}>
+                <CardView card={currentCardObject}/>
+                </div>
+            }
             <Container className="d-flex justify-content-center align-items-end">
                 <p>Answered &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Remaining</p>
             </Container>

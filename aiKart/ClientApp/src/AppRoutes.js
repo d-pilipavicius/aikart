@@ -1,7 +1,7 @@
 import Home from "./components/Home";
 import ManageDecks from "./components/deck/ManageDecks";
 import DeckView from "./components/deck/DeckView";
-import DeckPractice from "./components/deck/DeckPractice"; 
+import DeckPractice from "./components/DeckPractice"; 
 const AppRoutes = [
   {
     index: true,
