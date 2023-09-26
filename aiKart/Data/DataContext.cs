@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using aiKart.Models;
 using System.Reflection;
 
-namespace aikart.Data;
+namespace aiKart.Data;
 
 public class DataContext : DbContext
 {
