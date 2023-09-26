@@ -1,6 +1,7 @@
-import { Home } from "./components/Home";
+import Home from "./components/Home";
 import ManageDecks from "./components/deck/ManageDecks";
-import DeckView from "./components/deck/DeckView"; 
+import DeckView from "./components/deck/DeckView";
+import DeckPractice from "./components/DeckPractice"; 
 const AppRoutes = [
   {
     index: true,
@@ -13,6 +14,14 @@ const AppRoutes = [
   {
     path: '/decks/:deckName',
     element: <DeckView />
+  },
+  {
+    path: '/practice',
+    element: <DeckPractice />
+  },
+  {
+    path: '/practice/:deckName',
+    element: <DeckPractice />
   }
 ];
 
