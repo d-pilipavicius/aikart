@@ -1,5 +1,8 @@
 using aiKart;
 using aiKart.Data;
+using aiKart.Interfaces;
+using aiKart.Models;
+using aiKart.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddTransient<Seed>();
+builder.Services.AddScoped<IDeckRepository, DeckRepository>();
+builder.Services.AddScoped<ICardRepository, CardRepository>();
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
