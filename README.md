@@ -65,6 +65,16 @@ Create tables in the database
 dotnet ef database update
 ```
 
+### Populating the Database with seed (OPTIONAL)
+
+In the project dir update the `Seed.cs`file with decks and cards that you want to add to the database.
+
+Run the following command to seed the database:
+
+```bash
+dotnet run seeddata
+```
+
 ## How to Run
 
 ### Backend
