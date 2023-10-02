@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using aikart.Data;
+using aiKart.Data;
 
 #nullable disable
 
@@ -47,7 +47,7 @@ namespace aiKart.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Card");
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("aiKart.Models.Deck", b =>
@@ -67,7 +67,7 @@ namespace aiKart.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deck");
+                    b.ToTable("Decks");
                 });
 
             modelBuilder.Entity("aiKart.Models.Card", b =>

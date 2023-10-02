@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using aikart.Data;
+using aiKart.Data;
 
 #nullable disable
 
 namespace aiKart.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230919152325_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230926195400_Migrations")]
+    partial class Migrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace aiKart.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Card");
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("aiKart.Models.Deck", b =>
@@ -70,7 +70,7 @@ namespace aiKart.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deck");
+                    b.ToTable("Decks");
                 });
 
             modelBuilder.Entity("aiKart.Models.Card", b =>

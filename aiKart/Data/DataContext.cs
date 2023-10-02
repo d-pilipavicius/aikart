@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using aiKart.Models;
 using System.Reflection;
 
-namespace aikart.Data;
+namespace aiKart.Data;
 
 public class DataContext : DbContext
 {
@@ -11,7 +11,7 @@ public class DataContext : DbContext
     }
 
     public DbSet<Card> Cards {get; set;}
-    public DbSet<Card> Decks {get; set;}
+    public DbSet<Deck> Decks {get; set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
