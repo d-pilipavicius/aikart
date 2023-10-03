@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
-using aikart.States;
+using aiKart.States;
 
 namespace aiKart.Models;
 public class Card
 {
+    [Key]
     public int Id { get; set; }
+    [Required]
     public int DeckId { get; set; }
     public Deck Deck { get; set; }
     

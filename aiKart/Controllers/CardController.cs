@@ -6,14 +6,14 @@ namespace aiKart.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CardController : Controller
+    public class CardController : ControllerBase
     {
         private readonly ICardRepository _cardRepository;
         public CardController(ICardRepository cardRepository) 
         {
             _cardRepository = cardRepository;
         }
-        [HttpGet("{}")]
+        [HttpGet("{cardId}")]
         [ProducesResponseType(200, Type = typeof(Deck))]
         public IActionResult GetCard(int cardId)
         {
@@ -24,7 +24,7 @@ namespace aiKart.Controllers
             return Ok(card);
         }
 
-        [HttpDelete("{}")]
+        [HttpDelete("{cardId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]

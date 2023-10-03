@@ -6,7 +6,7 @@ namespace aiKart.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DeckController : Controller
+    public class DeckController : ControllerBase
     {
         private readonly IDeckRepository _deckRepository;
         public DeckController(IDeckRepository deckRepository) 
@@ -35,7 +35,11 @@ namespace aiKart.Controllers
 
             return Ok(deck);
         }
-        [HttpPut("{}")]
+        [HttpPut("{deckId}")]
+        public IActionResult UpdateDeck(int deckId, Deck updatedDeck)
+        {
+            return Ok();
+        }
 
     }
 
