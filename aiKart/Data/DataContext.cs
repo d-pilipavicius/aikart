@@ -15,6 +15,7 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
         modelBuilder.Entity<Card>()
             .HasKey(card => new {card.Id});
         modelBuilder.Entity<Deck>()
@@ -23,12 +24,12 @@ public class DataContext : DbContext
         modelBuilder.Entity<Deck>()
             .HasMany(deck => deck.Cards)
             .WithOne(card => card.Deck)
-            .HasForeignKey(card => card.DeckId);
+            .HasForeignKey(card => card.DeckId).IsRequired();
 
         modelBuilder.Entity<Card>()
             .HasOne(card => card.Deck)
             .WithMany(deck => deck.Cards)
-            .HasForeignKey(card => card.DeckId);
+            .HasForeignKey(card => card.DeckId).IsRequired();
     }
 
 }

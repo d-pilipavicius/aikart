@@ -14,7 +14,7 @@ namespace aiKart.Controllers
             _cardRepository = cardRepository;
         }
         [HttpGet("{cardId}")]
-        [ProducesResponseType(200, Type = typeof(Deck))]
+        [ProducesResponseType(200, Type = typeof(Card))]
         public IActionResult GetCard(int cardId)
         {
             var card = _cardRepository.GetCard(cardId);
