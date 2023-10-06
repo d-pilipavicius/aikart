@@ -12,8 +12,8 @@ using aiKart.Data;
 namespace aiKart.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231003113528_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231006142328_migration_4")]
+    partial class migration_4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,8 +44,9 @@ namespace aiKart.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("State")
-                        .HasColumnType("integer");
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
