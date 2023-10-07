@@ -1,5 +1,8 @@
+using aiKart.Dtos.CardDtos;
+using aiKart.Dtos.DeckDtos;
 using aiKart.Interfaces;
 using aiKart.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace aiKart.Controllers
@@ -8,65 +11,145 @@ namespace aiKart.Controllers
     [ApiController]
     public class DeckController : Controller
     {
-        private readonly IDeckRepository _deckRepository;
-        private readonly ICardRepository _cardRepository;
-        public DeckController(IDeckRepository deckRepository, ICardRepository cardRepository) 
+        private readonly IDeckService _deckService;
+
+        private readonly IMapper _mapper;
+        public DeckController(IDeckService deckService, IMapper mapper)
         {
-            _deckRepository = deckRepository;
-            _cardRepository = cardRepository;
+            _deckService = deckService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ICollection<Deck>), 200)]
-        public IActionResult GetDecks()
+        [ProducesResponseType(typeof(IEnumerable<DeckDto>), 200)]
+        [ProducesResponseType(400)]
+        public IActionResult GetAllDecks()
         {
-            var decks = _deckRepository.GetDecks();
-            
-            if(!ModelState.IsValid)
+            var decks = _deckService.GetAllDecks();
+
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(decks);
+            var deckDtos = _mapper.Map<List<DeckDto>>(decks);
+
+            return Ok(deckDtos);
+
         }
+
         [HttpGet("{deckId}")]
-        [ProducesResponseType(200, Type = typeof(Deck))]
+        [ProducesResponseType(200, Type = typeof(DeckDto))]
         [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public IActionResult GetDeck(int deckId)
         {
-            if(_deckRepository.GetDeck(deckId) == null)
+            if (!_deckService.DeckExistsById(deckId))
                 return NotFound();
-                
-            var deck = _deckRepository.GetDeck(deckId);
-            if(!ModelState.IsValid)
+
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(deck);
+            var deck = _deckService.GetDeckById(deckId);
+
+            var deckDto = _mapper.Map<DeckDto>(deck);
+
+            return Ok(deckDto);
         }
+
+
+        // return card dtos
+        [HttpGet("cardlist/{deckId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CardDto>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult GetCardsInDeck(int deckId)
+        {
+            if (!_deckService.DeckExistsById(deckId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var cards = _deckService.GetCardsInDeck(deckId);
+            var cardDtos = _mapper.Map<IEnumerable<CardDto>>(cards);
+
+            return Ok(cardDtos);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
+        public IActionResult AddDeck([FromBody] AddDeckDto deckDto)
+        {
+            if (deckDto == null)
+                return BadRequest(ModelState);
+
+            if (_deckService.DeckExistsByName(deckDto.Name))
+                return UnprocessableEntity("Deck with name: " + deckDto.Name + " already exists");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var deck = _mapper.Map<Deck>(deckDto);
+
+            if (!_deckService.AddDeck(deck))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving a new deck");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok();
+        }
+
+        [HttpPut("{deckId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public IActionResult UpdateDeck(int deckId, [FromBody] UpdateDeckDto deckDto) //change addDeckDto 
+        {
+            if (deckDto == null)
+                return BadRequest(ModelState);
+
+            if (!_deckService.DeckExistsById(deckId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var deck = _deckService.GetDeckById(deckId);
+
+            _mapper.Map(deckDto, deck);
+
+            if (!_deckService.UpdateDeck(deck))
+            {
+                ModelState.AddModelError("", "Something went wrong updating deck");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
         [HttpDelete("{deckId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public IActionResult DeleteDeck(int deckId)
         {
-            if(_deckRepository.GetDeck(deckId) == null)
+            if (!_deckService.DeckExistsById(deckId))
                 return NotFound();
-            
-            var deckToDelete = _deckRepository.GetDeck(deckId);
-            var cardsToDelete = _deckRepository.GetDeckCards(deckId);
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            
-            foreach(Card card in cardsToDelete)
-            {
-                if(!_cardRepository.DeleteCard(card))
-                {
-                    ModelState.AddModelError("", "Something went wrong while deleting a card");
-                }
-            }
 
-            if(!_deckRepository.DeleteDeck(deckToDelete))
+            var deckToDelete = _deckService.GetDeckById(deckId);
+
+            if (!_deckService.DeleteDeck(deckToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong while deleting the deck");
+                ModelState.AddModelError("", "Something went wrong while deleting the card");
+                return StatusCode(500, ModelState);
             }
 
             return NoContent();

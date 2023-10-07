@@ -1,17 +1,22 @@
 using aiKart;
 using aiKart.Data;
 using aiKart.Interfaces;
-using aiKart.Models;
 using aiKart.Repositories;
+using aiKart.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IDeckRepository, DeckRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<IDeckService, DeckService>();
+
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -22,9 +27,6 @@ var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(connection));
-
-
-builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
