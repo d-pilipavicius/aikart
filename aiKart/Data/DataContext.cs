@@ -6,20 +6,20 @@ namespace aiKart.Data;
 
 public class DataContext : DbContext
 {
-    public DataContext(DbContextOptions<DataContext> options) : base (options)
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
 
-    public DbSet<Card> Cards {get; set;}
-    public DbSet<Deck> Decks {get; set;}
+    public DbSet<Card> Cards { get; set; }
+    public DbSet<Deck> Decks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+
         modelBuilder.Entity<Card>()
-            .HasKey(card => new {card.Id});
+            .HasKey(card => card.Id);
         modelBuilder.Entity<Deck>()
-            .HasKey(deck => new {deck.Id});
+            .HasKey(deck => deck.Id);
 
         modelBuilder.Entity<Deck>()
             .HasMany(deck => deck.Cards)
