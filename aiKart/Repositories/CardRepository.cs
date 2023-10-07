@@ -13,7 +13,7 @@ public class CardRepository : ICardRepository
         _context = context;
     }
 
-    public Card GetCard(int id)
+    public Card GetCardById(int id)
     {
         return _context.Cards.Find(id);
     }
