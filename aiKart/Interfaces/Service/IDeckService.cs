@@ -13,5 +13,7 @@ namespace aiKart.Interfaces
         bool DeleteDeck(Deck deck);
         bool UpdateDeck(Deck deck);
         IEnumerable<Card> GetCardsInDeck(int deckId);
+
+        IEnumerable<Deck> GetAllDecksIncludingCards();
     }
 }

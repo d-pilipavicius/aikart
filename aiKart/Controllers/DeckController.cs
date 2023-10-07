@@ -25,7 +25,7 @@ namespace aiKart.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetAllDecks()
         {
-            var decks = _deckService.GetAllDecks();
+            var decks = _deckService.GetAllDecksIncludingCards();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -33,7 +33,6 @@ namespace aiKart.Controllers
             var deckDtos = _mapper.Map<List<DeckDto>>(decks);
 
             return Ok(deckDtos);
-
         }
 
         [HttpGet("{deckId}")]

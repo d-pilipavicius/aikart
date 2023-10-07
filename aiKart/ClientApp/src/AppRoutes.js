@@ -12,7 +12,7 @@ const AppRoutes = [
     element: <ManageDecks />
   },
   {
-    path: '/decks/:deckName',
+    path: '/decks/:deckId',
     element: <DeckView />
   },
   {
@@ -20,7 +20,7 @@ const AppRoutes = [
     element: <DeckPractice />
   },
   {
-    path: '/practice/:deckName',
+    path: '/practice/:deckId',
     element: <DeckPractice />
   }
 ];

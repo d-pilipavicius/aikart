@@ -2,24 +2,25 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
-  addCardToDeck,
-  editCardInDeck,
-  deleteCardFromDeck,
-} from "../../app/state/deck/decksSlice";
+  addCard as addCardToDeck,
+  updateCard as updateCardInDeck,
+  deleteCard as deleteCardFromDeck,
+} from "../../app/state/card/cardsSlice";
 import AddCardModal from "../card/AddCardModal";
 import EditCardModal from "../card/EditCardModal";
 import { Card, CardBody, CardTitle, CardText, Button } from "reactstrap";
 
 const DeckView = () => {
   const dispatch = useDispatch();
-  const { deckName } = useParams();
+  const { deckId } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
 
   const deck = useSelector((state) =>
-    state.decks.decks.find((deck) => deck.name === deckName)
+    state.decks.decks.find((deck) => deck.id === parseInt(deckId))
   );
+
 
   const toggleAddModal = () => {
     setShowModal(!showModal);
@@ -30,18 +31,15 @@ const DeckView = () => {
   };
 
   const addCard = (question, answer) => {
-    dispatch(addCardToDeck({ deckName, card: { question, answer } }));
+    const cardDto = { deckId: deck.id, question, answer}; 
+    dispatch(addCardToDeck(cardDto));
     toggleAddModal();
   };
 
   const editCard = (index, question, answer) => {
-    dispatch(
-      editCardInDeck({
-        deckName,
-        cardIndex: index,
-        newCard: { question, answer },
-      })
-    );
+    const cardId = deck.cards[index].id;
+    const cardDto = { question, answer };
+    dispatch(updateCardInDeck({ cardId, cardDto }));
     toggleEditModal();
   };
 
@@ -51,14 +49,15 @@ const DeckView = () => {
   };
 
   const deleteCard = (cardIndex) => {
+    const cardId = deck.cards[cardIndex].id;
     if (window.confirm("Are you sure you want to delete this card?")) {
-      dispatch(deleteCardFromDeck({ deckName, cardIndex }));
+      dispatch(deleteCardFromDeck(cardId));
     }
   };
 
   return (
     <div>
-      <h2 className="text-dark mb-3">{deckName}</h2>
+      <h2 className="text-dark mb-3">{deck.name}</h2>
       <button className="btn btn-primary mb-3" onClick={toggleAddModal}>
         Add Card
       </button>

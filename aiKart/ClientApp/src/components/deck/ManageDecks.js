@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteDeck } from "../../app/state/deck/decksSlice";
 import EditDeckModal from "./EditDeckModal";
+import { fetchDecks } from "../../app/state/deck/decksSlice";
 
 const ManageDecks = () => {
   const decks = useSelector((state) => state.decks.decks);
@@ -10,10 +11,16 @@ const ManageDecks = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleDelete = (event, deckName) => {
+  useEffect(() => {
+    dispatch(fetchDecks());
+  }, [dispatch]);
+
+  const handleDelete = (event, deck) => {
     event.stopPropagation();
     if (window.confirm("Are you sure you want to delete this deck?")) {
-      dispatch(deleteDeck(deckName));
+      dispatch(deleteDeck(deck.id)).then(() => {
+        dispatch(fetchDecks());
+      });
     }
   };
 
@@ -30,7 +37,7 @@ const ManageDecks = () => {
           <div className="col-md-4" key={index}>
             <div
               className="card mb-4"
-              onClick={() => navigate(`/decks/${deck.name}`)}
+              onClick={() => navigate(`/decks/${deck.id}`)}
               style={{ cursor: "pointer" }}
             >
               <div className="card-body">
@@ -48,7 +55,7 @@ const ManageDecks = () => {
 
                 <button
                   className="btn btn-danger me-2"
-                  onClick={(e) => handleDelete(e, deck.name)}
+                  onClick={(e) => handleDelete(e, deck)}
                 >
                   Delete
                 </button>
@@ -67,7 +74,11 @@ const ManageDecks = () => {
         <EditDeckModal
           deck={selectedDeck}
           isOpen={Boolean(selectedDeck)}
-          toggle={() => setSelectedDeck(null)}
+          toggle={() => {
+            // Refetch the decks list after editing
+            dispatch(fetchDecks());
+            setSelectedDeck(null);
+          }}
         />
       )}
     </div>
