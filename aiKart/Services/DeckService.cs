@@ -13,19 +13,24 @@ namespace aiKart.Services
             _deckRepository = deckRepository;
         }
 
-        public ICollection<Deck> GetDecks()
+        public IEnumerable<Deck> GetAllDecks()
         {
             return _deckRepository.GetDecks();
         }
 
-        public Deck GetDeck(int id)
+        public Deck GetDeckById(int id)
         {
             return _deckRepository.GetDeck(id);
         }
 
-        public ICollection<Card> GetDeckCards(int deckId)
+        public bool DeckExistsById(int id)
         {
-            return _deckRepository.GetDeckCards(deckId);
+            return _deckRepository.DeckExistsById(id);
+        }
+
+        public bool DeckExistsByName(string name)
+        {
+            return _deckRepository.DeckExistsByName(name);
         }
 
         public bool AddDeck(Deck deck)
@@ -35,12 +40,18 @@ namespace aiKart.Services
 
         public bool DeleteDeck(Deck deck)
         {
+            if (deck == null) return false;
             return _deckRepository.DeleteDeck(deck);
         }
 
         public bool UpdateDeck(Deck deck)
         {
             return _deckRepository.UpdateDeck(deck);
+        }
+
+        public IEnumerable<Card> GetCardsInDeck(int deckId)
+        {
+            return _deckRepository.GetDeckCards(deckId);
         }
     }
 }
