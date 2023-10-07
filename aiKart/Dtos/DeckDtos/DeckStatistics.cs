@@ -1,4 +1,4 @@
-namespace aiKart.Dtos;
+namespace aiKart.Dtos.DeckDtos;
 public record DeckStatistics
 (
     int TotalCards,
