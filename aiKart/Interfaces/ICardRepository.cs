@@ -7,7 +7,7 @@ public interface ICardRepository
 {
     Card GetCard(int id);
     bool CardExists(int id);
-    bool AddCardToDeck(int deckId, string question, string answer);
+    bool AddCardToDeck(Card card);
     bool DeleteCard(Card card);
     bool UpdateCard(Card card);
     bool Save();
