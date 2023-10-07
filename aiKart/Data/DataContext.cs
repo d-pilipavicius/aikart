@@ -18,9 +18,9 @@ public class DataContext : DbContext
     {
 
         modelBuilder.Entity<Card>()
-            .HasKey(card => new { card.Id });
+            .HasKey(card => card.Id);
         modelBuilder.Entity<Deck>()
-            .HasKey(deck => new { deck.Id });
+            .HasKey(deck => deck.Id);
 
         modelBuilder.Entity<Deck>()
             .HasMany(deck => deck.Cards)
