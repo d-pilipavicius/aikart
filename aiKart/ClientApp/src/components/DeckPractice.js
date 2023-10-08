@@ -6,9 +6,9 @@ import { Button, Container } from "reactstrap"
 
 
 const DeckPractice = () => {
-    const { deckName } = useParams();
+    const { deckId } = useParams();
     const deck = useSelector((state) =>
-        state.decks.decks.find((deck) => deck.name === deckName)
+        state.decks.decks.find((deck) => deck.id === parseInt(deckId))
     );
     const [currentCard, setCurrentCard] = useState(0);
     const navigate = useNavigate();

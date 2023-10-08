@@ -1,5 +1,7 @@
+using aiKart.Data;
 using aiKart.Interfaces;
 using aiKart.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
 namespace aiKart.Services
@@ -8,9 +10,18 @@ namespace aiKart.Services
     {
         private readonly IDeckRepository _deckRepository;
 
-        public DeckService(IDeckRepository deckRepository)
+        private readonly DataContext _dbContext;
+
+        public DeckService(IDeckRepository deckRepository, DataContext dbContext)
         {
             _deckRepository = deckRepository;
+            _dbContext = dbContext;
+        }
+
+
+        public IEnumerable<Deck> GetAllDecksIncludingCards()
+        {
+            return _dbContext.Decks.Include(d => d.Cards).ToList();
         }
 
         public IEnumerable<Deck> GetAllDecks()

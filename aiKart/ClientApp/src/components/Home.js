@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchDecks } from "../app/state/deck/decksSlice";
+import { useDispatch } from "react-redux";
 
 const Home = () => {
   const decks = useSelector((state) => state.decks.decks);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchDecks());
+  }, [dispatch]);
 
   return (
     <div>
@@ -18,7 +25,7 @@ const Home = () => {
           <div className="col-md-4" key={index}>
             <div
               className="card mb-4"
-              onClick={() => navigate(`/practice/${deck.name}`)}
+              onClick={() => navigate(`/practice/${deck.id}`)}
               style={{ cursor: "pointer" }}
             >
               <div className="card-body">
