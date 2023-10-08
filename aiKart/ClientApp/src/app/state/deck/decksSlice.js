@@ -61,7 +61,7 @@ export const decksSlice = createSlice({
       })
       .addCase(addDeck.pending, (state, action) => {
         state.loading = "pending";
-      })  
+      })
       .addCase(addDeck.rejected, (state, action) => {
         state.loading = "idle";
       })
