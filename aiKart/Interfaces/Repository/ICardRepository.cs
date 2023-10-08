@@ -5,7 +5,7 @@ namespace aiKart.Interfaces;
 
 public interface ICardRepository
 {
-    Card GetCard(int id);
+    Card GetCardById(int id);
     bool CardExists(int id);
     bool AddCardToDeck(Card card);
     bool DeleteCard(Card card);

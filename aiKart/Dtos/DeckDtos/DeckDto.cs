@@ -1,3 +1,5 @@
+using aiKart.Dtos.CardDtos;
+
 namespace aiKart.Dtos.DeckDtos;
 public record DeckDto(
   int Id,
@@ -5,5 +7,6 @@ public record DeckDto(
   string? Description, 
   string? CreatorName,
   DateTime CreationDate,
-  DateTime LastEditDate
+  DateTime LastEditDate,
+  ICollection<CardDto>? Cards
 );

@@ -11,13 +11,13 @@ namespace aiKart.Controllers
     [ApiController]
     public class CardController : ControllerBase
     {
-        private readonly ICardRepository _cardRepository;
-        private readonly IDeckRepository _deckRepository;
+        private readonly ICardService _cardService;
+        private readonly IDeckService _deckService;
         private readonly IMapper _mapper;
-        public CardController(ICardRepository cardRepository, IDeckRepository deckRepository, IMapper mapper)
+        public CardController(ICardService cardService, IDeckService deckService, IMapper mapper)
         {
-            _cardRepository = cardRepository;
-            _deckRepository = deckRepository;
+            _cardService = cardService;
+            _deckService = deckService;
             _mapper = mapper;
         }
 
@@ -27,13 +27,13 @@ namespace aiKart.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetCard(int cardId)
         {
-            if (!_cardRepository.CardExists(cardId))
+            if (!_cardService.CardExists(cardId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var card = _cardRepository.GetCard(cardId);
+            var card = _cardService.GetCardById(cardId);
 
             var cardDto = _mapper.Map<CardDto>(card);
 
@@ -62,13 +62,13 @@ namespace aiKart.Controllers
             if (cardStateDto == null)
                 return BadRequest(ModelState);
 
-            if (!_cardRepository.CardExists(cardId))
+            if (!_cardService.CardExists(cardId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var card = _cardRepository.GetCard(cardId);
+            var card = _cardService.GetCardById(cardId);
 
             try
             {
@@ -79,7 +79,7 @@ namespace aiKart.Controllers
                 return BadRequest("Invalid state!");
             }
 
-            if (!_cardRepository.UpdateCard(card))
+            if (!_cardService.UpdateCard(card))
             {
                 ModelState.AddModelError("", "Something went wrong while updating a card");
                 return StatusCode(500, ModelState);
@@ -98,7 +98,7 @@ namespace aiKart.Controllers
             if (cardDto == null)
                 return BadRequest(ModelState);
 
-            if (!_deckRepository.DeckExistsById(cardDto.DeckId))
+            if (!_deckService.DeckExistsById(cardDto.DeckId))
                 return NotFound("Deck with id " + cardDto.DeckId + " does not exist");
 
             if (!ModelState.IsValid)
@@ -106,7 +106,7 @@ namespace aiKart.Controllers
 
             var card = _mapper.Map<Card>(cardDto);
 
-            if (!_cardRepository.AddCardToDeck(card))
+            if (!_cardService.AddCardToDeck(card))
             {
                 ModelState.AddModelError("", "Something went wrong while saving a new card");
                 return StatusCode(500, ModelState);
@@ -125,17 +125,17 @@ namespace aiKart.Controllers
             if (cardDto == null)
                 return BadRequest(ModelState);
 
-            if (!_cardRepository.CardExists(cardId))
+            if (!_cardService.CardExists(cardId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var card = _cardRepository.GetCard(cardId);
+            var card = _cardService.GetCardById(cardId);
 
             _mapper.Map(cardDto, card);
 
-            if (!_cardRepository.UpdateCard(card))
+            if (!_cardService.UpdateCard(card))
             {
                 ModelState.AddModelError("", "Something went wrong while updating a card");
                 return StatusCode(500, ModelState);
@@ -152,15 +152,15 @@ namespace aiKart.Controllers
         [ProducesResponseType(500)]
         public IActionResult DeleteCard(int cardId)
         {
-            if (!_cardRepository.CardExists(cardId))
+            if (!_cardService.CardExists(cardId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var cardToDelete = _cardRepository.GetCard(cardId);
+            var cardToDelete = _cardService.GetCardById(cardId);
 
-            if (!_cardRepository.DeleteCard(cardToDelete))
+            if (!_cardService.DeleteCard(cardToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong while deleting the card");
                 return StatusCode(500, ModelState);

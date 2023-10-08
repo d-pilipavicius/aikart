@@ -2,10 +2,12 @@
 // The store is a parent component that wraps the entire application, allowing all child components to access the store.
 import { configureStore } from '@reduxjs/toolkit';
 import decksReducer from './deck/decksSlice';
+import cardsReducer from './card/cardsSlice';
 
 const store = configureStore({
   reducer: {
-    decks: decksReducer
+    decks: decksReducer,
+    cards: cardsReducer
   }
 });
 

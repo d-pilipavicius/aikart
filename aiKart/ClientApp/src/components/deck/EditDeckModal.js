@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { editDeck } from "../../app/state/deck/decksSlice";
+import { updateDeck } from "../../app/state/deck/decksSlice";
 import {
   Modal,
   ModalHeader,
@@ -18,7 +18,13 @@ const EditDeckModal = ({ deck, isOpen, toggle }) => {
 
   const handleSave = (event) => {
     event.preventDefault();
-    dispatch(editDeck({ deckName: deck.name, newName, newDescription }));
+    const deckId = deck.id;
+    dispatch(
+      updateDeck({
+        deckId,
+        deckDto: { name: newName, description: newDescription },
+      })
+    );
     toggle();
   };
 

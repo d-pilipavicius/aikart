@@ -2,6 +2,7 @@ using aiKart;
 using aiKart.Data;
 using aiKart.Interfaces;
 using aiKart.Repositories;
+using aiKart.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,20 @@ builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IDeckRepository, DeckRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<IDeckService, DeckService>();
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("https://localhost:44411") // Front-end URL
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -25,6 +40,9 @@ builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(connection));
 
 var app = builder.Build();
+
+// Enable CORS policy
+app.UseCors("AllowSpecificOrigin");
 
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
     SeedData(app);

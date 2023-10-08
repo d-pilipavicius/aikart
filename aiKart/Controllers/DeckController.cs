@@ -11,20 +11,21 @@ namespace aiKart.Controllers
     [ApiController]
     public class DeckController : Controller
     {
-        private readonly IDeckRepository _deckRepository;
+        private readonly IDeckService _deckService;
+
         private readonly IMapper _mapper;
-        public DeckController(IDeckRepository deckRepository, IMapper mapper)
+        public DeckController(IDeckService deckService, IMapper mapper)
         {
-            _deckRepository = deckRepository;
+            _deckService = deckService;
             _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<DeckDto>), 200)]
         [ProducesResponseType(400)]
-        public IActionResult GetDecks()
+        public IActionResult GetAllDecks()
         {
-            var decks = _deckRepository.GetDecks();
+            var decks = _deckService.GetAllDecksIncludingCards();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -32,7 +33,6 @@ namespace aiKart.Controllers
             var deckDtos = _mapper.Map<List<DeckDto>>(decks);
 
             return Ok(deckDtos);
-
         }
 
         [HttpGet("{deckId}")]
@@ -41,13 +41,13 @@ namespace aiKart.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetDeck(int deckId)
         {
-            if (!_deckRepository.DeckExistsById(deckId))
+            if (!_deckService.DeckExistsById(deckId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var deck = _deckRepository.GetDeck(deckId);
+            var deck = _deckService.GetDeckById(deckId);
 
             var deckDto = _mapper.Map<DeckDto>(deck);
 
@@ -62,13 +62,13 @@ namespace aiKart.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetCardsInDeck(int deckId)
         {
-            if (!_deckRepository.DeckExistsById(deckId))
+            if (!_deckService.DeckExistsById(deckId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var cards = _deckRepository.GetDeckCards(deckId);
+            var cards = _deckService.GetCardsInDeck(deckId);
             var cardDtos = _mapper.Map<IEnumerable<CardDto>>(cards);
 
             return Ok(cardDtos);
@@ -84,7 +84,7 @@ namespace aiKart.Controllers
             if (deckDto == null)
                 return BadRequest(ModelState);
 
-            if (_deckRepository.DeckExistsByName(deckDto.Name))
+            if (_deckService.DeckExistsByName(deckDto.Name))
                 return UnprocessableEntity("Deck with name: " + deckDto.Name + " already exists");
 
             if (!ModelState.IsValid)
@@ -92,7 +92,7 @@ namespace aiKart.Controllers
 
             var deck = _mapper.Map<Deck>(deckDto);
 
-            if (!_deckRepository.AddDeck(deck))
+            if (!_deckService.AddDeck(deck))
             {
                 ModelState.AddModelError("", "Something went wrong while saving a new deck");
                 return StatusCode(500, ModelState);
@@ -111,17 +111,17 @@ namespace aiKart.Controllers
             if (deckDto == null)
                 return BadRequest(ModelState);
 
-            if (!_deckRepository.DeckExistsById(deckId))
+            if (!_deckService.DeckExistsById(deckId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var deck = _deckRepository.GetDeck(deckId);
+            var deck = _deckService.GetDeckById(deckId);
 
             _mapper.Map(deckDto, deck);
 
-            if (!_deckRepository.UpdateDeck(deck))
+            if (!_deckService.UpdateDeck(deck))
             {
                 ModelState.AddModelError("", "Something went wrong updating deck");
                 return StatusCode(500, ModelState);
@@ -137,15 +137,15 @@ namespace aiKart.Controllers
         [ProducesResponseType(500)]
         public IActionResult DeleteDeck(int deckId)
         {
-            if (!_deckRepository.DeckExistsById(deckId))
+            if (!_deckService.DeckExistsById(deckId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var deckToDelete = _deckRepository.GetDeck(deckId);
+            var deckToDelete = _deckService.GetDeckById(deckId);
 
-            if (!_deckRepository.DeleteDeck(deckToDelete))
+            if (!_deckService.DeleteDeck(deckToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong while deleting the card");
                 return StatusCode(500, ModelState);

@@ -1,51 +1,111 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { CardStatus } from "../../../features/card/CardStatus";
+// decksSlice.js
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchDecks = createAsyncThunk("decks/fetchDecks", async () => {
+  const response = await axios.get("/api/deck");
+  return response.data;
+});
+
+export const addDeck = createAsyncThunk("decks/addDeck", async (deckDto) => {
+  const response = await axios.post("/api/deck", deckDto);
+  return response.data;
+});
+
+export const updateDeck = createAsyncThunk(
+  "decks/updateDeck",
+  async ({ deckId, deckDto }) => {
+    const response = await axios.put(`/api/deck/${deckId}`, deckDto);
+    return response.data;
+  }
+);
+
+export const deleteDeck = createAsyncThunk(
+  "decks/deleteDeck",
+  async (deckId) => {
+    await axios.delete(`/api/deck/${deckId}`);
+    return deckId;
+  }
+);
+
+export const fetchDeckById = createAsyncThunk(
+  "decks/fetchDeckById",
+  async (deckId) => {
+    const response = await axios.get(`/api/deck/${deckId}`);
+    return response.data;
+  }
+);
 
 export const decksSlice = createSlice({
   name: "decks",
   initialState: {
     decks: [],
+    loading: "idle",
   },
-  reducers: {
-    addDeck: (state, action) => {
-      const { name, description } = action.payload;
-      state.decks.push({ name, description, cards: [] });
-    },
-    editDeck: (state, action) => {
-      const { deckName, newName, newDescription } = action.payload;
-      const deckIndex = state.decks.findIndex((deck) => deck.name === deckName);
-      if (deckIndex > -1) {
-        state.decks[deckIndex].name = newName;
-        state.decks[deckIndex].description = newDescription;
-      }
-    },
-    deleteDeck: (state, action) => {
-      const deckName = action.payload;
-      state.decks = state.decks.filter((deck) => deck.name !== deckName);
-    },
-    addCardToDeck: (state, action) => {
-      const { deckName, card } = action.payload;
-      const deck = state.decks.find((deck) => deck.name === deckName);
-      if (deck) {
-        deck.cards.push({ ...card, status: CardStatus.UNANSWERED });
-      }
-    },
-    editCardInDeck: (state, action) => {
-      const { deckName, cardIndex, newCard } = action.payload;
-      const deck = state.decks.find((deck) => deck.name === deckName);
-      if (deck) {
-        deck.cards[cardIndex] = newCard;
-      }
-    },
-    deleteCardFromDeck: (state, action) => {
-      const { deckName, cardIndex } = action.payload;
-      const deck = state.decks.find((deck) => deck.name === deckName);
-      if (deck) {
-        deck.cards.splice(cardIndex, 1);
-      }
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchDecks.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.decks = action.payload;
+      })
+      .addCase(fetchDecks.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(fetchDecks.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(addDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.decks.push(action.payload);
+      })
+      .addCase(addDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })  
+      .addCase(addDeck.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(updateDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        const index = state.decks.findIndex(
+          (deck) => deck.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.decks[index] = action.payload;
+        }
+      })
+      .addCase(updateDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(updateDeck.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(deleteDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        const index = state.decks.findIndex(
+          (deck) => deck.id === action.payload
+        );
+        if (index !== -1) {
+          state.decks.splice(index, 1);
+        }
+      })
+      .addCase(deleteDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(deleteDeck.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(fetchDeckById.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.decks.push(action.payload);
+      })
+      .addCase(fetchDeckById.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(fetchDeckById.rejected, (state, action) => {
+        state.loading = "idle";
+      });
   },
 });
 
-export const { addDeck, editDeck, deleteDeck, addCardToDeck, editCardInDeck, deleteCardFromDeck } = decksSlice.actions;
 export default decksSlice.reducer;
