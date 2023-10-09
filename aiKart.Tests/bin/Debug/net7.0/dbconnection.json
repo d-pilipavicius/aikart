@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+      "DefaultConnection" : "Host=db-instance.cirospqoydxc.eu-north-1.rds.amazonaws.com;Port=5432;Database=flashcards_db;Username=postgres;Password=%postgres900%"
+   }
+}

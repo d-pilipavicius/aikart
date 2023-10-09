@@ -47,8 +47,17 @@ public class CardRepository : ICardRepository
 
     public bool Save()
     {
-        var saved = _context.SaveChanges();
-        return saved > 0 ? true : false;
+        try
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while saving changes: {ex.Message}");
+            return false;
+        }
     }
+
 
 }
