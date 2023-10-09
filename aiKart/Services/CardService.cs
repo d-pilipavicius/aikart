@@ -38,5 +38,11 @@ namespace aiKart.Services
         {
             return _cardRepository.UpdateCard(card);
         }
+        
+        public bool UpdateCardState(Card card)
+        {
+            return _cardRepository.UpdateCardState(card);
+        }
+
     }
 }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xesf6AEO+WFoxXFo0bIxfg70SYeF9bhAufhcXEI/DQh6Fvj3rEsXtydVhRjPazLTbV6LyYZLRsW5pbCXaVHCYg==",
+  "dgSpecHash": "GC+RDylhD7ZZwUdWnGs14/cZ0kAq3zEqTnc77lSmnBPTpue571L+Te9SrIY4VSaOpwkJ/dByMxrYTTB1OHDpVA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart.Tests\\aiKart.Tests.csproj",
+  "projectFilePath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rokax\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\rokax\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

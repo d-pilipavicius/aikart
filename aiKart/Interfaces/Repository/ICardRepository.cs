@@ -10,5 +10,7 @@ public interface ICardRepository
     bool AddCardToDeck(Card card);
     bool DeleteCard(Card card);
     bool UpdateCard(Card card);
+
+    bool UpdateCardState(Card card);
     bool Save();
 }

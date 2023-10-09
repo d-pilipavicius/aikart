@@ -45,6 +45,19 @@ public class CardRepository : ICardRepository
         return Save();
     }
 
+    public bool UpdateCardState(Card card)
+    {
+        var existingCard = _context.Cards.Find(card.Id);
+        if (existingCard == null)
+        {
+            return false;
+        }
+        existingCard.State = card.State;
+        _context.Cards.Update(existingCard);
+        return Save();
+    }
+
+
     public bool Save()
     {
         try

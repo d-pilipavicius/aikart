@@ -3,6 +3,8 @@ using aiKart.Interfaces;
 using aiKart.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace aiKart.Repositories
 {
@@ -13,6 +15,11 @@ namespace aiKart.Repositories
         public DeckRepository(DataContext context)
         {
             _context = context;
+        }
+
+        public IEnumerable<Deck> GetDecksIncludingCards()
+        {
+            return _context.Decks.Include(d => d.Cards).ToList();
         }
 
         public ICollection<Deck> GetDecks()

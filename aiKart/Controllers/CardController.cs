@@ -41,12 +41,11 @@ namespace aiKart.Controllers
         }
 
         [HttpGet("states")]
-        [ProducesResponseType(200, Type = typeof(List<String>))]
+        [ProducesResponseType(200, Type = typeof(List<CardState>))]
         public IActionResult GetStateTypes()
         {
             var cardStateValues = Enum.GetValues(typeof(CardState))
                 .Cast<CardState>()
-                .Select(e => e.ToString())
                 .ToList();
 
             return Ok(cardStateValues);

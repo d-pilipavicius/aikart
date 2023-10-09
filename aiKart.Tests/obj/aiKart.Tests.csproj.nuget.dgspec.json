@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart.Tests\\aiKart.Tests.csproj": {}
+    "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart.Tests\\aiKart.Tests.csproj": {
+    "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart.Tests\\aiKart.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj",
         "projectName": "aiKart.Tests",
-        "projectPath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart.Tests\\aiKart.Tests.csproj",
+        "projectPath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj",
         "packagesPath": "C:\\Users\\rokax\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart.Tests\\obj\\",
+        "outputPath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\rokax\\AppData\\Roaming\\NuGet\\NuGet.Config"

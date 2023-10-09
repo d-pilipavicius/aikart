@@ -31,115 +31,113 @@ namespace aiKart.Tests.Controllers
         [Fact]
         public void GetCard_CardExists_ReturnsOk()
         {
-            // Arrange
             var cardId = 1;
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
             _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
-            _mockMapper.Setup(mapper => mapper.Map<CardDto>(It.IsAny<Card>())).Returns(new CardDto(1, 1, "Question", "Answer", "Active"));
+            _mockMapper.Setup(mapper => mapper.Map<CardDto>(It.IsAny<Card>())).Returns(new CardDto(1, 1, "Question", "Answer", CardState.Answered));
 
-            // Act
             var result = _controller.GetCard(cardId);
 
-            // Assert
             Assert.IsType<OkObjectResult>(result);
-        }
 
+            _mockCardService.Verify(service => service.CardExists(cardId), Times.Once);
+            _mockCardService.Verify(service => service.GetCardById(cardId), Times.Once);
+            _mockMapper.Verify(mapper => mapper.Map<CardDto>(It.IsAny<Card>()), Times.Once);
+        }
 
         [Fact]
         public void GetCard_CardDoesNotExist_ReturnsNotFound()
         {
-            // Arrange
             var cardId = 1;
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(false);
 
-            // Act
             var result = _controller.GetCard(cardId);
 
-            // Assert
             Assert.IsType<NotFoundResult>(result);
+
+            _mockCardService.Verify(service => service.CardExists(cardId), Times.Once);
         }
 
         [Fact]
         public void GetStateTypes_ReturnsOk()
         {
-            // Arrange
-            // Act
             var result = _controller.GetStateTypes();
 
-            // Assert
             Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
         public void DeleteCard_ValidCard_ReturnsNoContent()
         {
-            // Arrange
             var cardId = 1;
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
             _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
+            _mockCardService.Setup(service => service.DeleteCard(It.IsAny<Card>())).Returns(true);
 
-            // Act
+
             var result = _controller.DeleteCard(cardId);
 
-            // Diagnostic print
-            Console.WriteLine($"DeleteCard: Actual result type: {result.GetType()}");
-
-            // Assert
             Assert.IsType<NoContentResult>(result);
+
+            _mockCardService.Verify(service => service.CardExists(cardId), Times.Once);
+            _mockCardService.Verify(service => service.GetCardById(cardId), Times.Once);
         }
 
         [Fact]
         public void AddCard_ValidCard_ReturnsOk()
         {
-            // Arrange
             var addCardDto = new AddCardDto(1, "Question", "Answer");
             _mockDeckService.Setup(service => service.DeckExistsById(addCardDto.DeckId)).Returns(true);
+            _mockCardService.Setup(service => service.AddCardToDeck(It.IsAny<Card>())).Returns(true);
+            _mockCardService.Setup(service => service.UpdateCard(It.IsAny<Card>())).Returns(true);
 
-            // Act
+
             var result = _controller.AddCard(addCardDto);
 
-            // Diagnostic print
-            Console.WriteLine($"AddCard: Actual result type: {result.GetType()}");
-
-            // Assert
             Assert.IsType<OkResult>(result);
+
+            _mockDeckService.Verify(service => service.DeckExistsById(addCardDto.DeckId), Times.Once);
+            _mockCardService.Verify(service => service.AddCardToDeck(It.IsAny<Card>()), Times.Once);
         }
 
         [Fact]
         public void UpdateCard_ValidCard_ReturnsNoContent()
         {
-            // Arrange
             var cardId = 1;
             var updateCardDto = new UpdateCardDto("Updated Question", "Updated Answer");
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
+            _mockCardService.Setup(service => service.UpdateCard(It.IsAny<Card>())).Returns(true);
 
-            // Act
+
             var result = _controller.UpdateCard(cardId, updateCardDto);
 
-            // Diagnostic print
-            Console.WriteLine($"UpdateCard: Actual result type: {result.GetType()}");
-
-            // Assert
             Assert.IsType<NoContentResult>(result);
+
+            _mockCardService.Verify(service => service.CardExists(cardId), Times.Once);
         }
 
         [Fact]
         public void SetCardState_ValidCardState_ReturnsNoContent()
         {
-            // Arrange
             var cardId = 1;
-            var cardStateDto = new CardStateDto("Active"); // Using string to match your DTO
-            _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
-            _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
+            var cardStateDto = new CardStateDto(CardState.Answered);
 
-            // Act
+            _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
+
+            var card = new Card();
+            _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(card);
+
+            _mockCardService.Setup(service => service.UpdateCard(It.IsAny<Card>())).Returns(true);
+
             var result = _controller.SetCardState(cardId, cardStateDto);
 
-            // Diagnostic print
-            Console.WriteLine($"SetCardState: Actual result type: {result.GetType()}");
-
-            // Assert
             Assert.IsType<NoContentResult>(result);
+
+
+            _mockCardService.Verify(service => service.CardExists(cardId), Times.Once);
+            _mockCardService.Verify(service => service.GetCardById(cardId), Times.Once);
+            _mockCardService.Verify(service => service.UpdateCard(It.IsAny<Card>()), Times.Once);
         }
+
     }
 }
