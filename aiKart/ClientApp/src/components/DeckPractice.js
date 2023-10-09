@@ -20,7 +20,7 @@ const DeckPractice = () => {
       style={{ minHeight: "60vh", display: "flex", flexDirection: "column" }}
     >
       {currentCardObject && (
-        <div style={{ cursor: "pointer" }}>
+        <div>
           <h1>{currentCardObject.question}</h1>
           <hr></hr>
           {isAnswered && <h1>{currentCardObject.answer}</h1>}
