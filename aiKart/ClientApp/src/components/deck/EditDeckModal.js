@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateDeck } from "../../app/state/deck/decksSlice";
+import { updateDeck, fetchDecks } from "../../app/state/deck/decksSlice";
 import {
   Modal,
   ModalHeader,
@@ -24,7 +24,9 @@ const EditDeckModal = ({ deck, isOpen, toggle }) => {
         deckId,
         deckDto: { name: newName, description: newDescription },
       })
-    );
+    ).then(() => {
+      dispatch(fetchDecks());
+    });
     toggle();
   };
 
