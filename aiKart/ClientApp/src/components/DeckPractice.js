@@ -58,7 +58,7 @@ const DeckPractice = () => {
       </Container>
 
       <Container className="d-flex justify-content-center">
-        {currentCard < deck.cards.length - 1 && !isAnswered && (
+        {!isAnswered && (
           <Button
             style={{ marginRight: "5px" }}
             color="primary"
@@ -102,8 +102,12 @@ const DeckPractice = () => {
             </Button>
           </div>
         )}
-        {currentCard === deck.cards.length - 1 && (
-          <Button type="button" color="primary" onClick={() => navigate(`/`)}>
+        {currentCard === deck.cards.length - 1 && isAnswered && (
+          <Button
+            style={{ marginRight: "5px" }}
+            color="primary"
+            onClick={() => navigate(`/`)}
+          >
             Finish
           </Button>
         )}
