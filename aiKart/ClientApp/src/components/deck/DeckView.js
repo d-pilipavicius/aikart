@@ -6,9 +6,17 @@ import {
   updateCard as updateCardInDeck,
   deleteCard as deleteCardFromDeck,
 } from "../../app/state/card/cardsSlice";
+import { fetchDecks } from "../../app/state/deck/decksSlice";
 import AddCardModal from "../card/AddCardModal";
 import EditCardModal from "../card/EditCardModal";
-import { Card, CardBody, CardTitle, CardText, Button } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  CardText,
+  Button,
+  CardFooter,
+} from "reactstrap";
 
 const DeckView = () => {
   const dispatch = useDispatch();
@@ -21,7 +29,6 @@ const DeckView = () => {
     state.decks.decks.find((deck) => deck.id === parseInt(deckId))
   );
 
-
   const toggleAddModal = () => {
     setShowModal(!showModal);
   };
@@ -31,15 +38,19 @@ const DeckView = () => {
   };
 
   const addCard = (question, answer) => {
-    const cardDto = { deckId: deck.id, question, answer}; 
-    dispatch(addCardToDeck(cardDto));
+    const cardDto = { deckId: deck.id, question, answer };
+    dispatch(addCardToDeck(cardDto)).then(() => {
+      dispatch(fetchDecks());
+    });
     toggleAddModal();
   };
 
   const editCard = (index, question, answer) => {
     const cardId = deck.cards[index].id;
     const cardDto = { question, answer };
-    dispatch(updateCardInDeck({ cardId, cardDto }));
+    dispatch(updateCardInDeck({ cardId, cardDto })).then(() => {
+      dispatch(fetchDecks());
+    });
     toggleEditModal();
   };
 
@@ -51,7 +62,9 @@ const DeckView = () => {
   const deleteCard = (cardIndex) => {
     const cardId = deck.cards[cardIndex].id;
     if (window.confirm("Are you sure you want to delete this card?")) {
-      dispatch(deleteCardFromDeck(cardId));
+      dispatch(deleteCardFromDeck(cardId)).then(() => {
+        dispatch(fetchDecks());
+      });
     }
   };
 
@@ -61,6 +74,7 @@ const DeckView = () => {
       <button className="btn btn-primary mb-3" onClick={toggleAddModal}>
         Add Card
       </button>
+
       {deck &&
         deck.cards.map((card, index) => (
           <Card key={index} className="mb-3">
@@ -69,6 +83,8 @@ const DeckView = () => {
               <CardText>{card.question}</CardText>
               <CardTitle tag="h5">Answer</CardTitle>
               <CardText>{card.answer}</CardText>
+            </CardBody>
+            <CardFooter>
               <Button
                 style={{ marginRight: "1rem" }}
                 color="warning"
@@ -79,14 +95,16 @@ const DeckView = () => {
               <Button color="danger" onClick={() => deleteCard(index)}>
                 Delete
               </Button>
-            </CardBody>
+            </CardFooter>
           </Card>
         ))}
+
       <AddCardModal
         showModal={showModal}
         toggleModal={toggleAddModal}
         addCard={addCard}
       />
+
       <EditCardModal
         isOpen={editModalOpen}
         toggle={toggleEditModal}
