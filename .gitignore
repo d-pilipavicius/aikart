@@ -3,3 +3,4 @@ aiKart/aiKart.sln
 
 *.dll
 *.pdb
+*.cache
