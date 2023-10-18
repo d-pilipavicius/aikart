@@ -29,6 +29,23 @@ namespace aiKart.Tests.Controllers
         }
 
         [Fact]
+        public void GetCard_InvalidModelState_ReturnsBadRequest()
+        {
+            _controller.ModelState.AddModelError("Error", "Model State is Invalid");
+            var result = _controller.GetCard(1);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void AddCard_InvalidModelState_ReturnsBadRequest()
+        {
+            _controller.ModelState.AddModelError("Error", "Model State is Invalid");
+            var addCardDto = new AddCardDto(1, "Question", "Answer");
+            var result = _controller.AddCard(addCardDto);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
         public void GetCard_CardExists_ReturnsOk()
         {
             var cardId = 1;
@@ -137,6 +154,49 @@ namespace aiKart.Tests.Controllers
             _mockCardService.Verify(service => service.CardExists(cardId), Times.Once);
             _mockCardService.Verify(service => service.GetCardById(cardId), Times.Once);
             _mockCardService.Verify(service => service.UpdateCard(It.IsAny<Card>()), Times.Once);
+        }
+
+        [Fact]
+        public void AddCard_DeckDoesNotExist_ReturnsNotFound()
+        {
+            var addCardDto = new AddCardDto(1, "Question", "Answer");
+            _mockDeckService.Setup(service => service.DeckExistsById(addCardDto.DeckId)).Returns(false);
+            var result = _controller.AddCard(addCardDto);
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCard_UpdateFails_ReturnsStatusCode500()
+        {
+            var cardId = 1;
+            var updateCardDto = new UpdateCardDto("Updated Question", "Updated Answer");
+            _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
+            _mockCardService.Setup(service => service.UpdateCard(It.IsAny<Card>())).Returns(false);
+            var result = _controller.UpdateCard(cardId, updateCardDto);
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public void DeleteCard_DeleteFails_ReturnsStatusCode500()
+        {
+            var cardId = 1;
+            _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
+            _mockCardService.Setup(service => service.DeleteCard(It.IsAny<Card>())).Returns(false);
+            var result = _controller.DeleteCard(cardId);
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public void SetCardState_InvalidModelState_ReturnsBadRequest()
+        {
+            _controller.ModelState.AddModelError("Error", "Model State is Invalid");
+            var cardStateDto = new CardStateDto(CardState.Answered);
+            var result = _controller.SetCardState(1, cardStateDto);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
     }
