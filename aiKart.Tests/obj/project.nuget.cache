@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "DIlSdcVqCt9WFnHPKFXkGbI4VmkSjhCiar8BjgvlwM8qKvN4W/SMK6xCgKojU+rq4VBVe5XFckTzSzHGk9yjPQ==",
+  "dgSpecHash": "s2U0aQSog0j6htRRqvS7rINahU6LfhjEMOAEl2CwtGOrEhbRgU6GuCDVIXB6gLLQzEZ7sogelorpSTXYJhpwTw==",
   "success": true,
   "projectFilePath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj",
   "expectedPackageFiles": [
@@ -12,9 +12,10 @@
     "C:\\Users\\rokax\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\7.0.10\\microsoft.aspnetcore.spaproxy.7.0.10.nupkg.sha512",
     "C:\\Users\\rokax\\.nuget\\packages\\microsoft.codecoverage\\17.7.0\\microsoft.codecoverage.17.7.0.nupkg.sha512",
     "C:\\Users\\rokax\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
-    "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.11\\microsoft.entityframeworkcore.7.0.11.nupkg.sha512",
-    "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.11\\microsoft.entityframeworkcore.abstractions.7.0.11.nupkg.sha512",
-    "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.11\\microsoft.entityframeworkcore.analyzers.7.0.11.nupkg.sha512",
+    "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.12\\microsoft.entityframeworkcore.7.0.12.nupkg.sha512",
+    "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.12\\microsoft.entityframeworkcore.abstractions.7.0.12.nupkg.sha512",
+    "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.12\\microsoft.entityframeworkcore.analyzers.7.0.12.nupkg.sha512",
+    "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\7.0.12\\microsoft.entityframeworkcore.inmemory.7.0.12.nupkg.sha512",
     "C:\\Users\\rokax\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.11\\microsoft.entityframeworkcore.relational.7.0.11.nupkg.sha512",
     "C:\\Users\\rokax\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\rokax\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
