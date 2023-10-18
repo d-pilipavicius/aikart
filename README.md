@@ -41,7 +41,7 @@ npm install
 
 ### 4. Connect to your database
 
-Create a separate JSON file named `dbconnection.json` and place it in your project directory. 
+Create a separate JSON file named `dbconnection.json` and place it in your project directory.
 
 This file should contain your connection string:
 
@@ -124,7 +124,7 @@ npm test
 
 1. **dotnet command not found**
    - Make sure the .NET SDK is installed and the `PATH` is set correctly.
-   
+  
 2. **npm command not found**
    - Make sure Node.js and npm are installed and the `PATH` is set correctly.
 
@@ -133,3 +133,4 @@ npm test
 
 4. **The current working directory does not contain a project or solution file**
    - Make sure you've navigated to the correct project folder "\aiKart"
+  
