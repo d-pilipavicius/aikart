@@ -1,7 +1,10 @@
 
 aiKart/aiKart.sln
 
-aiKart/aiKart.Tests/coverage.json
 *.dll
 *.pdb
 *.cache
+*.pdb
+aiKart.Tests/coverage.json
+aiKart.Tests/coverage.cobertura.xml
+aiKart.Tests/coverage.json
