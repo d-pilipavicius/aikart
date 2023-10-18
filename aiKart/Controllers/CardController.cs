@@ -27,14 +27,13 @@ namespace aiKart.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetCard(int cardId)
         {
-            if (!_cardService.CardExists(cardId))
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var card = _cardService.GetCardById(cardId);
+            if (!_cardService.CardExists(cardId))
+                return NotFound();
 
+            var card = _cardService.GetCardById(cardId);
             var cardDto = _mapper.Map<CardDto>(card);
 
             return Ok(cardDto);
@@ -58,14 +57,14 @@ namespace aiKart.Controllers
         [ProducesResponseType(500)]
         public IActionResult SetCardState(int cardId, [FromBody] CardStateDto cardStateDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (cardStateDto == null)
                 return BadRequest(ModelState);
 
             if (!_cardService.CardExists(cardId))
                 return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             var card = _cardService.GetCardById(cardId);
 
@@ -73,7 +72,7 @@ namespace aiKart.Controllers
             {
                 _mapper.Map(cardStateDto, card);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Invalid state!");
             }
@@ -94,14 +93,14 @@ namespace aiKart.Controllers
         [ProducesResponseType(500)]
         public IActionResult AddCard([FromBody] AddCardDto cardDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (cardDto == null)
                 return BadRequest(ModelState);
 
             if (!_deckService.DeckExistsById(cardDto.DeckId))
                 return NotFound("Deck with id " + cardDto.DeckId + " does not exist");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             var card = _mapper.Map<Card>(cardDto);
 
