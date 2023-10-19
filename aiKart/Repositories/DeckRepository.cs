@@ -27,7 +27,7 @@ namespace aiKart.Repositories
             return _context.Decks.OrderBy(d => d.Id).ToList();
         }
 
-        public Deck GetDeck(int id)
+        public Deck? GetDeck(int id)
         {
             return _context.Decks.Find(id);
         }

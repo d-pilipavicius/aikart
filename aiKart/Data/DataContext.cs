@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using aiKart.Models;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using aiKart.States;
+using aiKart.Interfaces;
 
 namespace aiKart.Data;
 
@@ -10,9 +11,13 @@ public class DataContext : DbContext
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
+    
+    public DataContext()
+    {
+    }
 
-    public DbSet<Card> Cards { get; set; }
-    public DbSet<Deck> Decks { get; set; }
+    public virtual DbSet<Card> Cards { get; set; }
+    public virtual DbSet<Deck> Decks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

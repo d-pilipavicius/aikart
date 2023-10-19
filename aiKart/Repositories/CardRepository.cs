@@ -13,7 +13,7 @@ public class CardRepository : ICardRepository
         _context = context;
     }
 
-    public Card GetCardById(int id)
+    public Card? GetCardById(int id)
     {
         return _context.Cards.Find(id);
     }
@@ -63,7 +63,7 @@ public class CardRepository : ICardRepository
         try
         {
             var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
         catch (Exception ex)
         {

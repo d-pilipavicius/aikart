@@ -13,7 +13,7 @@ namespace aiKart.Services
             _cardRepository = cardRepository;
         }
 
-        public Card GetCardById(int id)
+        public Card? GetCardById(int id)
         {
             return _cardRepository.GetCardById(id);
         }
