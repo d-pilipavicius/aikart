@@ -1,8 +1,0 @@
-{
-"SpaProxyServer": {
-"ServerUrl": "https://localhost:44411",
-"LaunchCommand": "npm start",
-"WorkingDirectory": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart\\ClientApp\\",
-"MaxTimeoutInSeconds": "120"
-}
-}
