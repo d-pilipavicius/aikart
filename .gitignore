@@ -1,2 +1,17 @@
 
 aiKart/aiKart.sln
+
+*.dll
+*.pdb
+*.cache
+*.pdb
+aiKart.Tests/coverage.json
+aiKart.Tests/coverage.cobertura.xml
+aiKart.Tests/coverage.json
+aiKart.Tests/bin/Debug/net7.0/dbconnection.json
+aiKart.Tests/bin/Debug/net7.0/spa.proxy.json
+aiKart.Tests/obj/Debug/net7.0/aiKart.Tests.GeneratedMSBuildEditorConfig.editorconfig
+aiKart.Tests/obj/Debug/net7.0/aiKart.Tests.csproj.CopyComplete
+aiKart.Tests/obj/aiKart.Tests.csproj.nuget.dgspec.json
+aiKart.Tests/obj/Debug/net7.0/aiKart.Tests.csproj.FileListAbsolute.txt
+aiKart.Tests/obj/aiKart.Tests.csproj.nuget.g.props

@@ -1,2 +1,4 @@
+using aiKart.States;
+
 namespace aiKart.Dtos.CardDtos;
-public record CardStateDto(string State);
+public record CardStateDto(CardState State);

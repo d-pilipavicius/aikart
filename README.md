@@ -41,7 +41,7 @@ npm install
 
 ### 4. Connect to your database
 
-Create a separate JSON file named `dbconnection.json` and place it in your project directory. 
+Create a separate JSON file named `dbconnection.json` and place it in your project directory.
 
 This file should contain your connection string:
 
@@ -102,10 +102,16 @@ For consistent code styling, it's recommended to set up ESLint and Prettier. The
 For backend, you can use xUnit which integrates well with the .NET ecosystem.
 For frontend, the React project template often comes with Jest.
 
-To run backend tests:
+To run backend tests, navigate to the `Aikart.Tests` folder and run:
 
 ```bash
 dotnet test
+```
+
+To see unit test coverage, run:
+
+```bash
+dotnet test /p:CollectCoverage=true
 ```
 
 To run frontend tests, navigate to the `ClientApp` folder and run:
@@ -118,7 +124,7 @@ npm test
 
 1. **dotnet command not found**
    - Make sure the .NET SDK is installed and the `PATH` is set correctly.
-   
+  
 2. **npm command not found**
    - Make sure Node.js and npm are installed and the `PATH` is set correctly.
 
@@ -127,3 +133,4 @@ npm test
 
 4. **The current working directory does not contain a project or solution file**
    - Make sure you've navigated to the correct project folder "\aiKart"
+  
