@@ -33,9 +33,7 @@ builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("dbconnection.json", optional: false) // Load the connectionSettings.json
     .Build();
-
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(connection));
 

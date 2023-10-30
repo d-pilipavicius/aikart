@@ -7,5 +7,7 @@ public class Deck
     public string? CreatorName { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     public DateTime LastEditDate { get; set; } = DateTime.UtcNow;
+
     public ICollection<Card> Cards { get; set; } = new List<Card>();
+    public ICollection<UserDeck> UserDecks { get; set; }
 }

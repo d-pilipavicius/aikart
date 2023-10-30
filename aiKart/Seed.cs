@@ -8,12 +8,14 @@ public class Seed
     private readonly DataContext dataContext;
     public Seed(DataContext context)
     {
-        this.dataContext = context;
+        dataContext = context;
     }
     public void SeedDataContext()
     {
-        if (!dataContext.Decks.Any())
+        if (true)
         {
+            var adminUser = new User { Name = "admin" };
+
             var decks = new List<Deck>()
             {
                 new Deck()
@@ -39,7 +41,7 @@ public class Seed
                         }
                     }
                 },
-                
+
                 new Deck()
                 {
                     Name = "Science",
@@ -95,8 +97,17 @@ public class Seed
                 }
             };
 
+            var userDecks = decks.Select(deck => new UserDeck
+            {
+                User = adminUser,
+                Deck = deck
+            }).ToList();
+
+            dataContext.Users.Add(adminUser);
             dataContext.Decks.AddRange(decks);
+            dataContext.UserDecks.AddRange(userDecks);
             dataContext.SaveChanges();
         }
     }
 }
+
