@@ -25,7 +25,7 @@ namespace aiKart.Services
             return _deckRepository.GetDecks();
         }
 
-        public Deck GetDeckById(int id)
+        public Deck? GetDeckById(int id)
         {
             return _deckRepository.GetDeck(id);
         }

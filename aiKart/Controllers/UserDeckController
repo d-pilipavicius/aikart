@@ -1,0 +1,51 @@
+using System.Numerics;
+using aiKart.Dtos.CardDtos;
+using aiKart.Dtos.DeckDtos;
+using aiKart.Interfaces;
+using aiKart.Models;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+
+namespace aiKart.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class UserDeckController : ControllerBase
+{
+    private readonly UserDeckService _userDeckService;
+    private readonly UserService _userService;
+
+    public UserDeckController(UserDeckService userDeckService, UserService userService)
+    {
+        _userDeckService = userDeckService;
+        _userService = userService;
+    }
+
+    [HttpGet("{username}")]
+    public async Task<IActionResult> GetDecksByUser(string username)
+    {
+        var user = await userRepository.GetUserByNameAsync(username);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        try
+        {
+            var decks = await userDeckService.GetDecksByUserAsync(username);
+
+            if (decks == null)
+            {
+                return NotFound();
+            }
+
+            var deckDtos = _mapper.Map<List<DeckDto>>(decks);
+            return Ok(deckDtos);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error");
+        }
+    }
+}
