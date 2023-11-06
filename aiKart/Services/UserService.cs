@@ -12,8 +12,47 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<User?> GetUserByNameAsync(string username)
+    public User? GetUser(int id)
     {
-        return await _userRepository.GetUserByNameAsync(username);
+        return _userRepository.GetUser(id);
+    }
+
+    public User? GetUser(string name)
+    {
+        return _userRepository.GetUser(name);
+    }
+
+    public bool UserExists(int id)
+    {
+        return _userRepository.UserExists(id);
+    }
+
+    public bool UserExists(string name)
+    {
+        return _userRepository.UserExists(name);
+    }
+
+    public bool AddUser(User user)
+    {
+        if(!_userRepository.UserExists(user.Name)){
+            return _userRepository.AddUser(user);
+        }else{
+            return false;
+        }
+    }
+
+    public IEnumerable<User> GetUsers()
+    {
+        return _userRepository.GetUsers();
+    }
+
+    public ICollection<User> GetUsersOfADeck(int deckId)
+    {
+        return _userRepository.GetUsersOfADeck(deckId);
+    }
+
+    public ICollection<Deck> GetDecksByUser(int userId)
+    {
+        return _userRepository.GetDecksByUser(userId);
     }
 }

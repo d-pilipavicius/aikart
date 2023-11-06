@@ -15,3 +15,5 @@ aiKart.Tests/obj/Debug/net7.0/aiKart.Tests.csproj.CopyComplete
 aiKart.Tests/obj/aiKart.Tests.csproj.nuget.dgspec.json
 aiKart.Tests/obj/Debug/net7.0/aiKart.Tests.csproj.FileListAbsolute.txt
 aiKart.Tests/obj/aiKart.Tests.csproj.nuget.g.props
+aiKart.Tests/bin/Debug/net7.0/CoverletSourceRootsMapping
+aiKart.Tests/obj/project.assets.json
