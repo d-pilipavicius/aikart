@@ -1,22 +1,25 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchDecks } from "../app/state/deck/decksSlice";
-import { useDispatch } from "react-redux";
 import { Card, CardText, CardBody, CardHeader } from "reactstrap";
+import { fetchDecksByUser } from "../app/state/user/userDecksSlice";
 
 const Home = () => {
-  const decks = useSelector((state) => state.decks.decks);
+  const decks = useSelector((state) => state.userDecks.userDecks);
+  const user = useSelector((state) => state.users.currentUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchDecks());
-  }, [dispatch]);
+    if (user) {
+      console.log(user.id);
+      dispatch(fetchDecksByUser(user.id));
+    }
+  }, [dispatch, user]);
 
   return (
     <div>
-      <h1>Welcome to AiKart!</h1>
+      <h1>Welcome to AiKart, {user ? user.name : "Guest"}!</h1>
       <h5>
         Select a deck you want to practice or create a new one by pressing{" "}
         <strong>Create Deck</strong>.

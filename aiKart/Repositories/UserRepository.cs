@@ -14,6 +14,11 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
+    public ICollection<User> GetUsers()
+    {
+        return _context.Users.OrderBy(user => user.Id).ToList();
+    }
+
     public User? GetUser(int id)
     {
         return _context.Users.Find(id);
@@ -36,7 +41,8 @@ public class UserRepository : IUserRepository
 
     public bool AddUser(User user)
     {
-        throw new NotImplementedException();
+        _context.Add(user);
+        return Save();
     }
 
     public bool Save()
@@ -51,20 +57,5 @@ public class UserRepository : IUserRepository
             Console.WriteLine($"An error occurred while saving changes: {ex.Message}");
             return false;
         }
-    }
-
-    public ICollection<User> GetUsers()
-    {
-        return _context.Users.OrderBy(user => user.Id).ToList();
-    }
-
-    public ICollection<User> GetUsersOfADeck(int deckId)
-    {
-        return _context.UserDecks.Where(u => u.DeckId == deckId).Select(o => o.User).ToList();
-    }
-
-    public ICollection<Deck> GetDecksByUser(int userId)
-    {
-        return _context.UserDecks.Where(u => u.UserId == userId).Select(o => o.Deck).ToList();
     }
 }

@@ -25,6 +25,7 @@ public class MappingProfiles : Profile
 
         CreateMap<User, UserDto>();
         CreateMap<UserDto, User>();
-        
+
+        CreateMap<User, UserResponseDto>();
     }
 }

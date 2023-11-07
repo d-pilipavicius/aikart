@@ -20,7 +20,6 @@ builder.Services.AddScoped<IUserDeckRepository, UserDeckRepository>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserDeckService, UserDeckService>();
 
 builder.Services.AddCors(options =>
 {

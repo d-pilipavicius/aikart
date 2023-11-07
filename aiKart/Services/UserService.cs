@@ -12,6 +12,11 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    public IEnumerable<User> GetUsers()
+    {
+        return _userRepository.GetUsers();
+    }
+
     public User? GetUser(int id)
     {
         return _userRepository.GetUser(id);
@@ -34,25 +39,13 @@ public class UserService : IUserService
 
     public bool AddUser(User user)
     {
-        if(!_userRepository.UserExists(user.Name)){
+        if (!_userRepository.UserExists(user.Name))
+        {
             return _userRepository.AddUser(user);
-        }else{
+        }
+        else
+        {
             return false;
         }
-    }
-
-    public IEnumerable<User> GetUsers()
-    {
-        return _userRepository.GetUsers();
-    }
-
-    public ICollection<User> GetUsersOfADeck(int deckId)
-    {
-        return _userRepository.GetUsersOfADeck(deckId);
-    }
-
-    public ICollection<Deck> GetDecksByUser(int userId)
-    {
-        return _userRepository.GetDecksByUser(userId);
     }
 }

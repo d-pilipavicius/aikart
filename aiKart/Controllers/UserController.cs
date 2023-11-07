@@ -1,6 +1,7 @@
-using aiKart.Dtos.DeckDtos;
+
 using aiKart.Dtos.UserDtos;
 using aiKart.Interfaces;
+using aiKart.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +12,14 @@ namespace aiKart.Controllers;
 public class UserController : Controller
 {
     private readonly IUserService _userService;
+    private readonly IDeckService _deckService;
     private readonly IMapper _mapper;
 
-    public UserController(IUserService userService, IMapper mapper)
+    public UserController(IUserService userService, IDeckService deckService, IMapper mapper)
     {
         _mapper = mapper;
         _userService = userService;
+        _deckService = deckService;
     }
 
     [HttpGet]
@@ -52,21 +55,33 @@ public class UserController : Controller
         return Ok(userDto);
     }
 
-    [HttpGet("{userId}/decks")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<DeckDto>))]
+    [HttpPost]
+    [ProducesResponseType(201, Type = typeof(int))]
     [ProducesResponseType(400)]
-    [ProducesResponseType(404)]
-    public IActionResult GetDecksByUser(int userId)
+    public IActionResult AddUser([FromBody] UserDto userCreate)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (userCreate == null)
+            return BadRequest();
 
-        if (!_userService.UserExists(userId))
-            return NotFound();
+        var existingUser = _userService.GetUsers()
+            .FirstOrDefault(u => u.Name.Trim().ToUpper() == userCreate.Name.TrimEnd().ToUpper());
 
-        var decks = _userService.GetDecksByUser(userId);
-        var decksDto = _mapper.Map<List<DeckDto>>(decks);
+        if (existingUser != null)
+        {
+            var existingUserDto = _mapper.Map<UserResponseDto>(existingUser);
+            return Ok(existingUserDto);
+        }
 
-        return Ok(decksDto);
+        var userMap = _mapper.Map<User>(userCreate);
+
+        if (!_userService.AddUser(userMap))
+        {
+            ModelState.AddModelError("", "Something went wrong while saving");
+            return StatusCode(500, ModelState);
+        }
+
+        var userDto = _mapper.Map<UserResponseDto>(userMap);
+
+        return CreatedAtAction(nameof(GetUser), new { userId = userMap.Id }, userDto);
     }
 }

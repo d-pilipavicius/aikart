@@ -1,3 +1,3 @@
 namespace aiKart.Dtos.UserDtos;
 
-public record UserDto(int Id, string Name);
+public record UserDto(string Name);

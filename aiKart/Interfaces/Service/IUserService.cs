@@ -9,8 +9,6 @@ public interface IUserService
     User? GetUser(int id);
     bool UserExists(int id);
     bool UserExists(string name);
-    ICollection<User> GetUsersOfADeck(int deckId);
-    ICollection<Deck> GetDecksByUser(int userId);
     bool AddUser(User user);
 }
 
