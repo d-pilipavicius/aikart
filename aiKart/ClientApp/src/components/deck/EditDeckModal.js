@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateDeck, fetchDecks } from "../../app/state/deck/decksSlice";
+import { updateDeck } from "../../app/state/deck/decksSlice";
+import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import {
   Modal,
   ModalHeader,
@@ -11,7 +12,7 @@ import {
   Form,
 } from "reactstrap";
 
-const EditDeckModal = ({ deck, isOpen, toggle }) => {
+const EditDeckModal = ({ deck, isOpen, toggle, userId }) => {
   const [newName, setNewName] = useState(deck.name);
   const [newDescription, setNewDescription] = useState(deck.description);
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const EditDeckModal = ({ deck, isOpen, toggle }) => {
         deckDto: { name: newName, description: newDescription },
       })
     ).then(() => {
-      dispatch(fetchDecks());
+      dispatch(fetchDecksByUser(userId));
     });
     toggle();
   };

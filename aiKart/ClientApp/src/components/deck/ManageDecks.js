@@ -3,11 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import EditDeckModal from "./EditDeckModal";
 import CreateDeckModal from "./CreateDeckModal";
-import {
-  fetchDecks,
-  deleteDeck,
-  addDeck,
-} from "../../app/state/deck/decksSlice";
+import { deleteDeck, addDeck } from "../../app/state/deck/decksSlice";
 import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import {
   Button,
@@ -53,7 +49,7 @@ const ManageDecks = () => {
       setNewDeckName("");
       setNewDeckDescription("");
       toggleCreateDeckForm();
-      dispatch(fetchDecks()); // Refetch decks after adding
+      dispatch(fetchDecksByUser(user.id));
     }
   };
 
@@ -61,7 +57,7 @@ const ManageDecks = () => {
     event.stopPropagation();
     if (window.confirm("Are you sure you want to delete this deck?")) {
       dispatch(deleteDeck(deck.id)).then(() => {
-        dispatch(fetchDecks());
+        dispatch(fetchDecksByUser(user.id));
       });
     }
   };
@@ -133,6 +129,7 @@ const ManageDecks = () => {
           toggle={() => {
             setSelectedDeck(null);
           }}
+          userId={user.id}
         />
       )}
     </div>

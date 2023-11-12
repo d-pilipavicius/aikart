@@ -77,6 +77,9 @@ namespace aiKart.Controllers
                 return BadRequest("Invalid state!");
             }
 
+            if (card == null)
+                return NotFound();
+
             if (!_cardService.UpdateCard(card))
             {
                 ModelState.AddModelError("", "Something went wrong while updating a card");
@@ -131,6 +134,9 @@ namespace aiKart.Controllers
 
             var card = _cardService.GetCardById(cardId);
 
+            if (card == null)
+                return NotFound();
+
             _mapper.Map(cardDto, card);
 
             if (!_cardService.UpdateCard(card))
@@ -157,6 +163,9 @@ namespace aiKart.Controllers
                 return BadRequest(ModelState);
 
             var cardToDelete = _cardService.GetCardById(cardId);
+
+            if (cardToDelete == null)
+                return NotFound();
 
             if (!_cardService.DeleteCard(cardToDelete))
             {

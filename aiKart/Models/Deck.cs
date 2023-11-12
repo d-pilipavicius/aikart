@@ -9,5 +9,5 @@ public class Deck
     public DateTime LastEditDate { get; set; } = DateTime.UtcNow;
 
     public ICollection<Card> Cards { get; set; } = new List<Card>();
-    public ICollection<UserDeck> UserDecks { get; set; }
+    public ICollection<UserDeck>? UserDecks { get; set; }
 }

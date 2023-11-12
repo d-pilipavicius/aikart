@@ -39,7 +39,7 @@ public class UserService : IUserService
 
     public bool AddUser(User user)
     {
-        if (!_userRepository.UserExists(user.Name))
+        if (user.Name != null && !_userRepository.UserExists(user.Name))
         {
             return _userRepository.AddUser(user);
         }

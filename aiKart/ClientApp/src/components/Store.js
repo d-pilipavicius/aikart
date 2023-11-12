@@ -1,21 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDecks } from "../app/state/deck/decksSlice";
+import { addUserToDeck } from "../app/state/user/userDecksSlice";
 import {
   useTable,
   useSortBy,
   useGlobalFilter,
   usePagination,
 } from "react-table";
-import { Card, CardBody, Table, Button, Input } from "reactstrap";
+import { Table, Button, Input } from "reactstrap";
 
 const Store = () => {
   const dispatch = useDispatch();
   const decks = useSelector((state) => state.decks.decks);
+  const user = useSelector((state) => state.users.currentUser);
 
   useEffect(() => {
     dispatch(fetchDecks());
   }, [dispatch]);
+
+  const handlePurchase = useCallback(
+    (deckId) => {
+      dispatch(addUserToDeck({ UserId: user.id, DeckId: deckId }));
+    },
+    [dispatch, user.id]
+  );
 
   const data = React.useMemo(() => decks, [decks]);
   const columns = React.useMemo(
@@ -51,7 +60,7 @@ const Store = () => {
         width: "10%",
       },
     ],
-    []
+    [handlePurchase]
   );
 
   const {
@@ -76,15 +85,13 @@ const Store = () => {
     usePagination
   );
 
-  const { globalFilter, pageIndex, } = state;
+  const { globalFilter, pageIndex } = state;
 
   const handleRefresh = () => {
     dispatch(fetchDecks());
   };
 
-  const handlePurchase = (deckId) => {
-    console.log(`Purchased deck with ID: ${deckId}`);
-  };
+  
 
   return (
     <div>

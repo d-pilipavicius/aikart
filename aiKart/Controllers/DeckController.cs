@@ -125,6 +125,9 @@ namespace aiKart.Controllers
 
             var deck = _deckService.GetDeckById(deckId);
 
+            if (deck == null)
+                return NotFound();
+
             _mapper.Map(deckDto, deck);
 
             if (!_deckService.UpdateDeck(deck))
@@ -150,6 +153,9 @@ namespace aiKart.Controllers
                 return NotFound();
 
             var deckToDelete = _deckService.GetDeckById(deckId);
+
+            if (deckToDelete == null)
+                return NotFound();
 
             if (!_deckService.DeleteDeck(deckToDelete))
             {

@@ -10,6 +10,7 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  console.log(decks);
   useEffect(() => {
     if (user) {
       dispatch(fetchDecksByUser(user.id));

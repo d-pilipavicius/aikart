@@ -7,7 +7,6 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   const isUserLoginPage = location.pathname === "/";
-  console.log(isUserLoginPage);
 
   return (
     <div>

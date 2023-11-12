@@ -19,12 +19,12 @@ public class UserDeckRepository : IUserDeckRepository
         return _context.UserDecks.OrderBy(u => u.UserId).ToList();
     }
 
-    public ICollection<Deck> GetDecksByUser(int userId)
+    public ICollection<Deck?> GetDecksByUser(int userId)
     {
-        return _context.UserDecks.Where(u => u.UserId == userId).Select(o => o.Deck).ToList();
+        return _context.UserDecks.Where(u => u.UserId == userId).Include(o => o.Deck.Cards).Select(o => o.Deck).ToList();
     }
 
-    public ICollection<User> GetUsersOfADeck(int deckId)
+    public ICollection<User?> GetUsersOfADeck(int deckId)
     {
         return _context.UserDecks.Where(u => u.DeckId == deckId).Select(o => o.User).ToList();
     }
