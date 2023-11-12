@@ -8,6 +8,7 @@ import {
   deleteDeck,
   addDeck,
 } from "../../app/state/deck/decksSlice";
+import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import {
   Button,
   Card,
@@ -18,7 +19,8 @@ import {
 } from "reactstrap";
 
 const ManageDecks = () => {
-  const decks = useSelector((state) => state.decks.decks);
+  const decks = useSelector((state) => state.userDecks.userDecks);
+  const user = useSelector((state) => state.users.currentUser);
   const [selectedDeck, setSelectedDeck] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,8 +30,10 @@ const ManageDecks = () => {
   const [newDeckDescription, setNewDeckDescription] = useState("");
 
   useEffect(() => {
-    dispatch(fetchDecks());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchDecksByUser(user.id));
+    }
+  }, [dispatch, user]);
 
   const toggleCreateDeckForm = () => {
     setShowCreateDeckForm(!showCreateDeckForm);
@@ -39,7 +43,12 @@ const ManageDecks = () => {
     event.preventDefault();
     if (newDeckName && newDeckDescription) {
       await dispatch(
-        addDeck({ name: newDeckName, description: newDeckDescription })
+        addDeck({
+          name: newDeckName,
+          description: newDeckDescription,
+          creatorId: user.id,
+          creatorName: user.name,
+        })
       );
       setNewDeckName("");
       setNewDeckDescription("");

@@ -12,7 +12,6 @@ const Home = () => {
 
   useEffect(() => {
     if (user) {
-      console.log(user.id);
       dispatch(fetchDecksByUser(user.id));
     }
   }, [dispatch, user]);

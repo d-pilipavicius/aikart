@@ -56,7 +56,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    [ProducesResponseType(201, Type = typeof(int))]
+    [ProducesResponseType(201, Type = typeof(UserDto))]
     [ProducesResponseType(400)]
     public IActionResult AddUser([FromBody] UserDto userCreate)
     {

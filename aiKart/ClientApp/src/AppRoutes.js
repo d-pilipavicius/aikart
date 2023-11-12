@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import ManageDecks from "./components/deck/ManageDecks";
 import DeckView from "./components/deck/DeckView";
 import DeckPractice from "./components/DeckPractice";
+import Store from "./components/Store";
 
 const AppRoutes = [
   {
@@ -29,6 +30,10 @@ const AppRoutes = [
     path: "/practice/:deckId",
     element: <DeckPractice />,
   },
+  {
+    path: "/store",
+    element: <Store />,
+  }
 ];
 
 export default AppRoutes;

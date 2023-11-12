@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
-import { Container } from 'reactstrap';
-import NavMenu from './NavMenu';
+import React from "react";
+import { Container } from "reactstrap";
+import NavMenu from "./NavMenu";
+import { useLocation } from "react-router-dom";
 
-export class Layout extends Component {
-  static displayName = Layout.name;
+const Layout = ({ children }) => {
+  const location = useLocation();
 
-  render() {
-    return (
-      <div>
-        <NavMenu />
-        <Container tag="main">
-          {this.props.children}
-        </Container>
-      </div>
-    );
-  }
-}
+  const isUserLoginPage = location.pathname === "/";
+  console.log(isUserLoginPage);
+
+  return (
+    <div>
+      <NavMenu disableNavMenu={isUserLoginPage} />
+      <Container tag="main">{children}</Container>
+    </div>
+  );
+};
+
+export default Layout;
