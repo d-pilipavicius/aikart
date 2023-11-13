@@ -19,24 +19,20 @@ namespace aiKart.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<DeckController> _logger;
 
-        // Primary constructor used by the application
-        public DeckController(IDeckService deckService, IUserDeckService userDeckService, IMapper mapper, ILogger<DeckController> logger)
+        public DeckController(
+            IDeckService deckService,
+            IUserDeckService userDeckService,
+            IMapper mapper,
+            ILogger<DeckController> logger = null) // Logger is optional
         {
-            _deckService = deckService;
-            _userDeckService = userDeckService;
-            _mapper = mapper;
-            _logger = logger;
+            _deckService = deckService ?? throw new ArgumentNullException(nameof(deckService));
+            _userDeckService = userDeckService ?? throw new ArgumentNullException(nameof(userDeckService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<DeckController>(); // Provide a default logger if none is supplied
 
-            // Attach event handlers to the DeckService events
             _deckService.DeckCreated += DeckCreatedHandler;
             _deckService.DeckUpdated += DeckUpdatedHandler;
 
-        }
-
-        // Additional constructor for backward compatibility and testing
-        public DeckController(IDeckService deckService, IUserDeckService userDeckService, IMapper mapper)
-            : this(deckService, userDeckService, mapper, NullLogger<DeckController>.Instance)
-        {
         }
 
         private void DeckCreatedHandler(Deck deck)
