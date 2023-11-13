@@ -1,8 +1,11 @@
 using aiKart;
 using aiKart.Data;
+using aiKart.Exceptions;
 using aiKart.Interfaces;
+using aiKart.Models;
 using aiKart.Repositories;
 using aiKart.Services;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,6 +75,31 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseExceptionHandler(appBuilder =>
+{
+    appBuilder.Run(async context =>
+    {
+        var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+        if (exceptionHandlerFeature != null)
+        {
+            var logger = appBuilder.ApplicationServices.GetService<ILogger<Program>>();
+            logger.LogError(exceptionHandlerFeature.Error, "Unhandled exception");
+
+            // Check if the error is an EntityValidationException
+            if (exceptionHandlerFeature.Error is EntityValidationException<Deck> entityValidationException)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsync(entityValidationException.Message);
+            }
+            else
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await context.Response.WriteAsync("An error occurred processing your request.");
+            }
+        }
+    });
+});
+
 
 
 app.MapControllerRoute(

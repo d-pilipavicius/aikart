@@ -97,7 +97,8 @@ namespace aiKart.Tests
             var result = deckController.AddDeck(addDeckDto);
 
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-            Assert.Equal(deck.Id, createdAtActionResult.Value); // Check if the deck ID returned is correct
+            var deckDtoResult = Assert.IsType<DeckDto>(createdAtActionResult.Value); // Make sure the returned value is DeckDto
+            Assert.Equal(deck.Id, deckDtoResult.Id);
         }
 
 

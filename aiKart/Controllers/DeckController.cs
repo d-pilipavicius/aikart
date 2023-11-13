@@ -1,9 +1,12 @@
 using aiKart.Dtos.CardDtos;
 using aiKart.Dtos.DeckDtos;
+using aiKart.Exceptions;
 using aiKart.Interfaces;
 using aiKart.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions; // For NullLogger
 
 namespace aiKart.Controllers
 {
@@ -14,12 +17,21 @@ namespace aiKart.Controllers
         private readonly IDeckService _deckService;
         private readonly IUserDeckService _userDeckService;
         private readonly IMapper _mapper;
+        private readonly ILogger<DeckController> _logger;
 
-        public DeckController(IDeckService deckService, IUserDeckService userDeckService, IMapper mapper)
+        // Primary constructor used by the application
+        public DeckController(IDeckService deckService, IUserDeckService userDeckService, IMapper mapper, ILogger<DeckController> logger)
         {
             _deckService = deckService;
             _userDeckService = userDeckService;
             _mapper = mapper;
+            _logger = logger;
+        }
+
+        // Additional constructor for backward compatibility and testing
+        public DeckController(IDeckService deckService, IUserDeckService userDeckService, IMapper mapper)
+            : this(deckService, userDeckService, mapper, NullLogger<DeckController>.Instance)
+        {
         }
 
         [HttpGet]
@@ -61,31 +73,30 @@ namespace aiKart.Controllers
         {
             if (deckDto == null)
             {
+                _logger.LogError("Deck data was not provided");
                 return BadRequest("Deck data must be provided.");
-            }
-
-            if (_deckService.DeckExistsByName(deckDto.Name))
-            {
-                return UnprocessableEntity($"Deck with name: {deckDto.Name} already exists");
             }
 
             var deck = _mapper.Map<Deck>(deckDto);
 
-            if (!_deckService.AddDeck(deck))
+            // Here's where you can put some validation logic before saving the deck
+            if (string.IsNullOrWhiteSpace(deck.Name))
             {
-                ModelState.AddModelError("", "Something went wrong while saving a new deck");
-                return StatusCode(500, ModelState);
+                throw new EntityValidationException<Deck>(deck, "Deck name must not be empty.");
             }
 
+            if (_deckService.DeckExistsByName(deck.Name))
+            {
+                throw new EntityValidationException<Deck>(deck, $"Deck with name: {deck.Name} already exists");
+            }
+
+            _deckService.AddDeck(deck);
             var userDeck = new UserDeck { UserId = deckDto.CreatorId, DeckId = deck.Id };
-            if (!_userDeckService.AddUserDeck(userDeck))
-            {
-                ModelState.AddModelError("", "Something went wrong while adding the deck to the user");
-                return StatusCode(500, ModelState);
-            }
+            _userDeckService.AddUserDeck(userDeck);
 
-            return CreatedAtAction(nameof(GetDeck), new { deckId = deck.Id }, deck.Id);
+            return CreatedAtAction(nameof(GetDeck), new { deckId = deck.Id }, _mapper.Map<DeckDto>(deck));
         }
+
 
         [HttpPut("{deckId}")]
         public IActionResult UpdateDeck(int deckId, [FromBody] UpdateDeckDto deckDto)
