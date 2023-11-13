@@ -23,7 +23,6 @@ const UserLogin = () => {
     dispatch(addUser(newUser))
       .then((response) => {
         dispatch(setCurrentUser(response.payload));
-        console.log(response.payload);
         navigate(`/home`);
       })
       .catch((error) => {

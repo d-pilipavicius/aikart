@@ -4,6 +4,8 @@ using aiKart.Interfaces;
 using aiKart.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
+
 
 namespace aiKart.Controllers;
 
@@ -64,7 +66,8 @@ public class UserController : Controller
             return BadRequest();
 
         var existingUser = _userService.GetUsers()
-            .FirstOrDefault(u => u.Name.Trim().ToUpper() == userCreate.Name.TrimEnd().ToUpper());
+            .FirstOrDefault(u => Regex.IsMatch(u.Name.Trim(), userCreate.Name.Trim(), RegexOptions.IgnoreCase));
+
 
         if (existingUser != null)
         {
