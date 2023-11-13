@@ -16,6 +16,8 @@ builder.Services.AddScoped<IDeckRepository, DeckRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserDeckRepository, UserDeckRepository>();
+builder.Services.AddScoped<IUserDeckService, UserDeckService>();
+
 
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<IDeckService, DeckService>();

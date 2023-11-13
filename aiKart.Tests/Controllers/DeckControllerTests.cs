@@ -17,30 +17,39 @@ namespace aiKart.Tests
     {
         private readonly Mock<IDeckService> mockDeckService;
         private readonly Mock<IMapper> mockMapper;
-        private readonly DeckController controller;
+        private readonly DeckController deckController;
+
+        private readonly Mock<IUserDeckService> mockUserDeckService;
 
         public DeckControllerTests()
         {
             mockDeckService = new Mock<IDeckService>();
             mockMapper = new Mock<IMapper>();
-            controller = new DeckController(mockDeckService.Object, mockMapper.Object);
+            mockUserDeckService = new Mock<IUserDeckService>();
+            deckController = new DeckController(mockDeckService.Object, mockUserDeckService.Object, mockMapper.Object);
         }
 
         [Fact]
         public void GetAllDecks_ReturnsOk()
         {
-            mockDeckService.Setup(s => s.GetAllDecksIncludingCards()).Returns(new List<Deck>());
-            mockMapper.Setup(m => m.Map<List<DeckDto>>(It.IsAny<List<Deck>>()))
-                .Returns(new List<DeckDto> { new DeckDto(1, "Name", null, null, DateTime.Now, DateTime.Now, null) });
-            var result = controller.GetAllDecks();
-            Assert.IsType<OkObjectResult>(result);
+            var decks = new List<Deck>();
+            var deckDtos = new List<DeckDto> { new DeckDto(1, "Name", null, null, DateTime.Now, DateTime.Now, null) };
+
+            mockDeckService.Setup(s => s.GetAllDecksIncludingCards()).Returns(decks);
+            mockMapper.Setup(m => m.Map<List<DeckDto>>(decks)).Returns(deckDtos);
+
+            var result = deckController.GetAllDecks();
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(deckDtos, okResult.Value);
         }
+
 
         [Fact]
         public void GetDeck_ReturnsNotFound()
         {
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(false);
-            var result = controller.GetDeck(1);
+            var result = deckController.GetDeck(1);
             Assert.IsType<NotFoundResult>(result);
         }
 
@@ -51,7 +60,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.GetDeckById(It.IsAny<int>())).Returns(new Deck());
             mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>()))
                 .Returns(new DeckDto(1, "Name", null, null, DateTime.Now, DateTime.Now, null));
-            var result = controller.GetDeck(1);
+            var result = deckController.GetDeck(1);
             Assert.IsType<OkObjectResult>(result);
         }
 
@@ -59,7 +68,7 @@ namespace aiKart.Tests
         public void GetCardsInDeck_ReturnsNotFound()
         {
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(false);
-            var result = controller.GetCardsInDeck(1);
+            var result = deckController.GetCardsInDeck(1);
             Assert.IsType<NotFoundResult>(result);
         }
 
@@ -70,24 +79,33 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.GetCardsInDeck(It.IsAny<int>())).Returns(new List<Card>());
             mockMapper.Setup(m => m.Map<IEnumerable<CardDto>>(It.IsAny<IEnumerable<Card>>()))
                 .Returns(new List<CardDto> { new CardDto(1, 1, "Question", "Answer", CardState.Answered) });
-            var result = controller.GetCardsInDeck(1);
+            var result = deckController.GetCardsInDeck(1);
             Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
-        public void AddDeck_ReturnsOk()
+        public void AddDeck_ReturnsCreatedResponse()
         {
+            var addDeckDto = new AddDeckDto("Name", null, 1, null);
+            var deck = new Deck { Id = 1, Name = "Name" }; // The deck entity that would be "added" by the service.
             mockDeckService.Setup(s => s.DeckExistsByName(It.IsAny<string>())).Returns(false);
             mockDeckService.Setup(s => s.AddDeck(It.IsAny<Deck>())).Returns(true);
-            var result = controller.AddDeck(new AddDeckDto("Name", null, null));
-            Assert.IsType<OkResult>(result);
+            mockUserDeckService.Setup(s => s.AddUserDeck(It.IsAny<UserDeck>())).Returns(true); // Assume that adding a UserDeck relationship is successful.
+            mockMapper.Setup(m => m.Map<Deck>(It.IsAny<AddDeckDto>())).Returns(deck);
+            mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>())).Returns(new DeckDto(deck.Id, deck.Name, null, null, DateTime.Now, DateTime.Now, null));
+
+            var result = deckController.AddDeck(addDeckDto);
+
+            var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+            Assert.Equal(deck.Id, createdAtActionResult.Value); // Check if the deck ID returned is correct
         }
+
 
         [Fact]
         public void UpdateDeck_ReturnsNotFound()
         {
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(false);
-            var result = controller.UpdateDeck(1, new UpdateDeckDto("Name", null, null));
+            var result = deckController.UpdateDeck(1, new UpdateDeckDto("Name", null, null));
             Assert.IsType<NotFoundResult>(result);
         }
 
@@ -97,7 +115,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
             mockDeckService.Setup(s => s.GetDeckById(It.IsAny<int>())).Returns(new Deck());
             mockDeckService.Setup(s => s.UpdateDeck(It.IsAny<Deck>())).Returns(true);
-            var result = controller.UpdateDeck(1, new UpdateDeckDto("Name", null, null));
+            var result = deckController.UpdateDeck(1, new UpdateDeckDto("Name", null, null));
             Assert.IsType<NoContentResult>(result);
         }
 
@@ -105,7 +123,7 @@ namespace aiKart.Tests
         public void DeleteDeck_ReturnsNotFound()
         {
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(false);
-            var result = controller.DeleteDeck(1);
+            var result = deckController.DeleteDeck(1);
             Assert.IsType<NotFoundResult>(result);
         }
 
@@ -115,7 +133,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
             mockDeckService.Setup(s => s.GetDeckById(It.IsAny<int>())).Returns(new Deck());
             mockDeckService.Setup(s => s.DeleteDeck(It.IsAny<Deck>())).Returns(true);
-            var result = controller.DeleteDeck(1);
+            var result = deckController.DeleteDeck(1);
             Assert.IsType<NoContentResult>(result);
         }
     }
