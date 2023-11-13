@@ -26,12 +26,29 @@ namespace aiKart.Controllers
             _userDeckService = userDeckService;
             _mapper = mapper;
             _logger = logger;
+
+            // Attach event handlers to the DeckService events
+            _deckService.DeckCreated += DeckCreatedHandler;
+            _deckService.DeckUpdated += DeckUpdatedHandler;
+
         }
 
         // Additional constructor for backward compatibility and testing
         public DeckController(IDeckService deckService, IUserDeckService userDeckService, IMapper mapper)
             : this(deckService, userDeckService, mapper, NullLogger<DeckController>.Instance)
         {
+        }
+
+        private void DeckCreatedHandler(Deck deck)
+        {
+            // Log or handle the deck creation logic
+            _logger.LogInformation($"Deck created with ID: {deck.Id}");
+        }
+
+        private void DeckUpdatedHandler(Deck deck)
+        {
+            // Log or handle the deck update logic
+            _logger.LogInformation($"Deck updated with ID: {deck.Id}");
         }
 
         [HttpGet]

@@ -1,4 +1,5 @@
 using aiKart.Models;
+using aiKart.Services;
 
 namespace aiKart.Interfaces;
 
@@ -14,5 +15,8 @@ public interface IDeckService
     IEnumerable<Card> GetCardsInDeck(int deckId);
 
     IEnumerable<Deck> GetAllDecksIncludingCards();
+
+    event DeckService.DeckChangeHandler DeckCreated;
+    event DeckService.DeckChangeHandler DeckUpdated;
 }
 
