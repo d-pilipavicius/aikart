@@ -16,6 +16,7 @@ public class UserDeckRepository : IUserDeckRepository
 
     public ICollection<UserDeck> GetUserDecks()
     {
+        // lambda expression
         return _context.UserDecks.OrderBy(u => u.UserId).ToList();
     }
 

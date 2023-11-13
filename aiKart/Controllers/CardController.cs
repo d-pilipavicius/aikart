@@ -21,23 +21,23 @@ namespace aiKart.Controllers
             _mapper = mapper;
         }
 
+        //  async/await
         [HttpGet("{cardId}")]
-        [ProducesResponseType(200, Type = typeof(CardDto))]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public IActionResult GetCard(int cardId)
+        public async Task<IActionResult> GetCard(int cardId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_cardService.CardExists(cardId))
+            var card = await Task.Run(() => _cardService.GetCardById(cardId)); // Simulate async operation
+
+            if (card == null)
                 return NotFound();
 
-            var card = _cardService.GetCardById(cardId);
             var cardDto = _mapper.Map<CardDto>(card);
 
             return Ok(cardDto);
         }
+
 
         [HttpGet("states")]
         [ProducesResponseType(200, Type = typeof(List<CardState>))]

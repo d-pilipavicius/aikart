@@ -66,6 +66,7 @@ public class UserController : Controller
             return BadRequest();
 
         var existingUser = _userService.GetUsers()
+        //  Regex
             .FirstOrDefault(u => Regex.IsMatch(u.Name.Trim(), userCreate.Name.Trim(), RegexOptions.IgnoreCase));
 
 
