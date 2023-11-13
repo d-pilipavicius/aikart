@@ -3,11 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import EditDeckModal from "./EditDeckModal";
 import CreateDeckModal from "./CreateDeckModal";
-import {
-  fetchDecks,
-  deleteDeck,
-  addDeck,
-} from "../../app/state/deck/decksSlice";
+import { deleteDeck, addDeck } from "../../app/state/deck/decksSlice";
+import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import {
   Button,
   Card,
@@ -18,7 +15,8 @@ import {
 } from "reactstrap";
 
 const ManageDecks = () => {
-  const decks = useSelector((state) => state.decks.decks);
+  const decks = useSelector((state) => state.userDecks.userDecks);
+  const user = useSelector((state) => state.users.currentUser);
   const [selectedDeck, setSelectedDeck] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,8 +26,10 @@ const ManageDecks = () => {
   const [newDeckDescription, setNewDeckDescription] = useState("");
 
   useEffect(() => {
-    dispatch(fetchDecks());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchDecksByUser(user.id));
+    }
+  }, [dispatch, user]);
 
   const toggleCreateDeckForm = () => {
     setShowCreateDeckForm(!showCreateDeckForm);
@@ -39,12 +39,17 @@ const ManageDecks = () => {
     event.preventDefault();
     if (newDeckName && newDeckDescription) {
       await dispatch(
-        addDeck({ name: newDeckName, description: newDeckDescription })
+        addDeck({
+          name: newDeckName,
+          description: newDeckDescription,
+          creatorId: user.id,
+          creatorName: user.name,
+        })
       );
       setNewDeckName("");
       setNewDeckDescription("");
       toggleCreateDeckForm();
-      dispatch(fetchDecks()); // Refetch decks after adding
+      dispatch(fetchDecksByUser(user.id));
     }
   };
 
@@ -52,7 +57,7 @@ const ManageDecks = () => {
     event.stopPropagation();
     if (window.confirm("Are you sure you want to delete this deck?")) {
       dispatch(deleteDeck(deck.id)).then(() => {
-        dispatch(fetchDecks());
+        dispatch(fetchDecksByUser(user.id));
       });
     }
   };
@@ -124,6 +129,7 @@ const ManageDecks = () => {
           toggle={() => {
             setSelectedDeck(null);
           }}
+          userId={user.id}
         />
       )}
     </div>

@@ -1,19 +1,27 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Container } from "reactstrap";
+import { fetchDeckById } from "../app/state/deck/decksSlice";
 
 const DeckPractice = () => {
   const { deckId } = useParams();
-  const deck = useSelector((state) =>
-    state.decks.decks.find((deck) => deck.id === parseInt(deckId))
-  );
-  const [currentCard, setCurrentCard] = useState(0);
+  const decks = useSelector((state) => state.userDecks.userDecks);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentCardObject = deck && deck.cards[currentCard];
+  useEffect(() => {
+    dispatch(fetchDeckById(deckId));
+  }, [dispatch, deckId]);
+
+  const [currentCard, setCurrentCard] = useState(0);
 
   const [isAnswered, setAnswered] = useState(false);
+
+  const deck = decks.find((deck) => deck.id === parseInt(deckId));
+  
+  const currentCardObject = deck && deck.cards[currentCard];
+
 
   return (
     <div
@@ -106,7 +114,7 @@ const DeckPractice = () => {
           <Button
             style={{ marginRight: "5px" }}
             color="primary"
-            onClick={() => navigate(`/`)}
+            onClick={() => navigate("/home")}
           >
             Finish
           </Button>

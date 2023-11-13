@@ -1,5 +1,6 @@
 using aiKart.Dtos.CardDtos;
 using aiKart.Dtos.DeckDtos;
+using aiKart.Dtos.UserDtos;
 using aiKart.Models;
 using aiKart.States;
 using AutoMapper;
@@ -21,5 +22,13 @@ public class MappingProfiles : Profile
 
         CreateMap<CardStateDto, Card>();
         CreateMap<Card, CardStateDto>();
+
+        CreateMap<User, UserDto>();
+        CreateMap<UserDto, User>();
+
+        CreateMap<UserDeck, UserDeckDto>();
+        CreateMap<UserDeckDto, UserDeck>();
+
+        CreateMap<User, UserResponseDto>();
     }
 }

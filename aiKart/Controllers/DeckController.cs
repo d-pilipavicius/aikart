@@ -1,10 +1,12 @@
 using System.Numerics;
 using aiKart.Dtos.CardDtos;
 using aiKart.Dtos.DeckDtos;
+using aiKart.Dtos.UserDtos;
 using aiKart.Interfaces;
 using aiKart.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace aiKart.Controllers
 {
@@ -13,11 +15,13 @@ namespace aiKart.Controllers
     public class DeckController : Controller
     {
         private readonly IDeckService _deckService;
-
+        private readonly IUserDeckRepository _userDeckRepository;
         private readonly IMapper _mapper;
-        public DeckController(IDeckService deckService, IMapper mapper)
+
+        public DeckController(IDeckService deckService, IUserDeckRepository userDeckRepository, IMapper mapper)
         {
             _deckService = deckService;
+            _userDeckRepository = userDeckRepository;
             _mapper = mapper;
         }
 
@@ -75,7 +79,7 @@ namespace aiKart.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(201, Type = typeof(int))]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
@@ -83,7 +87,7 @@ namespace aiKart.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
+
             if (deckDto == null)
                 return BadRequest(ModelState);
 
@@ -98,7 +102,9 @@ namespace aiKart.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok();
+            _userDeckRepository.AddUserDeck(new UserDeck { UserId = deckDto.CreatorId, DeckId = deck.Id });
+
+            return CreatedAtAction(nameof(GetDeck), new { deckId = deck.Id }, deck.Id);
         }
 
         [HttpPut("{deckId}")]
@@ -118,6 +124,9 @@ namespace aiKart.Controllers
                 return NotFound();
 
             var deck = _deckService.GetDeckById(deckId);
+
+            if (deck == null)
+                return NotFound();
 
             _mapper.Map(deckDto, deck);
 
@@ -144,6 +153,9 @@ namespace aiKart.Controllers
                 return NotFound();
 
             var deckToDelete = _deckService.GetDeckById(deckId);
+
+            if (deckToDelete == null)
+                return NotFound();
 
             if (!_deckService.DeleteDeck(deckToDelete))
             {

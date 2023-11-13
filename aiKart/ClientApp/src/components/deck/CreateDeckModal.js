@@ -18,6 +18,7 @@ const CreateDeckModal = ({
   newDeckDescription,
   setNewDeckDescription,
 }) => {
+  
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       saveDeck(event);
@@ -34,7 +35,7 @@ const CreateDeckModal = ({
             placeholder="Deck Name"
             value={newDeckName}
             onChange={(e) => setNewDeckName(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
           <Input
             type="text"
@@ -42,7 +43,7 @@ const CreateDeckModal = ({
             value={newDeckDescription}
             onChange={(e) => setNewDeckDescription(e.target.value)}
             className="mt-2"
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
         </Form>
       </ModalBody>

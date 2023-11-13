@@ -1,27 +1,38 @@
+import UserLogin from "./components/UserLogin";
 import Home from "./components/Home";
 import ManageDecks from "./components/deck/ManageDecks";
 import DeckView from "./components/deck/DeckView";
-import DeckPractice from "./components/DeckPractice"; 
+import DeckPractice from "./components/DeckPractice";
+import Store from "./components/Store";
+
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: <UserLogin />,
   },
   {
-    path: '/decks',
-    element: <ManageDecks />
+    path: "/home",
+    element: <Home />,
   },
   {
-    path: '/decks/:deckId',
-    element: <DeckView />
+    path: "/decks",
+    element: <ManageDecks />,
   },
   {
-    path: '/practice',
-    element: <DeckPractice />
+    path: "/decks/:deckId",
+    element: <DeckView />,
   },
   {
-    path: '/practice/:deckId',
-    element: <DeckPractice />
+    path: "/practice",
+    element: <DeckPractice />,
+  },
+  {
+    path: "/practice/:deckId",
+    element: <DeckPractice />,
+  },
+  {
+    path: "/store",
+    element: <Store />,
   }
 ];
 

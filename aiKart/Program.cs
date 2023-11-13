@@ -14,9 +14,12 @@ builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IDeckRepository, DeckRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserDeckRepository, UserDeckRepository>();
+
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<IDeckService, DeckService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddCors(options =>
 {
@@ -33,9 +36,7 @@ builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("dbconnection.json", optional: false) // Load the connectionSettings.json
     .Build();
-
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(connection));
 
