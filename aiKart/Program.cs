@@ -3,6 +3,8 @@ using aiKart.Data;
 using aiKart.Interfaces;
 using aiKart.Repositories;
 using aiKart.Services;
+using aiKart.Models;
+using aiKart.Utils;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,8 @@ builder.Services.AddScoped<IUserDeckRepository, UserDeckRepository>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<Shuffler<Card>>();
 
 builder.Services.AddCors(options =>
 {

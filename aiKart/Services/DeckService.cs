@@ -1,6 +1,7 @@
 using aiKart.Data;
 using aiKart.Interfaces;
 using aiKart.Models;
+using aiKart.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -9,10 +10,12 @@ namespace aiKart.Services
     public class DeckService : IDeckService
     {
         private readonly IDeckRepository _deckRepository;
+        private Shuffler<Card> _cardShuffler;
 
-        public DeckService(IDeckRepository deckRepository)
+        public DeckService(IDeckRepository deckRepository, Shuffler<Card> cardShuffler)
         {
             _deckRepository = deckRepository;
+            _cardShuffler = cardShuffler;
         }
 
         public IEnumerable<Deck> GetAllDecksIncludingCards()
@@ -59,6 +62,15 @@ namespace aiKart.Services
         public IEnumerable<Card> GetCardsInDeck(int deckId)
         {
             return _deckRepository.GetDeckCards(deckId);
+        }
+
+        public IEnumerable<Card> GetShuffledDeckCards(int deckId)
+        {
+            IEnumerable<Card> deckCards = _deckRepository.GetDeckCards(deckId);
+
+            deckCards = _cardShuffler.Shuffle(deckCards);
+
+            return deckCards;
         }
     }
 
