@@ -12,7 +12,7 @@ public interface IDeckService
     bool DeleteDeck(Deck deck);
     bool UpdateDeck(Deck deck);
     IEnumerable<Card> GetCardsInDeck(int deckId);
-
+    IEnumerable<Card> GetShuffledDeckCards(int deckId);
     IEnumerable<Deck> GetAllDecksIncludingCards();
 }
 
