@@ -56,17 +56,23 @@ namespace aiKart.Controllers
         }
 
         [HttpGet("{deckId}")]
-        public IActionResult GetDeck(int deckId)
+        public async Task<IActionResult> GetDeck(int deckId)
         {
             if (!_deckService.DeckExistsById(deckId))
             {
                 return NotFound();
             }
 
-            var deck = _deckService.GetDeckById(deckId);
+            var deck = await _deckService.GetDeckByIdAsync(deckId);
+            if (deck == null)
+            {
+                return NotFound();
+            }
+
             var deckDto = _mapper.Map<DeckDto>(deck);
             return Ok(deckDto);
         }
+
 
         [HttpGet("cardlist/{deckId}")]
         public IActionResult GetCardsInDeck(int deckId)

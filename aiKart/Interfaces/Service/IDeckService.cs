@@ -12,6 +12,7 @@ public interface IDeckService
     bool AddDeck(Deck deck);
     bool DeleteDeck(Deck deck);
     bool UpdateDeck(Deck deck);
+    Task<Deck> GetDeckByIdAsync(int deckId);
     IEnumerable<Card> GetCardsInDeck(int deckId);
 
     IEnumerable<Deck> GetAllDecksIncludingCards();
