@@ -122,15 +122,25 @@ namespace aiKart.Tests.Controllers
         {
             var cardId = 1;
             var updateCardDto = new UpdateCardDto("Updated Question", "Updated Answer");
+            var card = new Card { Id = cardId, Question = "Question", Answer = "Answer" }; // Populate with necessary properties.
+
+            // Set up the mock to return true for CardExists check
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
-            _mockCardService.Setup(service => service.UpdateCard(It.IsAny<Card>())).Returns(true);
+            // Ensure GetCardById returns a card object for the provided ID
+            _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(card);
+            // Ensure UpdateCard returns true for the card update operation
+            _mockCardService.Setup(service => service.UpdateCard(card)).Returns(true);
 
-
+            // Act
             var result = _controller.UpdateCard(cardId, updateCardDto);
 
-            Assert.IsType<NoContentResult>(result);
+            // Assert
+            Assert.IsType<NoContentResult>(result); // Verify that NoContentResult is returned by the action
 
-            _mockCardService.Verify(service => service.CardExists(cardId), Times.Once);
+            // Verify the service calls
+            _mockCardService.Verify(service => service.CardExists(cardId), Times.Once); // Verify CardExists is called once
+            _mockCardService.Verify(service => service.GetCardById(cardId), Times.Once); // Verify GetCardById is called once with the correct ID
+            _mockCardService.Verify(service => service.UpdateCard(card), Times.Once); // Verify UpdateCard is called once with the correct card object
         }
 
         [Fact]
@@ -171,24 +181,31 @@ namespace aiKart.Tests.Controllers
             var cardId = 1;
             var updateCardDto = new UpdateCardDto("Updated Question", "Updated Answer");
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
-            _mockCardService.Setup(service => service.UpdateCard(It.IsAny<Card>())).Returns(false);
+            _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
+            _mockCardService.Setup(service => service.UpdateCard(It.IsAny<Card>())).Returns(false); // Setup to return false, indicating failure.
+
             var result = _controller.UpdateCard(cardId, updateCardDto);
-            Assert.IsType<ObjectResult>(result);
-            var objectResult = result as ObjectResult;
-            Assert.Equal(500, objectResult.StatusCode);
+
+            var objectResult = Assert.IsType<ObjectResult>(result); // Assert that you receive an ObjectResult
+            Assert.Equal(500, objectResult.StatusCode); // Assert that the status code is 500
         }
+
 
         [Fact]
         public void DeleteCard_DeleteFails_ReturnsStatusCode500()
         {
             var cardId = 1;
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
+            _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
             _mockCardService.Setup(service => service.DeleteCard(It.IsAny<Card>())).Returns(false);
+
             var result = _controller.DeleteCard(cardId);
-            Assert.IsType<ObjectResult>(result);
+
+            Assert.IsType<ObjectResult>(result); // We expect an ObjectResult for a server error
             var objectResult = result as ObjectResult;
-            Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal(500, objectResult.StatusCode); // Status code should be 500 for server error
         }
+
 
         [Fact]
         public void SetCardState_InvalidModelState_ReturnsBadRequest()

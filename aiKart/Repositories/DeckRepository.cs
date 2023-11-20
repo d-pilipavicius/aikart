@@ -17,6 +17,12 @@ namespace aiKart.Repositories
             _context = context;
         }
 
+        //  async/await
+        public async Task<Deck> GetDeckByIdAsync(int deckId)
+        {
+            return await _context.Decks.FindAsync(deckId);
+        }
+
         public IEnumerable<Deck> GetDecksIncludingCards()
         {
             return _context.Decks.Include(d => d.Cards).ToList();

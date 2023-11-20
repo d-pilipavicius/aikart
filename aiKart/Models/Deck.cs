@@ -1,5 +1,8 @@
+using aiKart.Interfaces;
+
 namespace aiKart.Models;
-public class Deck
+
+public class Deck : IEntity
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";
