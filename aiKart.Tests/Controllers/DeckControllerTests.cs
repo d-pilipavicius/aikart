@@ -46,23 +46,29 @@ namespace aiKart.Tests
 
 
         [Fact]
-        public void GetDeck_ReturnsNotFound()
+        public async Task GetDeck_ReturnsNotFound()
         {
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(false);
-            var result = deckController.GetDeck(1);
+
+            var result = await deckController.GetDeck(1);
+
             Assert.IsType<NotFoundResult>(result);
         }
 
+
         [Fact]
-        public void GetDeck_ReturnsOk()
+        public async Task GetDeck_ReturnsOk()
         {
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
-            mockDeckService.Setup(s => s.GetDeckById(It.IsAny<int>())).Returns(new Deck());
+            mockDeckService.Setup(s => s.GetDeckByIdAsync(It.IsAny<int>())).ReturnsAsync(new Deck());
             mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>()))
                 .Returns(new DeckDto(1, "Name", null, null, DateTime.Now, DateTime.Now, null));
-            var result = deckController.GetDeck(1);
+
+            var result = await deckController.GetDeck(1);
+
             Assert.IsType<OkObjectResult>(result);
         }
+
 
         [Fact]
         public void GetCardsInDeck_ReturnsNotFound()
