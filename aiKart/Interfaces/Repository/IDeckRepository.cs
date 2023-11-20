@@ -9,6 +9,7 @@ public interface IDeckRepository
     public IEnumerable<Deck> GetDecksIncludingCards();
     ICollection<Card> GetDeckCards(int deckId);
     Deck? GetDeck(int id);
+    Task<Deck> GetDeckByIdAsync(int deckId);
     bool DeckExistsById(int id);
     bool DeckExistsByName(string name);
     bool AddDeck(Deck deck);

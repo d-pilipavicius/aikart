@@ -117,64 +117,53 @@ namespace aiKart.Controllers
         }
 
         [HttpPut("{cardId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
         public IActionResult UpdateCard(int cardId, [FromBody] UpdateCardDto cardDto)
         {
-            if (cardDto == null)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             if (!_cardService.CardExists(cardId))
                 return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var card = _cardService.GetCardById(cardId);
-
             if (card == null)
                 return NotFound();
 
-            _mapper.Map(cardDto, card);
-
-            if (!_cardService.UpdateCard(card))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong while updating a card");
-                return StatusCode(500, ModelState);
+                _mapper.Map(cardDto, card);
+                var updateResult = _cardService.UpdateCard(card);
+                if (!updateResult)
+                {
+                    return StatusCode(500, "An error occurred while processing your request.");
+                }
+            }
+            catch (Exception) // Catch exceptions from the service layer.
+            {
+                return StatusCode(500, "An error occurred while processing your request.");
             }
 
             return NoContent();
-
         }
 
+
         [HttpDelete("{cardId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         public IActionResult DeleteCard(int cardId)
         {
             if (!_cardService.CardExists(cardId))
                 return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var cardToDelete = _cardService.GetCardById(cardId);
-
-            if (cardToDelete == null)
+            if (cardToDelete == null) // This check might be redundant if CardExists already ensures the card is there
                 return NotFound();
 
-            if (!_cardService.DeleteCard(cardToDelete))
-            {
-                ModelState.AddModelError("", "Something went wrong while deleting the card");
-                return StatusCode(500, ModelState);
-            }
+            var result = _cardService.DeleteCard(cardToDelete);
+            if (!result)
+                return StatusCode(500, "An error occurred while attempting to delete the card.");
 
             return NoContent();
         }
+
     }
 
 }
