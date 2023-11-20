@@ -1,25 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteDeck } from "../../app/state/deck/decksSlice";
 import EditDeckModal from "./EditDeckModal";
-import { fetchDecks } from "../../app/state/deck/decksSlice";
+import CreateDeckModal from "./CreateDeckModal";
+import { deleteDeck, addDeck } from "../../app/state/deck/decksSlice";
+import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
+import {
+  Button,
+  Card,
+  CardText,
+  CardBody,
+  CardFooter,
+  CardHeader,
+} from "reactstrap";
 
 const ManageDecks = () => {
-  const decks = useSelector((state) => state.decks.decks);
+  const decks = useSelector((state) => state.userDecks.userDecks);
+  const user = useSelector((state) => state.users.currentUser);
   const [selectedDeck, setSelectedDeck] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [showCreateDeckForm, setShowCreateDeckForm] = useState(false);
+  const [newDeckName, setNewDeckName] = useState("");
+  const [newDeckDescription, setNewDeckDescription] = useState("");
+
   useEffect(() => {
-    dispatch(fetchDecks());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchDecksByUser(user.id));
+    }
+  }, [dispatch, user]);
+
+  const toggleCreateDeckForm = () => {
+    setShowCreateDeckForm(!showCreateDeckForm);
+  };
+
+  const saveDeck = async (event) => {
+    event.preventDefault();
+    if (newDeckName && newDeckDescription) {
+      await dispatch(
+        addDeck({
+          name: newDeckName,
+          description: newDeckDescription,
+          creatorId: user.id,
+          creatorName: user.name,
+        })
+      );
+      setNewDeckName("");
+      setNewDeckDescription("");
+      toggleCreateDeckForm();
+      dispatch(fetchDecksByUser(user.id));
+    }
+  };
 
   const handleDelete = (event, deck) => {
     event.stopPropagation();
     if (window.confirm("Are you sure you want to delete this deck?")) {
       dispatch(deleteDeck(deck.id)).then(() => {
-        dispatch(fetchDecks());
+        dispatch(fetchDecksByUser(user.id));
       });
     }
   };
@@ -32,53 +70,66 @@ const ManageDecks = () => {
   return (
     <div className="container">
       <h1 className="mb-4">Manage Decks</h1>
+
+      <Button color="primary" className="mb-5" onClick={toggleCreateDeckForm}>
+        Create Deck
+      </Button>
+      <CreateDeckModal
+        isOpen={showCreateDeckForm}
+        toggle={toggleCreateDeckForm}
+        saveDeck={saveDeck}
+        newDeckName={newDeckName}
+        setNewDeckName={setNewDeckName}
+        newDeckDescription={newDeckDescription}
+        setNewDeckDescription={setNewDeckDescription}
+      />
+
       <div className="row">
         {decks.map((deck, index) => (
           <div className="col-md-4" key={index}>
-            <div
-              className="card mb-4"
+            <Card
+              className="mb-4"
               onClick={() => navigate(`/decks/${deck.id}`)}
               style={{ cursor: "pointer" }}
             >
-              <div className="card-body">
-                <h5 className="card-title">
-                  <Link
-                    to={`/decks/${deck.name}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-dark"
-                    style={{ textDecoration: "none" }}
-                  >
-                    {deck.name}
-                  </Link>
-                </h5>
-                <p className="card-text">{deck.description}</p>
-
-                <button
-                  className="btn btn-danger me-2"
-                  onClick={(e) => handleDelete(e, deck)}
+              <CardHeader className="bg-primary bg-gradient">
+                <Link
+                  to={`/decks/${deck.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-light"
+                  style={{ textDecoration: "none" }}
                 >
-                  Delete
-                </button>
-                <button
-                  className="btn btn-primary"
+                  {deck.name}
+                </Link>
+              </CardHeader>
+              <CardBody>
+                <CardText>{deck.description}</CardText>
+              </CardBody>
+              <CardFooter>
+                <Button
+                  color="warning"
+                  style={{ marginRight: "1rem" }}
                   onClick={(e) => handleEdit(e, deck)}
                 >
                   Edit
-                </button>
-              </div>
-            </div>
+                </Button>
+                <Button color="danger" onClick={(e) => handleDelete(e, deck)}>
+                  Delete
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
         ))}
       </div>
+
       {selectedDeck && (
         <EditDeckModal
           deck={selectedDeck}
           isOpen={Boolean(selectedDeck)}
           toggle={() => {
-            // Refetch the decks list after editing
-            dispatch(fetchDecks());
             setSelectedDeck(null);
           }}
+          userId={user.id}
         />
       )}
     </div>

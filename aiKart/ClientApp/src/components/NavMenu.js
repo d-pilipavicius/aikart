@@ -1,42 +1,32 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addDeck } from "../app/state/deck/decksSlice";
+import React, { useState, useEffect } from "react";
 import {
-  Collapse,
   Navbar,
   NavbarBrand,
   NavbarToggler,
+  Collapse,
   NavItem,
   NavLink,
-  Button,
+  Nav,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import CreateDeckModal from "./deck/CreateDeckModal";
+import { useSelector } from "react-redux";
+
 import "./NavMenu.css";
 
-const NavMenu = () => {
-  const dispatch = useDispatch();
-
+const NavMenu = ({ disableNavMenu }) => {
   const [collapsed, setCollapsed] = useState(true);
-  const [showCreateDeckForm, setShowCreateDeckForm] = useState(false);
-  const [newDeckName, setNewDeckName] = useState("");
-  const [newDeckDescription, setNewDeckDescription] = useState("");
+
+  const currentUser = useSelector((state) => state.users.currentUser);
+
+  useEffect(() => {
+    if (disableNavMenu) {
+      setCollapsed(true);
+    }
+  }, [disableNavMenu]);
 
   const toggleNavbar = () => {
-    setCollapsed(!collapsed);
-  };
-
-  const toggleCreateDeckForm = () => {
-    setShowCreateDeckForm(!showCreateDeckForm);
-  };
-
-  const saveDeck = (event) => {
-    event.preventDefault();
-    if (newDeckName && newDeckDescription) {
-      dispatch(addDeck({ name: newDeckName, description: newDeckDescription }));
-      setNewDeckName("");
-      setNewDeckDescription("");
-      toggleCreateDeckForm();
+    if (!disableNavMenu) {
+      setCollapsed(!collapsed);
     }
   };
 
@@ -47,38 +37,37 @@ const NavMenu = () => {
           aiKart
         </NavbarBrand>
         <NavbarToggler onClick={toggleNavbar} className="mr-2" />
-        <Collapse
-          className="d-sm-inline-flex flex-sm-row-reverse"
-          isOpen={!collapsed}
-          navbar
-        >
-          <ul className="navbar-nav flex-grow">
-            <NavItem>
-              <NavLink tag={Link} className="text-white" to="/">
-                Home
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} className="text-white" to="/decks">
-                Manage Decks
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <Button color="primary" onClick={toggleCreateDeckForm}>
-                Create Deck
-              </Button>
-            </NavItem>
-          </ul>
-        </Collapse>
-        <CreateDeckModal
-          isOpen={showCreateDeckForm}
-          toggle={toggleCreateDeckForm}
-          saveDeck={saveDeck}
-          newDeckName={newDeckName}
-          setNewDeckName={setNewDeckName}
-          newDeckDescription={newDeckDescription}
-          setNewDeckDescription={setNewDeckDescription}
-        />
+        {!disableNavMenu && (
+          <Collapse isOpen={!collapsed} navbar>
+            <Nav className="ml-auto" navbar>
+              <NavItem>
+                <NavLink tag={Link} className="text-white" to="/home">
+                  Home
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-white" to="/store">
+                  Store
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-white" to="/decks">
+                  Manage Decks
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-white" to="/">
+                  Log out
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <Nav className="ms-auto" navbar>
+              <NavItem className="text-white">
+                Logged in as {currentUser && currentUser.name}
+              </NavItem>
+            </Nav>
+          </Collapse>
+        )}
       </Navbar>
     </header>
   );

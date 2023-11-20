@@ -1,9 +1,12 @@
+using System.Numerics;
 using aiKart.Dtos.CardDtos;
 using aiKart.Dtos.DeckDtos;
+using aiKart.Dtos.UserDtos;
 using aiKart.Interfaces;
 using aiKart.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace aiKart.Controllers
 {
@@ -12,11 +15,13 @@ namespace aiKart.Controllers
     public class DeckController : Controller
     {
         private readonly IDeckService _deckService;
-
+        private readonly IUserDeckRepository _userDeckRepository;
         private readonly IMapper _mapper;
-        public DeckController(IDeckService deckService, IMapper mapper)
+
+        public DeckController(IDeckService deckService, IUserDeckRepository userDeckRepository, IMapper mapper)
         {
             _deckService = deckService;
+            _userDeckRepository = userDeckRepository;
             _mapper = mapper;
         }
 
@@ -41,11 +46,11 @@ namespace aiKart.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetDeck(int deckId)
         {
-            if (!_deckService.DeckExistsById(deckId))
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (!_deckService.DeckExistsById(deckId))
+                return NotFound();
 
             var deck = _deckService.GetDeckById(deckId);
 
@@ -55,18 +60,17 @@ namespace aiKart.Controllers
         }
 
 
-        // return card dtos
         [HttpGet("cardlist/{deckId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CardDto>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public IActionResult GetCardsInDeck(int deckId)
         {
-            if (!_deckService.DeckExistsById(deckId))
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (!_deckService.DeckExistsById(deckId))
+                return NotFound();
 
             var cards = _deckService.GetCardsInDeck(deckId);
             var cardDtos = _mapper.Map<IEnumerable<CardDto>>(cards);
@@ -75,20 +79,20 @@ namespace aiKart.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(201, Type = typeof(int))]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
         [ProducesResponseType(500)]
         public IActionResult AddDeck([FromBody] AddDeckDto deckDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (deckDto == null)
                 return BadRequest(ModelState);
 
             if (_deckService.DeckExistsByName(deckDto.Name))
                 return UnprocessableEntity("Deck with name: " + deckDto.Name + " already exists");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             var deck = _mapper.Map<Deck>(deckDto);
 
@@ -98,7 +102,9 @@ namespace aiKart.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok();
+            _userDeckRepository.AddUserDeck(new UserDeck { UserId = deckDto.CreatorId, DeckId = deck.Id });
+
+            return CreatedAtAction(nameof(GetDeck), new { deckId = deck.Id }, deck.Id);
         }
 
         [HttpPut("{deckId}")]
@@ -106,18 +112,21 @@ namespace aiKart.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult UpdateDeck(int deckId, [FromBody] UpdateDeckDto deckDto) //change addDeckDto 
+        public IActionResult UpdateDeck(int deckId, [FromBody] UpdateDeckDto deckDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (deckDto == null)
                 return BadRequest(ModelState);
 
             if (!_deckService.DeckExistsById(deckId))
                 return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var deck = _deckService.GetDeckById(deckId);
+
+            if (deck == null)
+                return NotFound();
 
             _mapper.Map(deckDto, deck);
 
@@ -137,13 +146,16 @@ namespace aiKart.Controllers
         [ProducesResponseType(500)]
         public IActionResult DeleteDeck(int deckId)
         {
-            if (!_deckService.DeckExistsById(deckId))
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (!_deckService.DeckExistsById(deckId))
+                return NotFound();
+
             var deckToDelete = _deckService.GetDeckById(deckId);
+
+            if (deckToDelete == null)
+                return NotFound();
 
             if (!_deckService.DeleteDeck(deckToDelete))
             {
@@ -154,5 +166,4 @@ namespace aiKart.Controllers
             return NoContent();
         }
     }
-
 }

@@ -13,7 +13,7 @@ public class CardRepository : ICardRepository
         _context = context;
     }
 
-    public Card GetCardById(int id)
+    public Card? GetCardById(int id)
     {
         return _context.Cards.Find(id);
     }
@@ -45,10 +45,32 @@ public class CardRepository : ICardRepository
         return Save();
     }
 
+    public bool UpdateCardState(Card card)
+    {
+        var existingCard = _context.Cards.Find(card.Id);
+        if (existingCard == null)
+        {
+            return false;
+        }
+        existingCard.State = card.State;
+        _context.Cards.Update(existingCard);
+        return Save();
+    }
+
+
     public bool Save()
     {
-        var saved = _context.SaveChanges();
-        return saved > 0 ? true : false;
+        try
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while saving changes: {ex.Message}");
+            return false;
+        }
     }
+
 
 }

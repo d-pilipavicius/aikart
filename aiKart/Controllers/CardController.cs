@@ -27,26 +27,24 @@ namespace aiKart.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetCard(int cardId)
         {
-            if (!_cardService.CardExists(cardId))
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var card = _cardService.GetCardById(cardId);
+            if (!_cardService.CardExists(cardId))
+                return NotFound();
 
+            var card = _cardService.GetCardById(cardId);
             var cardDto = _mapper.Map<CardDto>(card);
 
             return Ok(cardDto);
         }
 
         [HttpGet("states")]
-        [ProducesResponseType(200, Type = typeof(List<String>))]
+        [ProducesResponseType(200, Type = typeof(List<CardState>))]
         public IActionResult GetStateTypes()
         {
             var cardStateValues = Enum.GetValues(typeof(CardState))
                 .Cast<CardState>()
-                .Select(e => e.ToString())
                 .ToList();
 
             return Ok(cardStateValues);
@@ -59,14 +57,14 @@ namespace aiKart.Controllers
         [ProducesResponseType(500)]
         public IActionResult SetCardState(int cardId, [FromBody] CardStateDto cardStateDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (cardStateDto == null)
                 return BadRequest(ModelState);
 
             if (!_cardService.CardExists(cardId))
                 return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             var card = _cardService.GetCardById(cardId);
 
@@ -74,10 +72,13 @@ namespace aiKart.Controllers
             {
                 _mapper.Map(cardStateDto, card);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Invalid state!");
             }
+
+            if (card == null)
+                return NotFound();
 
             if (!_cardService.UpdateCard(card))
             {
@@ -95,14 +96,14 @@ namespace aiKart.Controllers
         [ProducesResponseType(500)]
         public IActionResult AddCard([FromBody] AddCardDto cardDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (cardDto == null)
                 return BadRequest(ModelState);
 
             if (!_deckService.DeckExistsById(cardDto.DeckId))
                 return NotFound("Deck with id " + cardDto.DeckId + " does not exist");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             var card = _mapper.Map<Card>(cardDto);
 
@@ -133,6 +134,9 @@ namespace aiKart.Controllers
 
             var card = _cardService.GetCardById(cardId);
 
+            if (card == null)
+                return NotFound();
+
             _mapper.Map(cardDto, card);
 
             if (!_cardService.UpdateCard(card))
@@ -159,6 +163,9 @@ namespace aiKart.Controllers
                 return BadRequest(ModelState);
 
             var cardToDelete = _cardService.GetCardById(cardId);
+
+            if (cardToDelete == null)
+                return NotFound();
 
             if (!_cardService.DeleteCard(cardToDelete))
             {

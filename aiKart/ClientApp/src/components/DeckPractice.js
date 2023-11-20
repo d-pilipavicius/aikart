@@ -1,48 +1,127 @@
-import React, { useState } from "react"
-import { useSelector } from "react-redux"
-import { useParams, useNavigate} from "react-router-dom"
-import CardView from "./card/CardView"
-import { Button, Container } from "reactstrap"
-
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button, Container } from "reactstrap";
+import { fetchDeckById } from "../app/state/deck/decksSlice";
 
 const DeckPractice = () => {
-    const { deckId } = useParams();
-    const deck = useSelector((state) =>
-        state.decks.decks.find((deck) => deck.id === parseInt(deckId))
-    );
-    const [currentCard, setCurrentCard] = useState(0);
-    const navigate = useNavigate();
+  const { deckId } = useParams();
+  const decks = useSelector((state) => state.userDecks.userDecks);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const currentCardObject = deck && deck.cards[currentCard];
+  useEffect(() => {
+    dispatch(fetchDeckById(deckId));
+  }, [dispatch, deckId]);
 
-    return (
-        <div>
-            {currentCardObject &&
-                <div style={{ cursor: "pointer" }}>
-                <CardView card={currentCardObject}/>
-                </div>
-            }
-            <Container className="d-flex justify-content-center align-items-end">
-                <p>Answered &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Remaining</p>
-            </Container>
-            <Container className="d-flex justify-content-center align-items-end">
-                <p>{currentCard} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {deck.cards.length - currentCard}</p>
-            </Container>
-            <Container className="d-flex justify-content-center align-items-end">
-                {currentCard > 0 ? (<Button onClick={() => {
-                        setCurrentCard(currentCard - 1)
-                        }}>Prev</Button>) : null
-                }
-                {currentCard < deck.cards.length - 1 ? (<Button type="button" color="primary" onClick={() => {
-                        setCurrentCard(currentCard + 1)
-                        }}>Next</Button>) : null
-                }
-                {currentCard === deck.cards.length - 1 ? (<Button type="button" color="primary" onClick={() => navigate(`/`)}>Finish</Button>) : null
-                }
-            </Container>
-        </div>
-    )
-}
+  const [currentCard, setCurrentCard] = useState(0);
+
+  const [isAnswered, setAnswered] = useState(false);
+
+  const deck = decks.find((deck) => deck.id === parseInt(deckId));
   
-export default DeckPractice;
+  const currentCardObject = deck && deck.cards[currentCard];
 
+
+  return (
+    <div
+      style={{ minHeight: "60vh", display: "flex", flexDirection: "column" }}
+    >
+      {currentCardObject && (
+        <div>
+          <h1>{currentCardObject.question}</h1>
+          <hr></hr>
+          {isAnswered && <h1>{currentCardObject.answer}</h1>}
+        </div>
+      )}
+
+      <Container
+        className="d-flex justify-content-center align-items-end"
+        style={{ marginTop: "auto" }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "5px",
+          }}
+        >
+          <p>Answered</p>
+          <p>{currentCard}</p>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "5px",
+          }}
+        >
+          <p>Remaining</p>
+          <p>{deck.cards.length - currentCard}</p>
+        </div>
+      </Container>
+
+      <Container className="d-flex justify-content-center">
+        {!isAnswered && (
+          <Button
+            style={{ marginRight: "5px" }}
+            color="primary"
+            onClick={() => {
+              setAnswered(true);
+            }}
+          >
+            Show answer
+          </Button>
+        )}
+        {currentCard < deck.cards.length - 1 && isAnswered && (
+          <div>
+            <Button
+              style={{ marginRight: "5px" }}
+              color="danger"
+              onClick={() => {
+                setCurrentCard(currentCard + 1);
+                setAnswered(false);
+              }}
+            >
+              Hard
+            </Button>
+            <Button
+              style={{ marginRight: "5px" }}
+              color="warning"
+              onClick={() => {
+                setCurrentCard(currentCard + 1);
+                setAnswered(false);
+              }}
+            >
+              Decent
+            </Button>
+            <Button
+              color="success"
+              onClick={() => {
+                setCurrentCard(currentCard + 1);
+                setAnswered(false);
+              }}
+            >
+              Easy
+            </Button>
+          </div>
+        )}
+        {currentCard === deck.cards.length - 1 && isAnswered && (
+          <Button
+            style={{ marginRight: "5px" }}
+            color="primary"
+            onClick={() => navigate("/home")}
+          >
+            Finish
+          </Button>
+        )}
+      </Container>
+    </div>
+  );
+};
+
+export default DeckPractice;

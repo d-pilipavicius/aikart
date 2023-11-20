@@ -81,6 +81,37 @@ namespace aiKart.Migrations
                     b.ToTable("Decks");
                 });
 
+            modelBuilder.Entity("aiKart.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("aiKart.Models.UserDeck", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DeckId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "DeckId");
+
+                    b.HasIndex("DeckId");
+
+                    b.ToTable("UserDecks");
+                });
+
             modelBuilder.Entity("aiKart.Models.Card", b =>
                 {
                     b.HasOne("aiKart.Models.Deck", "Deck")
@@ -92,9 +123,35 @@ namespace aiKart.Migrations
                     b.Navigation("Deck");
                 });
 
+            modelBuilder.Entity("aiKart.Models.UserDeck", b =>
+                {
+                    b.HasOne("aiKart.Models.Deck", "Deck")
+                        .WithMany("UserDecks")
+                        .HasForeignKey("DeckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("aiKart.Models.User", "User")
+                        .WithMany("UserDecks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deck");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("aiKart.Models.Deck", b =>
                 {
                     b.Navigation("Cards");
+
+                    b.Navigation("UserDecks");
+                });
+
+            modelBuilder.Entity("aiKart.Models.User", b =>
+                {
+                    b.Navigation("UserDecks");
                 });
 #pragma warning restore 612, 618
         }

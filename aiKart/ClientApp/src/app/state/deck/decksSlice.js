@@ -1,4 +1,5 @@
-// decksSlice.js
+
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -61,7 +62,7 @@ export const decksSlice = createSlice({
       })
       .addCase(addDeck.pending, (state, action) => {
         state.loading = "pending";
-      })  
+      })
       .addCase(addDeck.rejected, (state, action) => {
         state.loading = "idle";
       })

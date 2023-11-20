@@ -10,18 +10,14 @@ namespace aiKart.Services
     {
         private readonly IDeckRepository _deckRepository;
 
-        private readonly DataContext _dbContext;
-
-        public DeckService(IDeckRepository deckRepository, DataContext dbContext)
+        public DeckService(IDeckRepository deckRepository)
         {
             _deckRepository = deckRepository;
-            _dbContext = dbContext;
         }
-
 
         public IEnumerable<Deck> GetAllDecksIncludingCards()
         {
-            return _dbContext.Decks.Include(d => d.Cards).ToList();
+            return _deckRepository.GetDecksIncludingCards();
         }
 
         public IEnumerable<Deck> GetAllDecks()
@@ -29,7 +25,7 @@ namespace aiKart.Services
             return _deckRepository.GetDecks();
         }
 
-        public Deck GetDeckById(int id)
+        public Deck? GetDeckById(int id)
         {
             return _deckRepository.GetDeck(id);
         }
@@ -65,4 +61,5 @@ namespace aiKart.Services
             return _deckRepository.GetDeckCards(deckId);
         }
     }
+
 }
