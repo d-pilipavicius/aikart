@@ -5,6 +5,8 @@ using aiKart.Interfaces;
 using aiKart.Models;
 using aiKart.Repositories;
 using aiKart.Services;
+using aiKart.Utils;
+using aiKart.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +27,8 @@ builder.Services.AddScoped<IUserDeckService, UserDeckService>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<Shuffler<Card>>();
 
 builder.Services.AddCors(options =>
 {

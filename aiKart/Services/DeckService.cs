@@ -1,15 +1,16 @@
-using aiKart.Data;
 using aiKart.Interfaces;
 using aiKart.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using aiKart.Utils;
 
 namespace aiKart.Services
 {
     public class DeckService : IDeckService
     {
         private readonly IDeckRepository _deckRepository;
+        private readonly Shuffler<Card> _cardShuffler;
 
         //  concurrent collection
         private ConcurrentDictionary<int, Deck> _deckCache = new ConcurrentDictionary<int, Deck>();
@@ -21,9 +22,10 @@ namespace aiKart.Services
         public event DeckChangeHandler DeckCreated;
         public event DeckChangeHandler DeckUpdated;
 
-        public DeckService(IDeckRepository deckRepository)
+        public DeckService(IDeckRepository deckRepository, Shuffler<Card> cardShuffler)
         {
             _deckRepository = deckRepository;
+            _cardShuffler = cardShuffler;
         }
 
         // Method to raise the DeckCreated event
@@ -117,7 +119,17 @@ namespace aiKart.Services
 
         public IEnumerable<Card> GetCardsInDeck(int deckId)
         {
-            return _deckRepository.GetDeckCards(deckId);
+            return _deckRepository.
+            GetDeckCards(deckId);
+        }
+
+        public IEnumerable<Card> GetShuffledDeckCards(int deckId)
+        {
+            IEnumerable<Card> deckCards = _deckRepository.GetDeckCards(deckId);
+
+            deckCards = _cardShuffler.Shuffle(deckCards);
+
+            return deckCards;
         }
     }
 

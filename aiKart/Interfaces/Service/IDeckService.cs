@@ -14,7 +14,7 @@ public interface IDeckService
     bool UpdateDeck(Deck deck);
     Task<Deck> GetDeckByIdAsync(int deckId);
     IEnumerable<Card> GetCardsInDeck(int deckId);
-
+    IEnumerable<Card> GetShuffledDeckCards(int deckId);
     IEnumerable<Deck> GetAllDecksIncludingCards();
 
     event DeckService.DeckChangeHandler DeckCreated;

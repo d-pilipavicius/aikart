@@ -169,5 +169,23 @@ namespace aiKart.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("cardlist/shuffled/{deckId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CardDto>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult GetShuffledDeckCards(int deckId)
+        {
+            if (!_deckService.DeckExistsById(deckId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var cards = _deckService.GetShuffledDeckCards(deckId);
+            var cardDtos = _mapper.Map<IEnumerable<CardDto>>(cards);
+
+            return Ok(cardDtos);
+        }
     }
 }
