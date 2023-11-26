@@ -4,6 +4,7 @@ using aiKart.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using aiKart.States;
 
 
 namespace aiKart.Repositories
@@ -76,6 +77,30 @@ namespace aiKart.Repositories
         {
             var saved = _context.SaveChanges();
             return saved > 0;
+        }
+
+        public async Task<Deck> CloneDeckAsync(Deck originalDeck)
+        {
+            var clonedDeck = new Deck
+            {
+                Name = originalDeck.Name,
+                Description = originalDeck.Description,
+                CreatorName = originalDeck.CreatorName,
+                IsPublic = false,
+                CreationDate = originalDeck.CreationDate,
+                LastEditDate = DateTime.UtcNow,
+                Cards = originalDeck.Cards.Select(c => new Card
+                {
+                    Question = c.Question,
+                    Answer = c.Answer,
+                    State = CardState.Unanswered,
+                }).ToList()
+            };
+
+            _context.Decks.Add(clonedDeck);
+            await _context.SaveChangesAsync();
+
+            return clonedDeck;
         }
     }
 }

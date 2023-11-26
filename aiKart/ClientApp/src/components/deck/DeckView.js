@@ -7,6 +7,7 @@ import {
   deleteCard as deleteCardFromDeck,
 } from "../../app/state/card/cardsSlice";
 import { fetchDecks } from "../../app/state/deck/decksSlice";
+import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import AddCardModal from "../card/AddCardModal";
 import EditCardModal from "../card/EditCardModal";
 import {
@@ -24,9 +25,10 @@ const DeckView = () => {
   const [showModal, setShowModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
+  const user = useSelector((state) => state.users.currentUser);
 
   const deck = useSelector((state) =>
-    state.decks.decks.find((deck) => deck.id === parseInt(deckId))
+    state.userDecks.userDecks.find((deck) => deck.id === parseInt(deckId))
   );
 
   const toggleAddModal = () => {
@@ -40,7 +42,7 @@ const DeckView = () => {
   const addCard = (question, answer) => {
     const cardDto = { deckId: deck.id, question, answer };
     dispatch(addCardToDeck(cardDto)).then(() => {
-      dispatch(fetchDecks());
+      dispatch(fetchDecksByUser(user.id));
     });
     toggleAddModal();
   };
@@ -67,6 +69,10 @@ const DeckView = () => {
       });
     }
   };
+
+  if (!deck) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>

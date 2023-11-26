@@ -55,6 +55,15 @@ namespace aiKart.Controllers
             return Ok(deckDtos);
         }
 
+        [HttpGet("public")]
+        public IActionResult GetAllPublicDecks()
+        {
+            var publicDecks = _deckService.GetAllDecksIncludingCards().Where(d => d.IsPublic);
+            var deckDtos = _mapper.Map<List<DeckDto>>(publicDecks);
+            return Ok(deckDtos);
+        }
+
+
         [HttpGet("{deckId}")]
         public async Task<IActionResult> GetDeck(int deckId)
         {
@@ -187,5 +196,21 @@ namespace aiKart.Controllers
 
             return Ok(cardDtos);
         }
+
+        [HttpPost("{deckId}/clone")]
+        public async Task<IActionResult> ClonePublicDeck(int deckId, [FromBody] CloneDeckDto cloneDeckDto)
+        {
+            try
+            {
+                var clonedDeck = await _deckService.ClonePublicDeck(deckId, cloneDeckDto.UserId);
+                var deckDto = _mapper.Map<DeckDto>(clonedDeck);
+                return CreatedAtAction(nameof(GetDeck), new { deckId = clonedDeck.Id }, deckDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

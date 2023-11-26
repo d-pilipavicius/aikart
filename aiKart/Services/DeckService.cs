@@ -12,6 +12,8 @@ namespace aiKart.Services
         private readonly IDeckRepository _deckRepository;
         private readonly Shuffler<Card> _cardShuffler;
 
+        private readonly IUserDeckService _userDeckService;
+
         //  concurrent collection
         private ConcurrentDictionary<int, Deck> _deckCache = new ConcurrentDictionary<int, Deck>();
 
@@ -22,10 +24,11 @@ namespace aiKart.Services
         public event DeckChangeHandler DeckCreated;
         public event DeckChangeHandler DeckUpdated;
 
-        public DeckService(IDeckRepository deckRepository, Shuffler<Card> cardShuffler)
+        public DeckService(IDeckRepository deckRepository, Shuffler<Card> cardShuffler, IUserDeckService userDeckService)
         {
             _deckRepository = deckRepository;
             _cardShuffler = cardShuffler;
+            _userDeckService = userDeckService;
         }
 
         // Method to raise the DeckCreated event
@@ -130,6 +133,26 @@ namespace aiKart.Services
             deckCards = _cardShuffler.Shuffle(deckCards);
 
             return deckCards;
+        }
+
+        public async Task<Deck> ClonePublicDeck(int deckId, int userId)
+        {
+            var originalDeck = await _deckRepository.GetDeckByIdAsync(deckId);
+            if (originalDeck == null || !originalDeck.IsPublic)
+                throw new Exception("Deck not found or is not public");
+
+            var clonedDeck = await _deckRepository.CloneDeckAsync(originalDeck);
+
+            var userDeck = new UserDeck
+            {
+                UserId = userId,
+                DeckId = clonedDeck.Id
+            };
+
+            _userDeckService.AddUserDeck(userDeck);
+            _userDeckService.Save();
+
+            return clonedDeck;
         }
     }
 

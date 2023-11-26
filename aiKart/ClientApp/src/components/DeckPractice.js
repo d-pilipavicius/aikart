@@ -83,6 +83,7 @@ const DeckPractice = () => {
               style={{ marginRight: "5px" }}
               color="danger"
               onClick={() => {
+                currentCardObject.state = "Unanswered";
                 setCurrentCard(currentCard + 1);
                 setAnswered(false);
               }}

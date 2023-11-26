@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDecks } from "../app/state/deck/decksSlice";
-import { addUserToDeck } from "../app/state/user/userDecksSlice";
+import { addUserToDeck, cloneDeck } from "../app/state/user/userDecksSlice";
 import {
   useTable,
   useSortBy,
@@ -31,10 +31,11 @@ const Store = () => {
 
   const handlePurchase = useCallback(
     (deckId) => {
-      dispatch(addUserToDeck({ UserId: user.id, DeckId: deckId }));
+      dispatch(cloneDeck({ deckId, userId: user.id }));
     },
     [dispatch, user.id]
   );
+
 
   const data = React.useMemo(() => decks, [decks]);
   const columns = React.useMemo(
@@ -51,12 +52,14 @@ const Store = () => {
       },
       {
         Header: "Creator",
-        accessor: "creatorname",
+        accessor: "creatorName",
         width: "10%",
       },
       {
         Header: "Last edit date",
-        accessor: "lasteditdate",
+        accessor: (row) => {
+          return new Date(row.lastEditDate).toLocaleDateString(); // Formatting the date
+        },
         width: "10%",
       },
       {

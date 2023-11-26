@@ -24,6 +24,7 @@ const ManageDecks = () => {
   const [showCreateDeckForm, setShowCreateDeckForm] = useState(false);
   const [newDeckName, setNewDeckName] = useState("");
   const [newDeckDescription, setNewDeckDescription] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -44,10 +45,12 @@ const ManageDecks = () => {
           description: newDeckDescription,
           creatorId: user.id,
           creatorName: user.name,
+          isPublic,
         })
       );
       setNewDeckName("");
       setNewDeckDescription("");
+      setIsPublic(false);
       toggleCreateDeckForm();
       dispatch(fetchDecksByUser(user.id));
     }
@@ -82,6 +85,8 @@ const ManageDecks = () => {
         setNewDeckName={setNewDeckName}
         newDeckDescription={newDeckDescription}
         setNewDeckDescription={setNewDeckDescription}
+        isPublic={isPublic}
+        setIsPublic={setIsPublic}
       />
 
       <div className="row">

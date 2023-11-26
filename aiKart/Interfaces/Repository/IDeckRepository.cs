@@ -16,4 +16,5 @@ public interface IDeckRepository
     bool DeleteDeck(Deck deck);
     bool UpdateDeck(Deck deck);
     bool Save();
+    Task<Deck> CloneDeckAsync(Deck originalDeck);
 }

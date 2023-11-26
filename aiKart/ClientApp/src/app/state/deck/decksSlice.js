@@ -4,9 +4,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchDecks = createAsyncThunk("decks/fetchDecks", async () => {
-  const response = await axios.get("/api/deck");
+  const response = await axios.get("/api/deck/public");
   return response.data;
 });
+
 
 export const addDeck = createAsyncThunk("decks/addDeck", async (deckDto) => {
   const response = await axios.post("/api/deck", deckDto);

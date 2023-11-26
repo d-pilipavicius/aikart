@@ -25,6 +25,15 @@ export const addUserToDeck = createAsyncThunk("userDecks/addUserToDeck", async (
   return response.data;
 });
 
+export const cloneDeck = createAsyncThunk(
+  "userDecks/cloneDeck",
+  async ({ deckId, userId }) => {
+    const response = await axios.post(`/api/deck/${deckId}/clone`, { userId });
+    return response.data;
+  }
+);
+
+
 const userDeckSlice = createSlice({
   name: "userDecks",
   initialState: {
@@ -42,6 +51,16 @@ const userDeckSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(fetchUserDecks.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(cloneDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.userDecks.push(action.payload);
+      })
+      .addCase(cloneDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(cloneDeck.rejected, (state, action) => {
         state.loading = "idle";
       })
       .addCase(fetchDecksByUser.fulfilled, (state, action) => {

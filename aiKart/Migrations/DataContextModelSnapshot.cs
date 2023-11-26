@@ -69,6 +69,9 @@ namespace aiKart.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("LastEditDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -103,6 +106,15 @@ namespace aiKart.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("DeckId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CorrectAnswers")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PartiallyCorrectAnswers")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimesSolved")
                         .HasColumnType("integer");
 
                     b.HasKey("UserId", "DeckId");
