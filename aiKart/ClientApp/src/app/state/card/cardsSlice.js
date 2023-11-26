@@ -14,6 +14,16 @@ export const addCard = createAsyncThunk("cards/addCard", async (cardDto) => {
   return response.data;
 });
 
+export const updateCardState = createAsyncThunk(
+  "cards/updateCardState",
+  async ({ cardId, newState }) => {
+    const response = await axios.put(`/api/card/states/set/${cardId}`, {
+      state: newState,
+    });
+    return response.data;
+  }
+);
+
 export const updateCard = createAsyncThunk(
   "cards/updateCard",
   async ({ cardId, cardDto }) => {
@@ -47,6 +57,20 @@ export const cardsSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(fetchCardById.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(updateCardState.fulfilled, (state, action) => {
+        const index = state.cards.findIndex(
+          (card) => card.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.cards[index] = action.payload;
+        }
+      })
+      .addCase(updateCardState.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(updateCardState.rejected, (state, action) => {
         state.loading = "idle";
       })
       .addCase(addCard.fulfilled, (state, action) => {

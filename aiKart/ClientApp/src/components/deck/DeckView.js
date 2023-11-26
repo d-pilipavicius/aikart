@@ -6,7 +6,7 @@ import {
   updateCard as updateCardInDeck,
   deleteCard as deleteCardFromDeck,
 } from "../../app/state/card/cardsSlice";
-import { fetchDecks } from "../../app/state/deck/decksSlice";
+import { fetchDecks, updateDeck } from "../../app/state/deck/decksSlice";
 import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import AddCardModal from "../card/AddCardModal";
 import EditCardModal from "../card/EditCardModal";
@@ -26,11 +26,15 @@ const DeckView = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
   const user = useSelector((state) => state.users.currentUser);
+  const [deckName, setDeckName] = useState("");
+  const [deckDescription, setDeckDescription] = useState("");
 
   const deck = useSelector((state) =>
     state.userDecks.userDecks.find((deck) => deck.id === parseInt(deckId))
   );
 
+  // Check if the current user is the deck's creator
+  const isCreator = user.id === deck.creatorId;
   const toggleAddModal = () => {
     setShowModal(!showModal);
   };
@@ -45,6 +49,19 @@ const DeckView = () => {
       dispatch(fetchDecksByUser(user.id));
     });
     toggleAddModal();
+  };
+
+  // Handle deck update
+  const handleSaveChanges = () => {
+    // Prepare the updated deck data
+    const updatedDeckDto = {
+      name: deckName || deck.name, // new name or fallback to existing
+      description: deckDescription || deck.description, // new description or existing
+      cards: deck.cards, // existing cards
+    };
+
+    // Dispatch action to update the deck
+    dispatch(updateDeck({ deckId: deck.id, deckDto: updatedDeckDto }));
   };
 
   const editCard = (index, question, answer) => {
@@ -76,11 +93,27 @@ const DeckView = () => {
 
   return (
     <div>
+      {isCreator && (
+        <div>
+          {/* Inputs to edit the deck name and description */}
+          <input
+            type="text"
+            value={deckName}
+            onChange={(e) => setDeckName(e.target.value)}
+            placeholder="Deck Name"
+          />
+          <textarea
+            value={deckDescription}
+            onChange={(e) => setDeckDescription(e.target.value)}
+            placeholder="Deck Description"
+          />
+          <button onClick={handleSaveChanges}>Save Changes</button>
+        </div>
+      )}
       <h2 className="text-dark mb-3">{deck.name}</h2>
       <button className="btn btn-primary mb-3" onClick={toggleAddModal}>
         Add Card
       </button>
-
       {deck &&
         deck.cards.map((card, index) => (
           <Card key={index} className="mb-3">

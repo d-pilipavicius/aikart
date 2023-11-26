@@ -22,6 +22,11 @@ const DeckPractice = () => {
   
   const currentCardObject = deck && deck.cards[currentCard];
 
+  if (!deck) {
+    // Handle the case where deck is not loaded yet
+    return <div>Loading...</div>;
+  }
+
 
   return (
     <div
@@ -83,7 +88,6 @@ const DeckPractice = () => {
               style={{ marginRight: "5px" }}
               color="danger"
               onClick={() => {
-                currentCardObject.state = "Unanswered";
                 setCurrentCard(currentCard + 1);
                 setAnswered(false);
               }}
