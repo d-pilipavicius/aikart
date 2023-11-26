@@ -8,4 +8,8 @@ public class UserDeck
     public int DeckId { get; set; }
     public Deck? Deck { get; set; }
 
+    public int TimesSolved { get; set; } = 0;
+    public int CorrectAnswers { get; set; } = 0;
+    public int PartiallyCorrectAnswers { get; set; } = 0;
+
 }
