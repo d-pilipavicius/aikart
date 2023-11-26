@@ -8,6 +8,7 @@ public class Deck : IEntity
     public string Name { get; set; } = "";
     public string? Description { get; set; }
     public string? CreatorName { get; set; }
+    public bool IsPublic { get; set; } = false;
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     public DateTime LastEditDate { get; set; } = DateTime.UtcNow;
 
