@@ -91,7 +91,7 @@ namespace aiKart.Repositories
                 CreatorName = originalDeck.CreatorName,
                 CreatorId = originalDeck.CreatorId,
                 IsPublic = false,
-                CreationDate = DateTime.UtcNow,
+                CreationDate = originalDeck.CreationDate,
                 LastEditDate = DateTime.UtcNow,
                 // Do not include Cards initialization here, it will be done below
             };

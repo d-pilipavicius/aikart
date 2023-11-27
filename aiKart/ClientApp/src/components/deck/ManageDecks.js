@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import EditDeckModal from "./EditDeckModal";
 import CreateDeckModal from "./CreateDeckModal";
 import { deleteDeck, addDeck } from "../../app/state/deck/decksSlice";
-import { fetchDecksByUser, deleteUserFromDeck } from "../../app/state/user/userDecksSlice";
+import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import {
   Button,
   Card,
@@ -59,7 +59,7 @@ const ManageDecks = () => {
  const handleDelete = (event, deck) => {
    event.stopPropagation();
    if (window.confirm("Are you sure you want to delete this deck?")) {
-     dispatch(deleteUserFromDeck({ deckId: deck.id, userId: user.id })).then(
+     dispatch(deleteDeck(deck.id)).then(
        () => {
          dispatch(fetchDecksByUser(user.id));
        }
@@ -72,6 +72,8 @@ const ManageDecks = () => {
     event.stopPropagation();
     setSelectedDeck(deck);
   };
+
+
 
   return (
     <div className="container">

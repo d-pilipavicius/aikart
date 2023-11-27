@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDecks } from "../app/state/deck/decksSlice";
-import { addUserToDeck, cloneDeck } from "../app/state/user/userDecksSlice";
+import { cloneDeck } from "../app/state/user/userDecksSlice";
 import {
   useTable,
   useSortBy,

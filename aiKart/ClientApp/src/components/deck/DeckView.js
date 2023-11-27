@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
@@ -35,6 +35,7 @@ const DeckView = () => {
 
   // Check if the current user is the deck's creator
   const isCreator = user.id === deck.creatorId;
+
   const toggleAddModal = () => {
     setShowModal(!showModal);
   };
@@ -51,18 +52,29 @@ const DeckView = () => {
     toggleAddModal();
   };
 
-  // Handle deck update
-  const handleSaveChanges = () => {
-    // Prepare the updated deck data
-    const updatedDeckDto = {
-      name: deckName || deck.name, // new name or fallback to existing
-      description: deckDescription || deck.description, // new description or existing
-      cards: deck.cards, // existing cards
-    };
+   const [isPublic, setIsPublic] = useState(false);
 
-    // Dispatch action to update the deck
-    dispatch(updateDeck({ deckId: deck.id, deckDto: updatedDeckDto }));
-  };
+   useEffect(() => {
+     if (deck) {
+      console.log(deck.isPublic);
+       setIsPublic(deck.isPublic);
+     }
+   }, [deck]);
+
+   const togglePrivacy = () => {
+     const newPrivacyStatus = !isPublic;
+     setIsPublic(newPrivacyStatus);
+
+     const updatedDeckDto = {
+       name: deck.name,
+       description: deck.description,
+       creatorName: user.name,
+       cards: deck.cards,
+       isPublic: newPrivacyStatus,
+     };
+
+     dispatch(updateDeck({ deckId: deck.id, deckDto: updatedDeckDto }));
+   };
 
   const editCard = (index, question, answer) => {
     const cardId = deck.cards[index].id;
@@ -95,19 +107,12 @@ const DeckView = () => {
     <div>
       {isCreator && (
         <div>
-          {/* Inputs to edit the deck name and description */}
-          <input
-            type="text"
-            value={deckName}
-            onChange={(e) => setDeckName(e.target.value)}
-            placeholder="Deck Name"
-          />
-          <textarea
-            value={deckDescription}
-            onChange={(e) => setDeckDescription(e.target.value)}
-            placeholder="Deck Description"
-          />
-          <button onClick={handleSaveChanges}>Save Changes</button>
+          <button
+            className={`btn ${isPublic ? "btn-danger" : "btn-success"}`}
+            onClick={togglePrivacy}
+          >
+            {isPublic ? "Make Private" : "Make Public"}
+          </button>
         </div>
       )}
       <h2 className="text-dark mb-3">{deck.name}</h2>
@@ -137,13 +142,11 @@ const DeckView = () => {
             </CardFooter>
           </Card>
         ))}
-
       <AddCardModal
         showModal={showModal}
         toggleModal={toggleAddModal}
         addCard={addCard}
       />
-
       <EditCardModal
         isOpen={editModalOpen}
         toggle={toggleEditModal}

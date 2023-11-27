@@ -7,6 +7,7 @@ public record DeckDto(
   int CreatorId,
   string? Description, 
   string? CreatorName,
+  bool IsPublic,
   DateTime CreationDate,
   DateTime LastEditDate,
   ICollection<CardDto>? Cards
