@@ -33,7 +33,7 @@ namespace aiKart.Tests
         public void GetAllDecks_ReturnsOk()
         {
             var decks = new List<Deck>();
-            var deckDtos = new List<DeckDto> { new DeckDto(1, "Name", null, null, DateTime.Now, DateTime.Now, null) };
+            var deckDtos = new List<DeckDto> { new DeckDto(1, "Name", 1, null, null, true, DateTime.Now, DateTime.Now, null) };
 
             mockDeckService.Setup(s => s.GetAllDecksIncludingCards()).Returns(decks);
             mockMapper.Setup(m => m.Map<List<DeckDto>>(decks)).Returns(deckDtos);
@@ -62,7 +62,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
             mockDeckService.Setup(s => s.GetDeckByIdAsync(It.IsAny<int>())).ReturnsAsync(new Deck());
             mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>()))
-                .Returns(new DeckDto(1, "Name", null, null, DateTime.Now, DateTime.Now, null));
+                .Returns(new DeckDto(1, "Name", 1, null, null, true, DateTime.Now, DateTime.Now, null));
 
             var result = await deckController.GetDeck(1);
 
@@ -92,13 +92,13 @@ namespace aiKart.Tests
         [Fact]
         public void AddDeck_ReturnsCreatedResponse()
         {
-            var addDeckDto = new AddDeckDto("Name", null, 1, null);
+            var addDeckDto = new AddDeckDto("Name", null, 1, null, true);
             var deck = new Deck { Id = 1, Name = "Name" }; // The deck entity that would be "added" by the service.
             mockDeckService.Setup(s => s.DeckExistsByName(It.IsAny<string>())).Returns(false);
             mockDeckService.Setup(s => s.AddDeck(It.IsAny<Deck>())).Returns(true);
             mockUserDeckService.Setup(s => s.AddUserDeck(It.IsAny<UserDeck>())).Returns(true); // Assume that adding a UserDeck relationship is successful.
             mockMapper.Setup(m => m.Map<Deck>(It.IsAny<AddDeckDto>())).Returns(deck);
-            mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>())).Returns(new DeckDto(deck.Id, deck.Name, null, null, DateTime.Now, DateTime.Now, null));
+            mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>())).Returns(new DeckDto(deck.Id, deck.Name, 1, null, null, true, DateTime.Now, DateTime.Now, null));
 
             var result = deckController.AddDeck(addDeckDto);
 
@@ -112,7 +112,7 @@ namespace aiKart.Tests
         public void UpdateDeck_ReturnsNotFound()
         {
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(false);
-            var result = deckController.UpdateDeck(1, new UpdateDeckDto("Name", null, null));
+            var result = deckController.UpdateDeck(1, new UpdateDeckDto("Name", null, null, true, null));
             Assert.IsType<NotFoundResult>(result);
         }
 
@@ -122,7 +122,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
             mockDeckService.Setup(s => s.GetDeckById(It.IsAny<int>())).Returns(new Deck());
             mockDeckService.Setup(s => s.UpdateDeck(It.IsAny<Deck>())).Returns(true);
-            var result = deckController.UpdateDeck(1, new UpdateDeckDto("Name", null, null));
+            var result = deckController.UpdateDeck(1, new UpdateDeckDto("Name", null, null, true, null));
             Assert.IsType<NoContentResult>(result);
         }
 
