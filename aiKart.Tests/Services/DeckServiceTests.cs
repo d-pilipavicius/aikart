@@ -15,7 +15,7 @@ namespace aiKart.Tests
     {
         private readonly Mock<IDeckRepository> _mockDeckRepository;
         private readonly DeckService _deckService;
-        private readonly Mock<IUserDeckRepository> _mockUserDeckRepository;
+        private readonly Mock<IUserDeckService> _mockUserDeckService;
         
         private readonly Shuffler<Card> _shuffler;
 
@@ -23,8 +23,8 @@ namespace aiKart.Tests
         {
             _mockDeckRepository = new Mock<IDeckRepository>();
             _shuffler = new Shuffler<Card>();
-            _mockUserDeckRepository = new Mock<IUserDeckRepository>();
-            _deckService = new DeckService(_mockDeckRepository.Object, _shuffler, _mockUserDeckRepository.Object);
+            _mockUserDeckService = new Mock<IUserDeckService>();
+            _deckService = new DeckService(_mockDeckRepository.Object, _shuffler, _mockUserDeckService.Object);
             
             
         }
