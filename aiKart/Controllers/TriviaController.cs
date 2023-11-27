@@ -99,6 +99,7 @@ namespace aiKart.Controllers
             {
                 Name = $"{triviaQuestions[0].Category}",
                 CreatorId = creatorId,
+                CreatorName = "Trivia API",
                 Description = $"{triviaQuestions.Count} questions about {triviaQuestions[0].Category}",
                 IsPublic = false,
             };
@@ -109,10 +110,20 @@ namespace aiKart.Controllers
 
             foreach (var question in triviaQuestions)
             {
+                // Combine all answers into a single string
+                var allAnswers = new List<string>(question.IncorrectAnswers) { question.CorrectAnswer };
+                allAnswers = ShuffleAnswers(allAnswers); // Optional: Shuffle the answers
+
+                var formattedQuestion = $"{question.Question}\n" +
+                                        $"A) {allAnswers[0]}\n" +
+                                        $"B) {allAnswers[1]}\n" +
+                                        $"C) {allAnswers[2]}\n" +
+                                        $"D) {allAnswers[3]}";
+
                 var card = new Card
                 {
-                    Question = question.Question,
-                    Answer = question.CorrectAnswer,
+                    Question = formattedQuestion,
+                    Answer = question.CorrectAnswer, // Store only the correct answer
                     DeckId = deck.Id
                 };
 
@@ -121,5 +132,13 @@ namespace aiKart.Controllers
 
             return deck;
         }
+
+        private List<string> ShuffleAnswers(List<string> answers)
+        {
+            // Implement a shuffling algorithm or use an existing method
+            // to shuffle the answers
+            return answers.OrderBy(a => Guid.NewGuid()).ToList();
+        }
+
     }
 }

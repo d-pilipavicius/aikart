@@ -30,6 +30,32 @@ const DeckPractice = () => {
     setIsFlipped(!isFlipped);
   };
 
+  const renderTextWithNewLines = (text) => {
+    return text.split("\n").map((line, index, array) => (
+      <React.Fragment key={index}>
+        {line}
+        {index !== array.length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
+  const handleNextCard = (difficulty) => {
+    // First, unflip the card
+    setIsFlipped(false);
+
+    // Wait for the flip animation to complete
+    setTimeout(() => {
+      // Update to the next card
+      if (currentCard < deck.cards.length - 1) {
+        setCurrentCard(currentCard + 1);
+      }
+
+      // Reset the answered state for the next card
+      setAnswered(false);
+    }, 500); // Adjust this duration to match your flip animation time
+  };
+
+
 
   if (!deck) {
     // Handle the case where deck is not loaded yet
@@ -42,10 +68,13 @@ const DeckPractice = () => {
       style={{ minHeight: "60vh", display: "flex", flexDirection: "column" }}
     >
       {currentCardObject && (
-        <div className="card-container" onClick={toggleFlip}>
+        <div className="card-container" onClick={() => {
+          toggleFlip();
+          setAnswered(true);
+        }}>
           <div className={`card-flipper ${isFlipped ? "flip" : ""}`}>
             <div className="card-face card-front">
-              <h1>{currentCardObject.question}</h1>
+              <h1>{renderTextWithNewLines(currentCardObject.question)}</h1>
             </div>
             <div className="card-face card-back">
               <h1>{currentCardObject.answer}</h1>
@@ -82,29 +111,20 @@ const DeckPractice = () => {
             <Button
               style={{ marginRight: "5px" }}
               color="danger"
-              onClick={() => {
-                setCurrentCard(currentCard + 1);
-                setAnswered(false);
-              }}
+              onClick={handleNextCard}
             >
               Hard
             </Button>
             <Button
               style={{ marginRight: "5px" }}
               color="warning"
-              onClick={() => {
-                setCurrentCard(currentCard + 1);
-                setAnswered(false);
-              }}
+              onClick={handleNextCard}
             >
               Decent
             </Button>
             <Button
               color="success"
-              onClick={() => {
-                setCurrentCard(currentCard + 1);
-                setAnswered(false);
-              }}
+              onClick={handleNextCard}
             >
               Easy
             </Button>
