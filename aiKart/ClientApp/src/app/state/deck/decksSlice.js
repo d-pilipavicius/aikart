@@ -1,5 +1,3 @@
-
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -7,7 +5,6 @@ export const fetchDecks = createAsyncThunk("decks/fetchDecks", async () => {
   const response = await axios.get("/api/deck/public");
   return response.data;
 });
-
 
 export const addDeck = createAsyncThunk("decks/addDeck", async (deckDto) => {
   const response = await axios.post("/api/deck", deckDto);
@@ -34,6 +31,14 @@ export const fetchDeckById = createAsyncThunk(
   "decks/fetchDeckById",
   async (deckId) => {
     const response = await axios.get(`/api/deck/${deckId}`);
+    return response.data;
+  }
+);
+
+export const generateDeck = createAsyncThunk(
+  "decks/generateDeck",
+  async (triviaDeckRequestDto) => {
+    const response = await axios.post("/api/trivia", triviaDeckRequestDto);
     return response.data;
   }
 );
@@ -105,6 +110,16 @@ export const decksSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(fetchDeckById.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(generateDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.decks.push(action.payload);
+      })
+      .addCase(generateDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(generateDeck.rejected, (state, action) => {
         state.loading = "idle";
       });
   },
