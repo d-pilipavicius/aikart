@@ -9,12 +9,15 @@ import {
   Nav,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../app/state/user/usersSlice";
+import { resetUserDecks } from "../app/state/user/userDecksSlice";
 
 import "./NavMenu.css";
 
 const NavMenu = ({ disableNavMenu }) => {
   const [collapsed, setCollapsed] = useState(true);
+  const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.users.currentUser);
 
@@ -28,6 +31,11 @@ const NavMenu = ({ disableNavMenu }) => {
     if (!disableNavMenu) {
       setCollapsed(!collapsed);
     }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(resetUserDecks());
   };
 
   return (
@@ -56,7 +64,7 @@ const NavMenu = ({ disableNavMenu }) => {
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-white" to="/">
+                <NavLink tag={Link} className="text-white" to="/" onClick={handleLogout}>
                   Log out
                 </NavLink>
               </NavItem>

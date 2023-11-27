@@ -47,7 +47,11 @@ const userDeckSlice = createSlice({
     userDecks: [],
     loading: "idle",
   },
-  reducers: {},
+  reducers: {
+    resetUserDecks: (state) => {
+      state.userDecks = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserDecks.fulfilled, (state, action) => {
@@ -119,4 +123,5 @@ const userDeckSlice = createSlice({
   },
 });
 
+export const { resetUserDecks } = userDeckSlice.actions;
 export default userDeckSlice.reducer;
