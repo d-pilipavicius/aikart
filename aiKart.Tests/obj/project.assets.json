@@ -7228,19 +7228,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\lettuceman\\.nuget\\packages\\": {}
+    "C:\\Users\\rokax\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lettuceman\\Documents\\VU\\2_kursas_1_pusm\\PSI\\aikart\\aikart\\aiKart.Tests\\aiKart.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj",
       "projectName": "aiKart.Tests",
-      "projectPath": "C:\\Users\\lettuceman\\Documents\\VU\\2_kursas_1_pusm\\PSI\\aikart\\aikart\\aiKart.Tests\\aiKart.Tests.csproj",
-      "packagesPath": "C:\\Users\\lettuceman\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lettuceman\\Documents\\VU\\2_kursas_1_pusm\\PSI\\aikart\\aikart\\aiKart.Tests\\obj\\",
+      "projectPath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\aiKart.Tests.csproj",
+      "packagesPath": "C:\\Users\\rokax\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aikart.tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\lettuceman\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\rokax\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -7252,8 +7252,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\lettuceman\\Documents\\VU\\2_kursas_1_pusm\\PSI\\aikart\\aikart\\aiKart\\aiKart.csproj": {
-              "projectPath": "C:\\Users\\lettuceman\\Documents\\VU\\2_kursas_1_pusm\\PSI\\aikart\\aikart\\aiKart\\aiKart.csproj"
+            "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart\\aiKart.csproj": {
+              "projectPath": "C:\\Users\\rokax\\OneDrive\\Desktop\\SWE Project\\aikart\\aiKart\\aiKart.csproj"
             }
           }
         }

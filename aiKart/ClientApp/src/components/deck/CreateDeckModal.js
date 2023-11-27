@@ -17,6 +17,8 @@ const CreateDeckModal = ({
   setNewDeckName,
   newDeckDescription,
   setNewDeckDescription,
+  isPublic,
+  setIsPublic,
 }) => {
   
   const handleKeyPress = (event) => {
@@ -45,6 +47,14 @@ const CreateDeckModal = ({
             className="mt-2"
             onKeyDown={handleKeyPress}
           />
+          <div className="mt-2">
+            <Input
+              type="checkbox"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+            />{" "}
+            <span>Make this deck public</span>
+          </div>
         </Form>
       </ModalBody>
       <ModalFooter>

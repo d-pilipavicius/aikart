@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
@@ -6,7 +6,8 @@ import {
   updateCard as updateCardInDeck,
   deleteCard as deleteCardFromDeck,
 } from "../../app/state/card/cardsSlice";
-import { fetchDecks } from "../../app/state/deck/decksSlice";
+import { fetchDecks, updateDeck } from "../../app/state/deck/decksSlice";
+import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import AddCardModal from "../card/AddCardModal";
 import EditCardModal from "../card/EditCardModal";
 import {
@@ -24,10 +25,16 @@ const DeckView = () => {
   const [showModal, setShowModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
+  const user = useSelector((state) => state.users.currentUser);
+  const [deckName, setDeckName] = useState("");
+  const [deckDescription, setDeckDescription] = useState("");
 
   const deck = useSelector((state) =>
-    state.decks.decks.find((deck) => deck.id === parseInt(deckId))
+    state.userDecks.userDecks.find((deck) => deck.id === parseInt(deckId))
   );
+
+  // Check if the current user is the deck's creator
+  const isCreator = user.id === deck.creatorId;
 
   const toggleAddModal = () => {
     setShowModal(!showModal);
@@ -40,10 +47,34 @@ const DeckView = () => {
   const addCard = (question, answer) => {
     const cardDto = { deckId: deck.id, question, answer };
     dispatch(addCardToDeck(cardDto)).then(() => {
-      dispatch(fetchDecks());
+      dispatch(fetchDecksByUser(user.id));
     });
     toggleAddModal();
   };
+
+   const [isPublic, setIsPublic] = useState(false);
+
+   useEffect(() => {
+     if (deck) {
+      console.log(deck.isPublic);
+       setIsPublic(deck.isPublic);
+     }
+   }, [deck]);
+
+   const togglePrivacy = () => {
+     const newPrivacyStatus = !isPublic;
+     setIsPublic(newPrivacyStatus);
+
+     const updatedDeckDto = {
+       name: deck.name,
+       description: deck.description,
+       creatorName: user.name,
+       cards: deck.cards,
+       isPublic: newPrivacyStatus,
+     };
+
+     dispatch(updateDeck({ deckId: deck.id, deckDto: updatedDeckDto }));
+   };
 
   const editCard = (index, question, answer) => {
     const cardId = deck.cards[index].id;
@@ -68,13 +99,26 @@ const DeckView = () => {
     }
   };
 
+  if (!deck) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
+      {isCreator && (
+        <div>
+          <button
+            className={`btn ${isPublic ? "btn-danger" : "btn-success"}`}
+            onClick={togglePrivacy}
+          >
+            {isPublic ? "Make Private" : "Make Public"}
+          </button>
+        </div>
+      )}
       <h2 className="text-dark mb-3">{deck.name}</h2>
       <button className="btn btn-primary mb-3" onClick={toggleAddModal}>
         Add Card
       </button>
-
       {deck &&
         deck.cards.map((card, index) => (
           <Card key={index} className="mb-3">
@@ -98,13 +142,11 @@ const DeckView = () => {
             </CardFooter>
           </Card>
         ))}
-
       <AddCardModal
         showModal={showModal}
         toggleModal={toggleAddModal}
         addCard={addCard}
       />
-
       <EditCardModal
         isOpen={editModalOpen}
         toggle={toggleEditModal}

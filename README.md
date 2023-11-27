@@ -108,6 +108,14 @@ To run backend tests, navigate to the `Aikart.Tests` folder and run:
 dotnet test
 ```
 
+If that doesn't work, try running these two commands first:
+
+```bash
+dotnet nuget locals all --clear
+
+dotnet restore
+```
+
 To see unit test coverage, run:
 
 ```bash

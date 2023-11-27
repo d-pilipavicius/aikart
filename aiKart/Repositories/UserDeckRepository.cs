@@ -43,7 +43,13 @@ public class UserDeckRepository : IUserDeckRepository
 
     public bool DeleteUserDeck(UserDeck userDeck)
     {
-        throw new NotImplementedException();
+        if (userDeck == null)
+        {
+            return false;
+        }
+
+        _context.UserDecks.Remove(userDeck);
+        return _context.SaveChanges() > 0;
     }
 
     public bool Save()

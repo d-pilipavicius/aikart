@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Container } from "reactstrap";
 import { fetchDeckById } from "../app/state/deck/decksSlice";
+import './DeckPractice.css';
 
 const DeckPractice = () => {
   const { deckId } = useParams();
@@ -22,46 +23,44 @@ const DeckPractice = () => {
   
   const currentCardObject = deck && deck.cards[currentCard];
 
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  // Toggle flip state
+  const toggleFlip = () => {
+    setIsFlipped(!isFlipped);
+  };
+
+
+  if (!deck) {
+    // Handle the case where deck is not loaded yet
+    return <div>Loading...</div>;
+  }
+
 
   return (
     <div
       style={{ minHeight: "60vh", display: "flex", flexDirection: "column" }}
     >
       {currentCardObject && (
-        <div>
-          <h1>{currentCardObject.question}</h1>
-          <hr></hr>
-          {isAnswered && <h1>{currentCardObject.answer}</h1>}
+        <div className="card-container" onClick={toggleFlip}>
+          <div className={`card-flipper ${isFlipped ? "flip" : ""}`}>
+            <div className="card-face card-front">
+              <h1>{currentCardObject.question}</h1>
+            </div>
+            <div className="card-face card-back">
+              <h1>{currentCardObject.answer}</h1>
+            </div>
+          </div>
         </div>
       )}
-
-      <Container
-        className="d-flex justify-content-center align-items-end"
-        style={{ marginTop: "auto" }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "5px",
-          }}
-        >
-          <p>Answered</p>
-          <p>{currentCard}</p>
+      <Container className="stats-container">
+        <div className="stat-box">
+          <i className="fas fa-check icon"></i>
+          <p>Answered: {currentCard}</p>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "5px",
-          }}
-        >
-          <p>Remaining</p>
-          <p>{deck.cards.length - currentCard}</p>
+        <div className="stat-box">
+          <i className="fas fa-layer-group icon"></i>
+          <p>Remaining: {deck.cards.length - currentCard}</p>
         </div>
       </Container>
 
@@ -71,6 +70,7 @@ const DeckPractice = () => {
             style={{ marginRight: "5px" }}
             color="primary"
             onClick={() => {
+              toggleFlip();
               setAnswered(true);
             }}
           >

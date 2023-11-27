@@ -25,13 +25,33 @@ export const addUserToDeck = createAsyncThunk("userDecks/addUserToDeck", async (
   return response.data;
 });
 
+export const deleteUserFromDeck = createAsyncThunk(
+  "userDecks/deleteUserFromDeck",
+  async ({ deckId, userId }) => {
+    await axios.delete(`/api/userdeck/${userId}/decks/${deckId}`);
+    return {deckId, userId};
+  }
+);
+export const cloneDeck = createAsyncThunk(
+  "userDecks/cloneDeck",
+  async ({ deckId, userId }) => {
+    const response = await axios.post(`/api/deck/${deckId}/clone`, { userId });
+    return response.data;
+  }
+);
+
+
 const userDeckSlice = createSlice({
   name: "userDecks",
   initialState: {
     userDecks: [],
     loading: "idle",
   },
-  reducers: {},
+  reducers: {
+    resetUserDecks: (state) => {
+      state.userDecks = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserDecks.fulfilled, (state, action) => {
@@ -42,6 +62,32 @@ const userDeckSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(fetchUserDecks.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(deleteUserFromDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.userDecks = state.userDecks.filter(
+          (userDeck) =>
+            !(
+              userDeck.deckId === action.payload.deckId &&
+              userDeck.userId === action.payload.userId
+            )
+        );
+      })
+      .addCase(deleteUserFromDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(deleteUserFromDeck.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(cloneDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.userDecks.push(action.payload);
+      })
+      .addCase(cloneDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(cloneDeck.rejected, (state, action) => {
         state.loading = "idle";
       })
       .addCase(fetchDecksByUser.fulfilled, (state, action) => {
@@ -77,4 +123,5 @@ const userDeckSlice = createSlice({
   },
 });
 
+export const { resetUserDecks } = userDeckSlice.actions;
 export default userDeckSlice.reducer;
