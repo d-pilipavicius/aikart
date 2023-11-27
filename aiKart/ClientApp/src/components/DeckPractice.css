@@ -1,0 +1,78 @@
+.card-container {
+  perspective: 1000px;
+  width: 300px;  /* Adjust size as needed */
+  height: 200px; /* Adjust size as needed */
+  margin: 0 auto; /* Center the card */
+}
+
+.card-flipper {
+  width: 100%;
+  height: 100%;
+  transition: 0.6s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.card-flipper.flip {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  padding: 10px; /* Padding for text */
+  border: 1px solid #ccc; /* Border for visibility */
+}
+
+.card-front {
+  background-color: #fff;
+  color: #000;
+}
+
+.card-back {
+  background-color: #fff;
+  color: #000;
+  transform: rotateY(180deg);
+}
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Spacing between items */
+  padding: 10px; /* Padding around the container */
+}
+
+.stat-box {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box p {
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+/* Styling for Font Awesome Icons */
+.icon {
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 1.2em; /* Adjust the size of the icon */
+}
+
+
+
+@media (max-width: 768px) {
+  .card-container {
+    max-width: 100%; /* Use more of the screen on smaller devices */
+  }
+}
