@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import EditDeckModal from "./EditDeckModal";
 import CreateDeckModal from "./CreateDeckModal";
+import GenerateDeckModal from "./GenerateDeckModal";
 import { deleteDeck, addDeck } from "../../app/state/deck/decksSlice";
 import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
 import {
@@ -22,6 +23,7 @@ const ManageDecks = () => {
   const navigate = useNavigate();
 
   const [showCreateDeckForm, setShowCreateDeckForm] = useState(false);
+  const [showGenerateDeckForm, setShowGenerateDeckForm] = useState(false);
   const [newDeckName, setNewDeckName] = useState("");
   const [newDeckDescription, setNewDeckDescription] = useState("");
   const [isPublic, setIsPublic] = useState(false);
@@ -34,6 +36,9 @@ const ManageDecks = () => {
 
   const toggleCreateDeckForm = () => {
     setShowCreateDeckForm(!showCreateDeckForm);
+  };
+  const toggleGenerateDeckForm = () => {
+    setShowGenerateDeckForm(!showGenerateDeckForm);
   };
 
   const saveDeck = async (event) => {
@@ -56,43 +61,52 @@ const ManageDecks = () => {
     }
   };
 
- const handleDelete = (event, deck) => {
-   event.stopPropagation();
-   if (window.confirm("Are you sure you want to delete this deck?")) {
-     dispatch(deleteDeck(deck.id)).then(
-       () => {
-         dispatch(fetchDecksByUser(user.id));
-       }
-     );
-   }
- };
-
+  const handleDelete = (event, deck) => {
+    event.stopPropagation();
+    if (window.confirm("Are you sure you want to delete this deck?")) {
+      dispatch(deleteDeck(deck.id)).then(() => {
+        dispatch(fetchDecksByUser(user.id));
+      });
+    }
+  };
 
   const handleEdit = (event, deck) => {
     event.stopPropagation();
     setSelectedDeck(deck);
   };
 
-
-
   return (
     <div className="container">
       <h1 className="mb-4">Manage Decks</h1>
 
-      <Button color="primary" className="mb-5" onClick={toggleCreateDeckForm}>
-        Create Deck
-      </Button>
-      <CreateDeckModal
-        isOpen={showCreateDeckForm}
-        toggle={toggleCreateDeckForm}
-        saveDeck={saveDeck}
-        newDeckName={newDeckName}
-        setNewDeckName={setNewDeckName}
-        newDeckDescription={newDeckDescription}
-        setNewDeckDescription={setNewDeckDescription}
-        isPublic={isPublic}
-        setIsPublic={setIsPublic}
-      />
+      <div className="mb-5">
+        <Button
+          color="primary"
+          style={{ marginRight: "1rem" }}
+          onClick={toggleCreateDeckForm}
+        >
+          Create Deck
+        </Button>
+        <CreateDeckModal
+          isOpen={showCreateDeckForm}
+          toggle={toggleCreateDeckForm}
+          saveDeck={saveDeck}
+          newDeckName={newDeckName}
+          setNewDeckName={setNewDeckName}
+          newDeckDescription={newDeckDescription}
+          setNewDeckDescription={setNewDeckDescription}
+          isPublic={isPublic}
+          setIsPublic={setIsPublic}
+        />
+
+        <Button color="primary" onClick={toggleGenerateDeckForm}>
+          Generate deck with Open TriviaDB
+        </Button>
+        <GenerateDeckModal
+          isOpen={showGenerateDeckForm}
+          toggle={toggleGenerateDeckForm}
+        />
+      </div>
 
       <div className="row">
         {decks.map((deck, index) => (

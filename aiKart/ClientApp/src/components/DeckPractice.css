@@ -1,8 +1,10 @@
 .card-container {
   perspective: 1000px;
   width: 300px;  /* Adjust size as needed */
-  height: 200px; /* Adjust size as needed */
+  height: 300px; /* Adjust size as needed */
   margin: 0 auto; /* Center the card */
+  margin-bottom: 5rem;
+  margin-top: 2rem;
 }
 
 .card-flipper {
@@ -28,7 +30,15 @@
   font-size: 20px;
   padding: 10px; /* Padding for text */
   border: 1px solid #ccc; /* Border for visibility */
+  min-height: 150px; /* Minimum height of the card */
+  max-height: 400px;
 }
+
+.card-face h1 {
+  margin: 0;
+  font-size: calc(16px + (24 - 16) * ((100vw - 300px) / (1600 - 300))); /* Responsive font size */
+}
+
 
 .card-front {
   background-color: #fff;
