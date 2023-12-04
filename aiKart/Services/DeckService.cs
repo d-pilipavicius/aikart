@@ -123,8 +123,7 @@ namespace aiKart.Services
 
         public IEnumerable<Card> GetCardsInDeck(int deckId)
         {
-            return _deckRepository.
-            GetDeckCards(deckId);
+            return _deckRepository.GetDeckCards(deckId);
         }
 
         public IEnumerable<Card> GetShuffledDeckCards(int deckId)
@@ -155,7 +154,18 @@ namespace aiKart.Services
             return clonedDeck;
         }
 
+        public IEnumerable<Card> GetUserCardsInDeck(int deckId)
+        {
+            ICollection<Card> cards = _deckRepository.GetDeckCards(deckId);
 
+            DateTime currentDate = DateTime.Now;
+
+            var filteredCards = cards.Where(card =>
+                card.LastRepetition == null || card.LastRepetition.Value.AddDays(card.IntervalInDays) >= currentDate
+            );
+
+            return filteredCards;
+        }
     }
 
 

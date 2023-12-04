@@ -1,4 +1,5 @@
 using aiKart.Models;
+using aiKart.States;
 
 namespace aiKart.Interfaces;
 
@@ -9,6 +10,6 @@ public interface ICardService
     bool AddCardToDeck(Card card);
     bool DeleteCard(Card card);
     bool UpdateCard(Card card);
-
+    bool UpdateCardRepetitionInterval(int cardId, CardState state);
     bool UpdateCardState(Card card);
 }
