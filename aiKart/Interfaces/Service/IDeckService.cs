@@ -14,10 +14,10 @@ public interface IDeckService
     bool UpdateDeck(Deck deck);
     Task<Deck> GetDeckByIdAsync(int deckId);
     IEnumerable<Card> GetCardsInDeck(int deckId);
+    IEnumerable<Card> GetUserCardsInDeck(int deckId);
     IEnumerable<Card> GetShuffledDeckCards(int deckId);
     IEnumerable<Deck> GetAllDecksIncludingCards();
     Task<Deck> ClonePublicDeck(int deckId, int userId);
-
     event DeckService.DeckChangeHandler DeckCreated;
     event DeckService.DeckChangeHandler DeckUpdated;
 }

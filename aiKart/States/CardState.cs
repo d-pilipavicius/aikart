@@ -1,8 +1,7 @@
 namespace aiKart.States;
 public enum CardState
 {
-    Answered,
-    Unanswered,
-    PartiallyAnswered
-    
+    Answered = 5,
+    Unanswered = 1,
+    PartiallyAnswered = 3,
 }

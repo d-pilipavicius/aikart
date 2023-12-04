@@ -164,6 +164,29 @@ namespace aiKart.Controllers
             return NoContent();
         }
 
+
+        [HttpPut("/repetition-interval/{cardId}")]
+        public IActionResult UpdateCardRepetitionInterval([FromQuery] int cardId, [FromQuery] CardState state)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_cardService.CardExists(cardId))
+                return NotFound();
+
+            var card = _cardService.GetCardById(cardId);
+            if (card == null)
+                return NotFound();
+
+            bool updateSuccess = _cardService.UpdateCardRepetitionInterval(cardId, state);
+
+            if (updateSuccess)
+                return NoContent();
+            else
+                return StatusCode(500);
+        }
+
+
     }
 
 }

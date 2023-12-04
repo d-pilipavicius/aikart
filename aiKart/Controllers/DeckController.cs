@@ -1,5 +1,6 @@
 using aiKart.Dtos.CardDtos;
 using aiKart.Dtos.DeckDtos;
+using aiKart.Dtos.UserDtos;
 using aiKart.Exceptions;
 using aiKart.Interfaces;
 using aiKart.Models;
@@ -95,6 +96,19 @@ namespace aiKart.Controllers
             var cardDtos = _mapper.Map<IEnumerable<CardDto>>(cards);
             return Ok(cardDtos);
         }
+
+        [HttpGet("cardlist/user/{deckId}")]
+        public IActionResult GetUserCardsInDeck(int deckId)
+        {
+            if (!_deckService.DeckExistsById(deckId))
+            {
+                return NotFound();
+            }
+            var cards = _deckService.GetUserCardsInDeck(deckId);
+            var cardDtos = _mapper.Map<IEnumerable<UserCardDto>>(cards);
+            return Ok(cardDtos);
+        }
+
 
         [HttpPost]
         public IActionResult AddDeck([FromBody] AddDeckDto deckDto)
