@@ -8,6 +8,14 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
+  <PropertyGroup>
+  <!-- Enable code coverage -->
+  <CollectCoverage>true</CollectCoverage>
+
+  <!-- Exclude patterns -->
+  <CoverageExclude>**\Migrations\**</CoverageExclude>
+</PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="6.0.0">
@@ -30,5 +38,4 @@
   <ItemGroup>
     <ProjectReference Include="..\aiKart\aiKart.csproj" />
   </ItemGroup>
-
 </Project>

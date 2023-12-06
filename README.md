@@ -122,6 +122,24 @@ To see unit test coverage, run:
 dotnet test /p:CollectCoverage=true
 ```
 
+Ignoring files:
+
+```bash
+dotnet test /p:CollectCoverage=true /p:ExcludeByFile="**/*Migrations/*.cs"
+```
+
+Visual representation:
+
+```bash
+dotnet restore
+
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/*Migrations/*.cs"
+
+dotnet new tool-manifest
+
+dotnet reportgenerator "-reports:coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:Html
+```
+
 To run frontend tests, navigate to the `ClientApp` folder and run:
 
 ```bash

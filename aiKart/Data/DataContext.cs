@@ -20,6 +20,8 @@ public class DataContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<UserDeck> UserDecks { get; set; }
 
+    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserDeck>()
@@ -32,6 +34,8 @@ public class DataContext : DbContext
             .HasOne(user => user.User)
             .WithMany(userDeck => userDeck.UserDecks)
             .HasForeignKey(user => user.UserId);
+
+            
         
         modelBuilder.Entity<Deck>()
             .HasKey(deck => deck.Id);

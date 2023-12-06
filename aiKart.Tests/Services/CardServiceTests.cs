@@ -125,5 +125,55 @@ namespace aiKart.Tests
             var result = _cardService.UpdateCardState(mockCard);
             Assert.False(result);
         }
+
+        [Fact]
+        public void UpdateCardRepetitionInterval_CardExists_UpdatesSuccessfully()
+        {
+            int cardId = 1;
+            var initialEFactor = 2.5;
+            var initialInterval = 1;
+            var card = new Card
+            {
+                Id = cardId,
+                EFactor = initialEFactor,
+                IntervalInDays = initialInterval,
+                LastRepetition = DateTime.Now.AddDays(-1)
+            };
+            _mockCardRepository.Setup(repo => repo.GetCardById(cardId)).Returns(card);
+            _mockCardRepository.Setup(repo => repo.UpdateCard(card)).Returns(true);
+
+            bool result = _cardService.UpdateCardRepetitionInterval(cardId, CardState.Answered);
+
+            Assert.True(result);
+            _mockCardRepository.Verify(repo => repo.UpdateCard(card), Times.Once);
+            // Additional assertions to check EFactor and IntervalInDays
+            Assert.NotEqual(initialEFactor, card.EFactor);
+            Assert.NotEqual(initialInterval, card.IntervalInDays);
+        }
+
+
+        [Fact]
+        public void UpdateCardRepetitionInterval_CardDoesNotExist_ReturnsFalse()
+        {
+            int cardId = 1;
+            _mockCardRepository.Setup(repo => repo.GetCardById(cardId)).Returns((Card)null);
+
+            bool result = _cardService.UpdateCardRepetitionInterval(cardId, CardState.Answered);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void UpdateCardRepetitionInterval_UpdateFails_ReturnsFalse()
+        {
+            int cardId = 1;
+            var card = new Card { Id = cardId, EFactor = 2.5, IntervalInDays = 1, LastRepetition = DateTime.Now.AddDays(-1) };
+            _mockCardRepository.Setup(repo => repo.GetCardById(cardId)).Returns(card);
+            _mockCardRepository.Setup(repo => repo.UpdateCard(card)).Returns(false);
+
+            bool result = _cardService.UpdateCardRepetitionInterval(cardId, CardState.Answered);
+
+            Assert.False(result);
+        }
     }
 }

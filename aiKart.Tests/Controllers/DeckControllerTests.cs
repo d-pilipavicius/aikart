@@ -143,5 +143,58 @@ namespace aiKart.Tests
             var result = deckController.DeleteDeck(1);
             Assert.IsType<NoContentResult>(result);
         }
+
+        [Fact]
+        public void GetAllPublicDecks_NoPublicDecks_ReturnsOkWithEmptyList()
+        {
+            mockDeckService.Setup(s => s.GetAllDecksIncludingCards()).Returns(new List<Deck>());
+            var result = deckController.GetAllPublicDecks();
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var decks = okResult.Value as List<DeckDto>;
+            Assert.Empty(decks ?? new List<DeckDto>()); // Handle null case
+        }
+
+        [Fact]
+        public void UpdateDeck_UpdateDataNull_ReturnsBadRequest()
+        {
+            var result = deckController.UpdateDeck(1, null);
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+
+        [Fact]
+        public void UpdateDeck_FailureInUpdate_ReturnsServerError()
+        {
+            mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
+            mockDeckService.Setup(s => s.GetDeckById(It.IsAny<int>())).Returns(new Deck());
+            mockDeckService.Setup(s => s.UpdateDeck(It.IsAny<Deck>())).Returns(false);
+
+            var result = deckController.UpdateDeck(1, new UpdateDeckDto("Name", null, null, true, null));
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public void DeleteDeck_FailureInDelete_ReturnsServerError()
+        {
+            mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
+            mockDeckService.Setup(s => s.GetDeckById(It.IsAny<int>())).Returns(new Deck());
+            mockDeckService.Setup(s => s.DeleteDeck(It.IsAny<Deck>())).Returns(false);
+
+            var result = deckController.DeleteDeck(1);
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task ClonePublicDeck_SourceDeckDoesNotExist_ReturnsBadRequest()
+        {
+            mockDeckService.Setup(s => s.ClonePublicDeck(It.IsAny<int>(), It.IsAny<int>())).Throws(new Exception("Deck not found."));
+            var result = await deckController.ClonePublicDeck(1, new CloneDeckDto(1));
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
     }
+
 }

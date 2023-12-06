@@ -216,5 +216,119 @@ namespace aiKart.Tests.Controllers
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
+        [Fact]
+        public void SetCardState_InvalidStateDto_ReturnsBadRequest()
+        {
+            var cardId = 1;
+            CardStateDto cardStateDto = null; // Invalid DTO
+
+            var result = _controller.SetCardState(cardId, cardStateDto);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void AddCard_NullDto_ReturnsBadRequest()
+        {
+            AddCardDto cardDto = null; // Null DTO
+
+            var result = _controller.AddCard(cardDto);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void AddCard_FailToAddCard_ReturnsStatusCode500()
+        {
+            var cardDto = new AddCardDto(1, "Question", "Answer");
+            _mockDeckService.Setup(service => service.DeckExistsById(cardDto.DeckId)).Returns(true);
+            _mockCardService.Setup(service => service.AddCardToDeck(It.IsAny<Card>())).Returns(false);
+
+            var result = _controller.AddCard(cardDto);
+
+            Assert.IsType<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public void UpdateCard_NullDto_ReturnsNotFound()
+        {
+            var cardId = 1;
+            UpdateCardDto cardDto = null; // Null DTO
+
+            var result = _controller.UpdateCard(cardId, cardDto);
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCard_InvalidModelState_ReturnsBadRequest()
+        {
+            _controller.ModelState.AddModelError("Error", "Model State is Invalid");
+            var updateCardDto = new UpdateCardDto("Updated Question", "Updated Answer");
+
+            var result = _controller.UpdateCard(1, updateCardDto);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCardRepetitionInterval_ValidCard_ReturnsNoContent()
+        {
+            var cardId = 1;
+            var state = CardState.Answered;
+
+            _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
+            _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
+            _mockCardService.Setup(service => service.UpdateCardRepetitionInterval(cardId, state)).Returns(true);
+
+            var result = _controller.UpdateCardRepetitionInterval(cardId, state);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+
+
+        [Fact]
+        public void UpdateCardRepetitionInterval_CardDoesNotExist_ReturnsNotFound()
+        {
+            var cardId = 1;
+            var state = CardState.Answered;
+
+            _mockCardService.Setup(service => service.CardExists(cardId)).Returns(false);
+
+            var result = _controller.UpdateCardRepetitionInterval(cardId, state);
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCardRepetitionInterval_UpdateFails_ReturnsStatusCode500()
+        {
+            var cardId = 1;
+            var state = CardState.Answered;
+
+            _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
+            _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
+            _mockCardService.Setup(service => service.UpdateCardRepetitionInterval(cardId, state)).Returns(false);
+
+            var result = _controller.UpdateCardRepetitionInterval(cardId, state);
+
+            Assert.IsType<StatusCodeResult>(result);
+            var statusCodeResult = result as StatusCodeResult;
+            Assert.Equal(500, statusCodeResult.StatusCode);
+        }
+
+
+        [Fact]
+        public void UpdateCardRepetitionInterval_InvalidModelState_ReturnsBadRequest()
+        {
+            _controller.ModelState.AddModelError("Error", "Model State is Invalid");
+            var result = _controller.UpdateCardRepetitionInterval(1, CardState.Answered);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
     }
 }
