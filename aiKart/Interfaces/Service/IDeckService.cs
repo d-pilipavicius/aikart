@@ -18,6 +18,9 @@ public interface IDeckService
     IEnumerable<Card> GetShuffledDeckCards(int deckId);
     IEnumerable<Deck> GetAllDecksIncludingCards();
     Task<Deck> ClonePublicDeck(int deckId, int userId);
+    bool SetAnkiUsage(int deckId, bool useAnki);
+    bool ResetRepetitionIntervalForDeckCards(int deckId);
+
     event DeckService.DeckChangeHandler DeckCreated;
     event DeckService.DeckChangeHandler DeckUpdated;
 }
