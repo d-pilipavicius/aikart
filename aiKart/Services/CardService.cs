@@ -49,6 +49,8 @@ namespace aiKart.Services
         {
             Card card = _cardRepository.GetCardById(cardId);
 
+            if (card == null) return false;
+
             if (card.LastRepetition != null)
             {
                 int stateValue = (int)state;

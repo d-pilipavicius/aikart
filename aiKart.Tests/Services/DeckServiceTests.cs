@@ -193,5 +193,74 @@ namespace aiKart.Tests
             var result = _deckService.GetCardsInDeck(1);
             Assert.Empty(result);
         }
+
+        [Fact]
+        public async Task GetDeckByIdAsync_ReturnsDeck_WhenDeckExists()
+        {
+            var deckId = 1;
+            var deck = new Deck { Id = deckId, Name = "Test Deck" };
+            _mockDeckRepository.Setup(repo => repo.GetDeckByIdAsync(deckId)).ReturnsAsync(deck);
+
+            var result = await _deckService.GetDeckByIdAsync(deckId);
+
+            Assert.Equal(deck, result);
+        }
+
+        [Fact]
+        public async Task GetDeckByIdAsync_ReturnsNull_WhenDeckDoesNotExist()
+        {
+            var deckId = 1;
+            _mockDeckRepository.Setup(repo => repo.GetDeckByIdAsync(deckId)).ReturnsAsync((Deck)null);
+
+            var result = await _deckService.GetDeckByIdAsync(deckId);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void GetShuffledDeckCards_ReturnsShuffledCards()
+        {
+            var deckId = 1;
+            var cards = new List<Card> { new Card(), new Card() };
+            _mockDeckRepository.Setup(repo => repo.GetDeckCards(deckId)).Returns(cards);
+
+            var result = _deckService.GetShuffledDeckCards(deckId);
+
+            Assert.Equal(cards.Count, result.Count());
+            // Additional checks can be added to ensure shuffling logic is correct
+        }
+
+        [Fact]
+        public async Task ClonePublicDeck_SuccessfulClone_ReturnsClonedDeck()
+        {
+            var deckId = 1;
+            var userId = 1;
+            var originalDeck = new Deck { Id = deckId, Name = "Original Deck", IsPublic = true };
+            var clonedDeck = new Deck { Id = 2, Name = "Cloned Deck" };
+
+            _mockDeckRepository.Setup(repo => repo.GetDeckByIdAsync(deckId)).ReturnsAsync(originalDeck);
+            _mockDeckRepository.Setup(repo => repo.CloneDeckAsync(originalDeck)).ReturnsAsync(clonedDeck);
+
+            var result = await _deckService.ClonePublicDeck(deckId, userId);
+
+            Assert.Equal(clonedDeck, result);
+            // Additional assertions for user deck relationship can be added
+        }
+
+        [Fact]
+        public void GetUserCardsInDeck_ReturnsFilteredCards()
+        {
+            var deckId = 1;
+            var cards = new List<Card>
+        {
+            new Card { LastRepetition = DateTime.Now.AddDays(-2), IntervalInDays = 1 },
+            new Card { LastRepetition = DateTime.Now, IntervalInDays = 3 }
+        };
+            _mockDeckRepository.Setup(repo => repo.GetDeckCards(deckId)).Returns(cards);
+
+            var result = _deckService.GetUserCardsInDeck(deckId);
+
+            Assert.Single(result); // Expecting only one card based on the filtering logic
+        }
     }
 }

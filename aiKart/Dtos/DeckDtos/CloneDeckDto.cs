@@ -1,4 +1,4 @@
-public class CloneDeckDto
-{
-    public int UserId { get; set; }
-}
+public record CloneDeckDto
+(
+    int UserId
+);
