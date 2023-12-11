@@ -7,17 +7,25 @@ import {
   NavItem,
   NavLink,
   Nav,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../app/state/user/usersSlice";
-import { resetUserDecks } from "../app/state/user/userDecksSlice";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { FaUser, FaUserCircle } from "react-icons/fa";
+import { IoStatsChartSharp } from "react-icons/io5";
 import "./NavMenu.css";
+import { resetUserDecks } from "../app/state/user/userDecksSlice";
+import { logout } from "../app/state/user/usersSlice";
 
 const NavMenu = ({ disableNavMenu }) => {
   const [collapsed, setCollapsed] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const currentUser = useSelector((state) => state.users.currentUser);
 
@@ -33,45 +41,68 @@ const NavMenu = ({ disableNavMenu }) => {
     }
   };
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   const handleLogout = () => {
-    dispatch(logout());
+    navigate(`/`);
     dispatch(resetUserDecks());
+    dispatch(logout());
   };
 
   return (
     <header>
       <Navbar className="navbar-expand-sm navbar-dark bg-dark mb-3">
-        <NavbarBrand tag={Link} to="/">
-          aiKart
-        </NavbarBrand>
+        <NavbarBrand>aiKart</NavbarBrand>
         <NavbarToggler onClick={toggleNavbar} className="mr-2" />
         {!disableNavMenu && (
           <Collapse isOpen={!collapsed} navbar>
-            <Nav className="ml-auto" navbar>
+            <Nav className="ms-auto" navbar>
               <NavItem>
-                <NavLink tag={Link} className="text-white" to="/home">
+                <NavLink
+                  tag={Link}
+                  className="text-white"
+                  to="/home"
+                  activeClassName="active"
+                >
                   Home
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-white" to="/store">
+                <NavLink
+                  tag={Link}
+                  className="text-white"
+                  to="/store"
+                  activeClassName="active"
+                >
                   Store
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-white" to="/decks">
+                <NavLink
+                  tag={Link}
+                  className="text-white"
+                  to="/decks"
+                  activeClassName="active"
+                >
                   Manage Decks
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-white" to="/" onClick={handleLogout}>
-                  Log out
-                </NavLink>
-              </NavItem>
-            </Nav>
-            <Nav className="ms-auto" navbar>
-              <NavItem className="text-white">
-                Logged in as {currentUser && currentUser.name}
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                  <DropdownToggle className="nav-link text-white" caret>
+                    <FaUserCircle size={25} /> {currentUser && currentUser.name}
+                  </DropdownToggle>
+                  <DropdownMenu end>
+                    <DropdownItem tag={Link} to="/Statistics">
+                      <IoStatsChartSharp /> Statistics
+                    </DropdownItem>
+                    <DropdownItem onClick={handleLogout}>
+                      <FaUser className="mr-2" /> Log out
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
               </NavItem>
             </Nav>
           </Collapse>

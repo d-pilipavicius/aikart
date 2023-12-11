@@ -16,3 +16,17 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+.nav-item:hover .nav-link {
+  background-color: #333;
+  outline: none;
+}
+
+.nav-item .nav-link.active {
+  background-color: #555;
+  outline: none;
+}
+
+.nav-link-no-outline:focus {
+  outline: none;
+}

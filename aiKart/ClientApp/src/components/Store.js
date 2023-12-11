@@ -29,13 +29,9 @@ const Store = () => {
     }
   }, [dispatch, user]);
 
-  const handlePurchase = useCallback(
-    (deckId) => {
-      dispatch(cloneDeck({ deckId, userId: user.id }));
-    },
-    [dispatch, user.id]
-  );
-
+  const handlePurchase = useCallback((deckId) => {
+    user && dispatch(cloneDeck({ deckId, userId: user.id }));
+  }, [dispatch, user]);
 
   const data = React.useMemo(() => decks, [decks]);
   const columns = React.useMemo(

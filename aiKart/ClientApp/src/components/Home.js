@@ -36,12 +36,13 @@ const Home = () => {
       {!isLoading && (
         <div>
           <h5>
-            Select a deck you want to practice or create a new one by pressing{" "}
-            <strong>Create Deck</strong>.
+            Go to the <strong>Store</strong> to get new decks or create one yourself by pressing <strong>Manage Decks</strong>.
           </h5>
           <h5>
-            Press <strong>Manage Decks</strong> to edit or delete existing
-            decks.
+            See personal deck and card statistics by pressing on your username.
+          </h5>
+          <h5>
+            Click on a deck below to start practicing!
           </h5>
           <br />
 
