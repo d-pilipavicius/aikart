@@ -1,4 +1,6 @@
 using aiKart.Models;
+using aiKart.States;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
 namespace aiKart.Interfaces
@@ -12,5 +14,8 @@ namespace aiKart.Interfaces
         bool AddUserDeck(UserDeck userDeck);
         bool DeleteUserDeck(int userId, int deckId);
         bool Save();
+        bool UpdateAnswerCount(int userId, int deckId, CardState state, int count);
+        UserDeck GetUserDeckStatisctics(int userId, int deckId);
+        bool IncrementDeckSolves(int userId, int deckId, int count);
     }
 }
