@@ -277,13 +277,12 @@ namespace aiKart.Tests.Controllers
         public void UpdateCardRepetitionInterval_ValidCard_ReturnsNoContent()
         {
             var cardId = 1;
-            var state = CardState.Answered;
 
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
             _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
-            _mockCardService.Setup(service => service.UpdateCardRepetitionInterval(cardId, state)).Returns(true);
+            _mockCardService.Setup(service => service.UpdateCardRepetitionInterval(cardId, CardState.Answered)).Returns(true);
 
-            var result = _controller.UpdateCardRepetitionInterval(cardId, state);
+            var result = _controller.UpdateCardRepetitionInterval(cardId, "Answered");
 
             Assert.IsType<NoContentResult>(result);
         }
@@ -294,7 +293,7 @@ namespace aiKart.Tests.Controllers
         public void UpdateCardRepetitionInterval_CardDoesNotExist_ReturnsNotFound()
         {
             var cardId = 1;
-            var state = CardState.Answered;
+            var state = "Answered";
 
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(false);
 
@@ -307,11 +306,11 @@ namespace aiKart.Tests.Controllers
         public void UpdateCardRepetitionInterval_UpdateFails_ReturnsStatusCode500()
         {
             var cardId = 1;
-            var state = CardState.Answered;
+            var state = "Answered";
 
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
             _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
-            _mockCardService.Setup(service => service.UpdateCardRepetitionInterval(cardId, state)).Returns(false);
+            _mockCardService.Setup(service => service.UpdateCardRepetitionInterval(cardId, CardState.Answered)).Returns(false);
 
             var result = _controller.UpdateCardRepetitionInterval(cardId, state);
 
@@ -325,7 +324,7 @@ namespace aiKart.Tests.Controllers
         public void UpdateCardRepetitionInterval_InvalidModelState_ReturnsBadRequest()
         {
             _controller.ModelState.AddModelError("Error", "Model State is Invalid");
-            var result = _controller.UpdateCardRepetitionInterval(1, CardState.Answered);
+            var result = _controller.UpdateCardRepetitionInterval(1, "Answered");
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
