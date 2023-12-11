@@ -32,5 +32,6 @@ public class MappingProfiles : Profile
         CreateMap<User, UserResponseDto>();
 
         CreateMap<Card, UserCardDto>();
+        CreateMap<UserDeck, UserDeckStatisticsDto>();
     }
 }
