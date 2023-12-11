@@ -6,7 +6,6 @@ using aiKart.Models;
 using aiKart.Repositories;
 using aiKart.Services;
 using aiKart.Utils;
-using aiKart.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<PerformanceMonitorAttribute>();
+});
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -30,6 +32,8 @@ builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<Shuffler<Card>>();
+
+builder.Services.AddLogging();
 
 builder.Services.AddCors(options =>
 {
