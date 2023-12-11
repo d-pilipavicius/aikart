@@ -11,6 +11,7 @@ namespace aiKart.Services
     public class DeckService : IDeckService
     {
         private readonly IDeckRepository _deckRepository;
+        private readonly ICardRepository _cardRepository;
         private readonly Shuffler<Card> _cardShuffler;
 
         private readonly IUserDeckService _userDeckService;
@@ -25,9 +26,10 @@ namespace aiKart.Services
         public event DeckChangeHandler DeckCreated;
         public event DeckChangeHandler DeckUpdated;
 
-        public DeckService(IDeckRepository deckRepository, Shuffler<Card> cardShuffler, IUserDeckService userDeckService)
+        public DeckService(IDeckRepository deckRepository, Shuffler<Card> cardShuffler, IUserDeckService userDeckService, ICardRepository cardRepository)
         {
             _deckRepository = deckRepository;
+            _cardRepository = cardRepository;
             _cardShuffler = cardShuffler;
             _userDeckService = userDeckService;
         }
@@ -166,7 +168,37 @@ namespace aiKart.Services
 
             return filteredCards;
         }
-    }
 
+        public bool SetAnkiUsage(int deckId, bool useAnki)
+        {
+            if (!_deckRepository.DeckExistsById(deckId)) return false;
+
+            var deck = _deckRepository.GetDeck(deckId);
+            deck.UseAnki = useAnki;
+
+            return _deckRepository.UpdateDeck(deck);
+        }
+
+        public bool ResetRepetitionIntervalForDeckCards(int deckId)
+        {
+            if (!_deckRepository.DeckExistsById(deckId)) return false;
+
+            var cards = _deckRepository.GetDeckCards(deckId);
+            foreach (Card card in cards)
+            {
+                card.EFactor = 2.5;
+                card.IntervalInDays = 1;
+                card.LastRepetition = null;
+
+                if (!_cardRepository.UpdateCard(card))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+    }
 
 }
