@@ -165,11 +165,17 @@ namespace aiKart.Controllers
         }
 
 
-        [HttpPut("/repetition-interval/{cardId}")]
-        public IActionResult UpdateCardRepetitionInterval([FromQuery] int cardId, [FromQuery] CardState state)
+        [HttpPut("update-repetition-interval")]
+        public IActionResult UpdateCardRepetitionInterval([FromQuery] int cardId, [FromQuery] string stateValue)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            CardState state;
+            if (!Enum.TryParse<CardState>(stateValue, out state))
+            {
+                return StatusCode(400, "State value is invalid");
+            }
 
             if (!_cardService.CardExists(cardId))
                 return NotFound();
