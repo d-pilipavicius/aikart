@@ -33,7 +33,7 @@ namespace aiKart.Tests
         public void GetAllDecks_ReturnsOk()
         {
             var decks = new List<Deck>();
-            var deckDtos = new List<DeckDto> { new DeckDto(1, "Name", 1, null, null, true, DateTime.Now, DateTime.Now, null) };
+            var deckDtos = new List<DeckDto> { new DeckDto(1, "Name", 1, null, null, true, true, DateTime.Now, DateTime.Now, null) };
 
             mockDeckService.Setup(s => s.GetAllDecksIncludingCards()).Returns(decks);
             mockMapper.Setup(m => m.Map<List<DeckDto>>(decks)).Returns(deckDtos);
@@ -62,7 +62,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
             mockDeckService.Setup(s => s.GetDeckByIdAsync(It.IsAny<int>())).ReturnsAsync(new Deck());
             mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>()))
-                .Returns(new DeckDto(1, "Name", 1, null, null, true, DateTime.Now, DateTime.Now, null));
+                .Returns(new DeckDto(1, "Name", 1, null, null, true, true, DateTime.Now, DateTime.Now, null));
 
             var result = await deckController.GetDeck(1);
 
@@ -98,7 +98,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.AddDeck(It.IsAny<Deck>())).Returns(true);
             mockUserDeckService.Setup(s => s.AddUserDeck(It.IsAny<UserDeck>())).Returns(true); // Assume that adding a UserDeck relationship is successful.
             mockMapper.Setup(m => m.Map<Deck>(It.IsAny<AddDeckDto>())).Returns(deck);
-            mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>())).Returns(new DeckDto(deck.Id, deck.Name, 1, null, null, true, DateTime.Now, DateTime.Now, null));
+            mockMapper.Setup(m => m.Map<DeckDto>(It.IsAny<Deck>())).Returns(new DeckDto(deck.Id, deck.Name, 1, null, null, true, false, DateTime.Now, DateTime.Now, null));
 
             var result = deckController.AddDeck(addDeckDto);
 

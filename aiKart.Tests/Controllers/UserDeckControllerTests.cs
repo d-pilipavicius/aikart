@@ -55,7 +55,7 @@ namespace aiKart.Tests
         {
             int userId = 1;
             var decks = new List<Deck?> { new Deck { Id = 2, Name = "Test Deck" } };
-            var deckDtos = new List<DeckDto> { new DeckDto(2, "Test Deck", 1, null, null, true, default, default, null) };
+            var deckDtos = new List<DeckDto> { new DeckDto(2, "Test Deck", 1, null, null, true, true, default, default, null) };
 
             mockUserDeckService.Setup(s => s.GetDecksByUser(userId)).Returns(decks);
             mockMapper.Setup(m => m.Map<List<DeckDto>>(decks)).Returns(deckDtos);
