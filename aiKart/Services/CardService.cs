@@ -67,10 +67,11 @@ namespace aiKart.Services
                 }
             }
 
-            card.LastRepetition = DateTime.Now;
+            card.LastRepetition = DateTime.UtcNow;
 
             return _cardRepository.UpdateCard(card);
         }
+
 
     }
 }

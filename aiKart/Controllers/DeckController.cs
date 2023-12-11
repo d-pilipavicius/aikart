@@ -226,5 +226,39 @@ namespace aiKart.Controllers
             }
         }
 
+        [HttpPut("set-anki-usage")]
+        public IActionResult SetAnkiUsage([FromQuery] int deckId, [FromQuery] bool useAnki)
+        {
+            if (!_deckService.DeckExistsById(deckId))
+            {
+                return NotFound();
+            }
+
+            if (!_deckService.SetAnkiUsage(deckId, useAnki))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating anki usage in deck");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+
+        [HttpPut("reset-repetition-interval/{deckId}")]
+        public IActionResult ResetRepetitionIntervalForDeckCards(int deckId)
+        {
+            if (!_deckService.DeckExistsById(deckId))
+            {
+                return NotFound();
+            }
+
+            if (!_deckService.ResetRepetitionIntervalForDeckCards(deckId))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating interval for deck cards");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }
