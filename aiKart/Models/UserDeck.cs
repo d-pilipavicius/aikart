@@ -11,5 +11,6 @@ public class UserDeck
     public int TimesSolved { get; set; } = 0;
     public int CorrectAnswers { get; set; } = 0;
     public int PartiallyCorrectAnswers { get; set; } = 0;
+    public int IncorrectAnswers { get; set; } = 0;
 
 }

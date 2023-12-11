@@ -1,5 +1,6 @@
 using aiKart.Interfaces;
 using aiKart.Models;
+using aiKart.States;
 using System.Collections.Generic;
 
 namespace aiKart.Services
@@ -43,6 +44,43 @@ namespace aiKart.Services
             var userDeck = _userDeckRepository.GetUserDecks().FirstOrDefault(ud => ud.UserId == userId && ud.DeckId == deckId);
             if (userDeck == null) return false;
             return _userDeckRepository.DeleteUserDeck(userDeck);
+        }
+
+        public bool UpdateAnswerCount(int userId, int deckId, CardState state, int count)
+        {
+            var userDeck = _userDeckRepository.GetUserDeck(userId, deckId);
+
+            switch (state)
+            {
+                case CardState.Answered:
+                    userDeck.CorrectAnswers += count;
+                    break;
+                case CardState.PartiallyAnswered:
+                    userDeck.PartiallyCorrectAnswers += count;
+                    break;
+                case CardState.Unanswered:
+                    userDeck.IncorrectAnswers += count;
+                    break;
+                default:
+                    return false;
+            }
+
+            return _userDeckRepository.UpdateUserDeck(userDeck);
+        }
+
+        public UserDeck GetUserDeckStatisctics(int userId, int deckId)
+        {
+            var userDeck = _userDeckRepository.GetUserDeck(userId, deckId);
+
+            return userDeck;
+        }
+
+        public bool IncrementDeckSolves(int userId, int deckId, int count)
+        {
+            var userDeck = _userDeckRepository.GetUserDeck(userId, deckId);
+            userDeck.TimesSolved = 0;
+
+            return _userDeckRepository.UpdateUserDeck(userDeck);
         }
 
         public bool Save()

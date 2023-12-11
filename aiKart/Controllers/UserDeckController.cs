@@ -1,7 +1,10 @@
+using System.Net.Mail;
 using aiKart.Dtos.DeckDtos;
 using aiKart.Dtos.UserDtos;
 using aiKart.Interfaces;
+using aiKart.Migrations;
 using aiKart.Models;
+using aiKart.States;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -89,6 +92,66 @@ public class UserDeckController : Controller
 
         if (!_userDeckService.DeleteUserDeck(userId, deckId))
             return StatusCode(500, "Something went wrong while deleting the user deck");
+
+        return NoContent();
+    }
+
+    [HttpPut("increment-answer-count/{userId}/{deckId}")]
+    public IActionResult UpdateAnswerCount(int userId, int deckId, [FromQuery] string stateValue, [FromQuery] int count)
+    {
+
+        if (!_userDeckService.UserDeckExists(userId, deckId))
+            return NotFound();
+
+        CardState state;
+
+        if (!Enum.TryParse<CardState>(stateValue, out state))
+        {
+            return StatusCode(400, "State value is invalid");
+        }
+
+        if (count <= 0)
+        {
+            return StatusCode(400, "Invalid count value, must be more than 0");
+        }
+
+        if (!_userDeckService.UpdateAnswerCount(userId, deckId, state, count))
+        {
+            return StatusCode(500, "Failed to update user deck answer count");
+        };
+        return NoContent();
+    }
+
+    [HttpGet("user-deck-statistics/{userId}/{deckId}")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<UserDeckStatisticsDto>))]
+    public IActionResult GetUserDeckStatistics(int userId, int deckId)
+    {
+
+        if (!_userDeckService.UserDeckExists(userId, deckId))
+            return NotFound();
+
+        UserDeck userDeck = _userDeckService.GetUserDeckStatisctics(userId, deckId);
+        var dto = _mapper.Map<UserDeckStatisticsDto>(userDeck);
+
+        return Ok(dto);
+    }
+
+    [HttpPut("increment-deck-solves/{userId}/{deckId}")]
+    public IActionResult IncrementDeckSolves(int userId, int deckId, [FromQuery] int count)
+    {
+
+        if (!_userDeckService.UserDeckExists(userId, deckId))
+            return NotFound();
+
+        if (count <= 0)
+        {
+            return StatusCode(400, "Invalid count value, must be more than 0");
+        }
+
+        if (!_userDeckService.IncrementDeckSolves(userId, deckId, count))
+        {
+            return StatusCode(500, "Failed to update user deck solves");
+        };
 
         return NoContent();
     }

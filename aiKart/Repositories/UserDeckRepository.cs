@@ -35,6 +35,11 @@ public class UserDeckRepository : IUserDeckRepository
         return _context.UserDecks.Any(u => (u.UserId == userId) && (u.DeckId == deckId));
     }
 
+    public UserDeck GetUserDeck(int userId, int deckId)
+    {
+        return _context.UserDecks.First(deck => deck.UserId == userId && deck.DeckId == deckId);
+    }
+
     public bool AddUserDeck(UserDeck userDeck)
     {
         _context.Add(userDeck);
@@ -50,6 +55,12 @@ public class UserDeckRepository : IUserDeckRepository
 
         _context.UserDecks.Remove(userDeck);
         return _context.SaveChanges() > 0;
+    }
+
+    public bool UpdateUserDeck(UserDeck userDeck)
+    {
+        _context.Update(userDeck);
+        return Save();
     }
 
     public bool Save()

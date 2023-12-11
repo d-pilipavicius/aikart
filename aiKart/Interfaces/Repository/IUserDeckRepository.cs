@@ -9,5 +9,7 @@ public interface IUserDeckRepository
     bool UserDeckExists(int userId, int deckId);
     bool AddUserDeck(UserDeck userDeck);
     bool DeleteUserDeck(UserDeck userDeck);
+    public UserDeck GetUserDeck(int userId, int deckId);
+    bool UpdateUserDeck(UserDeck userDeck);
     bool Save();
 }
