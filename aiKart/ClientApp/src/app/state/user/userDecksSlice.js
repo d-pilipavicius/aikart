@@ -2,36 +2,65 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Async thunk to fetch user decks
-export const fetchUserDecks = createAsyncThunk("userDecks/fetchUserDecks", async () => {
-  const response = await axios.get("/api/userdeck");
-  return response.data;
-});
+export const fetchUserDecks = createAsyncThunk(
+  "userDecks/fetchUserDecks",
+  async () => {
+    const response = await axios.get("/api/userdeck");
+    return response.data;
+  }
+);
 
 // Async thunk to fetch decks by user
-export const fetchDecksByUser = createAsyncThunk("userDecks/fetchDecksByUser", async (userId) => {
-  const response = await axios.get(`/api/userdeck/${userId}/decks`);
-  return response.data;
-});
+export const fetchDecksByUser = createAsyncThunk(
+  "userDecks/fetchDecksByUser",
+  async (userId) => {
+    try {
+      const response = await axios.get(`/api/userdeck/${userId}/decks`);
+      const decks = response.data;
+
+      // Fetch and update user deck statistics for each deck
+      for (const deck of decks) {
+        const statisticsResponse = await axios.get(
+          `/api/userdeck/user-deck-statistics/${userId}/${deck.id}`
+        );
+
+        deck.statistics = statisticsResponse.data;
+      }
+
+      return decks;
+    } catch (error) {
+      console.error("Error fetching decks by user:", error);
+      throw error;
+    }
+  }
+);
 
 // Async thunk to fetch users of a deck
-export const fetchUsersOfDeck = createAsyncThunk("userDecks/fetchUsersOfDeck", async (deckId) => {
-  const response = await axios.get(`/api/userdeck/${deckId}/users`);
-  return response.data;
-});
+export const fetchUsersOfDeck = createAsyncThunk(
+  "userDecks/fetchUsersOfDeck",
+  async (deckId) => {
+    const response = await axios.get(`/api/userdeck/${deckId}/users`);
+    return response.data;
+  }
+);
 
 // Async thunk to add user to a deck
-export const addUserToDeck = createAsyncThunk("userDecks/addUserToDeck", async (userDeckDto) => {
-  const response = await axios.post("/api/userdeck", userDeckDto);
-  return response.data;
-});
+export const addUserToDeck = createAsyncThunk(
+  "userDecks/addUserToDeck",
+  async (userDeckDto) => {
+    const response = await axios.post("/api/userdeck", userDeckDto);
+    return response.data;
+  }
+);
 
 export const deleteUserFromDeck = createAsyncThunk(
   "userDecks/deleteUserFromDeck",
   async ({ deckId, userId }) => {
     await axios.delete(`/api/userdeck/${userId}/decks/${deckId}`);
-    return {deckId, userId};
+    return { deckId, userId };
   }
 );
+
 export const cloneDeck = createAsyncThunk(
   "userDecks/cloneDeck",
   async ({ deckId, userId }) => {
@@ -40,6 +69,48 @@ export const cloneDeck = createAsyncThunk(
   }
 );
 
+export const incrementAnswerCount = createAsyncThunk(
+  "userDecks/incrementAnswerCount",
+  async ({ userId, deckId, stateValue }) => {
+    try {
+      await axios.put(
+        `/api/userdeck/increment-answer-count/${userId}/${deckId}`,
+        null,
+        {
+          params: {
+            stateValue: stateValue,
+            count: 1,
+          },
+        }
+      );
+      console.log(userId, deckId, stateValue);
+      return userId;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const incrementSolveCount = createAsyncThunk(
+  "userDecks/incrementSolveCount",
+  async ({ userId, deckId }) => {
+    try {
+      await axios.put(
+        `/api/userdeck/increment-deck-solves/${userId}/${deckId}`,
+        null,
+        {
+          params: {
+            count: 1,
+          },
+        }
+      );
+      console.log(userId, deckId);
+      return userId;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
 const userDeckSlice = createSlice({
   name: "userDecks",
@@ -50,6 +121,16 @@ const userDeckSlice = createSlice({
   reducers: {
     resetUserDecks: (state) => {
       state.userDecks = [];
+    },
+    updateUserDeckStatistics: (state, action) => {
+      const { deckId, statistics } = action.payload;
+      const deckIndex = state.userDecks.findIndex(
+        (deck) => deck.deckId === deckId
+      );
+
+      if (deckIndex !== -1) {
+        state.userDecks[deckIndex].statistics = statistics;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -118,6 +199,24 @@ const userDeckSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(addUserToDeck.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementAnswerCount.fulfilled, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementAnswerCount.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(incrementAnswerCount.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementSolveCount.fulfilled, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementSolveCount.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(incrementSolveCount.rejected, (state, action) => {
         state.loading = "idle";
       });
   },

@@ -43,6 +43,17 @@ export const generateDeck = createAsyncThunk(
   }
 );
 
+export const resetRepetitionIntervalForDeck = createAsyncThunk(
+  "decks/resetRepetitionIntervalForDeck",
+  async (deckId) => {
+    const response = await axios.put(
+      `/api/deck/reset-repetition-interval/${deckId}`
+    );
+    console.log("yes");
+    return response.data;
+  }
+);
+
 export const decksSlice = createSlice({
   name: "decks",
   initialState: {
@@ -120,6 +131,16 @@ export const decksSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(generateDeck.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(resetRepetitionIntervalForDeck.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.decks.push(action.payload);
+      })
+      .addCase(resetRepetitionIntervalForDeck.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(resetRepetitionIntervalForDeck.rejected, (state, action) => {
         state.loading = "idle";
       });
   },

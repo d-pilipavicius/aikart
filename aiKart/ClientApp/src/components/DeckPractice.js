@@ -110,23 +110,10 @@ const DeckPractice = () => {
           <div>
             <Button
               style={{ marginRight: "5px" }}
-              color="danger"
+              color="primary"
               onClick={handleNextCard}
             >
-              Hard
-            </Button>
-            <Button
-              style={{ marginRight: "5px" }}
-              color="warning"
-              onClick={handleNextCard}
-            >
-              Decent
-            </Button>
-            <Button
-              color="success"
-              onClick={handleNextCard}
-            >
-              Easy
+              Next
             </Button>
           </div>
         )}

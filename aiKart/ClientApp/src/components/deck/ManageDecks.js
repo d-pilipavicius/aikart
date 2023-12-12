@@ -4,8 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import EditDeckModal from "./EditDeckModal";
 import CreateDeckModal from "./CreateDeckModal";
 import GenerateDeckModal from "./GenerateDeckModal";
-import { deleteDeck, addDeck } from "../../app/state/deck/decksSlice";
-import { fetchDecksByUser } from "../../app/state/user/userDecksSlice";
+import {
+  deleteDeck,
+  addDeck,
+  resetRepetitionIntervalForDeck,
+} from "../../app/state/deck/decksSlice";
+import {
+  fetchDecksByUser,
+  fetchUserDeckStatistics,
+} from "../../app/state/user/userDecksSlice";
 import {
   Button,
   Card,
@@ -75,6 +82,11 @@ const ManageDecks = () => {
     setSelectedDeck(deck);
   };
 
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString(); // Format to display only the date
+  };
+
   return (
     <div className="container">
       <h1 className="mb-4">Manage Decks</h1>
@@ -110,13 +122,15 @@ const ManageDecks = () => {
 
       <div className="row">
         {decks.map((deck, index) => (
-          <div className="col-md-4" key={index}>
-            <Card
-              className="mb-4"
-              onClick={() => navigate(`/decks/${deck.id}`)}
-              style={{ cursor: "pointer" }}
-            >
-              <CardHeader className="bg-primary bg-gradient">
+          <div className="col-md-6" key={index}>
+            <Card className="mb-4">
+              <CardHeader
+                className={`bg-${
+                  deck.isPublic ? "success" : "primary"
+                } bg-gradient`}
+                onClick={() => navigate(`/decks/${deck.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <Link
                   to={`/decks/${deck.id}`}
                   onClick={(e) => e.stopPropagation()}
@@ -126,10 +140,30 @@ const ManageDecks = () => {
                   {deck.name}
                 </Link>
               </CardHeader>
-              <CardBody>
+              <CardBody
+                onClick={() => navigate(`/decks/${deck.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <CardText>{deck.description}</CardText>
+                <div className="row text-muted mb-1">
+                  <div className="col-md-6">
+                    <div>Number of cards: {deck.cards.length}</div>
+                    <div>Author: {deck.creatorName}</div>
+                    <div>Created: {formatDate(deck.creationDate)}</div>
+                    <div>Last Edit: {formatDate(deck.lastEditDate)}</div>
+                  </div>
+                  <div className="col-md-6">
+                    <div>Correct answers: {deck.statistics.correctAnswers}</div>
+                    <div>
+                      Incomplete answers:{" "}
+                      {deck.statistics.partiallyCorrectAnswers}
+                    </div>
+                    <div>Wrong answers: {deck.statistics.incorrectAnswers}</div>
+                    <div>Times solved: {deck.statistics.timesSolved}</div>
+                  </div>
+                </div>
               </CardBody>
-              <CardFooter>
+              <CardFooter className="text-muted">
                 <Button
                   color="warning"
                   style={{ marginRight: "1rem" }}
@@ -137,8 +171,18 @@ const ManageDecks = () => {
                 >
                   Edit
                 </Button>
-                <Button color="danger" onClick={(e) => handleDelete(e, deck)}>
+                <Button
+                  color="danger"
+                  style={{ marginRight: "1rem" }}
+                  onClick={(e) => handleDelete(e, deck)}
+                >
                   Delete
+                </Button>
+                <Button
+                  color="secondary"
+                  onClick={() => navigate(`/practice/${deck.id}`)}
+                >
+                  Practice without tracking
                 </Button>
               </CardFooter>
             </Card>

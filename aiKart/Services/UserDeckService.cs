@@ -68,7 +68,7 @@ namespace aiKart.Services
             return _userDeckRepository.UpdateUserDeck(userDeck);
         }
 
-        public UserDeck GetUserDeckStatisctics(int userId, int deckId)
+        public UserDeck GetUserDeckStatistics(int userId, int deckId)
         {
             var userDeck = _userDeckRepository.GetUserDeck(userId, deckId);
 
@@ -78,7 +78,7 @@ namespace aiKart.Services
         public bool IncrementDeckSolves(int userId, int deckId, int count)
         {
             var userDeck = _userDeckRepository.GetUserDeck(userId, deckId);
-            userDeck.TimesSolved = 0;
+            userDeck.TimesSolved += count;
 
             return _userDeckRepository.UpdateUserDeck(userDeck);
         }

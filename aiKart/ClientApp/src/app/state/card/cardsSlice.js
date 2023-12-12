@@ -40,6 +40,24 @@ export const deleteCard = createAsyncThunk(
   }
 );
 
+export const updateRepetitionInterval = createAsyncThunk(
+  "cards/updateRepetitionInterval",
+  async ({cardId, stateValue}) => {
+    try {
+      await axios.put(`/api/card/update-repetition-interval`, null, {
+        params: {
+          cardId: cardId,
+          stateValue: stateValue,
+        }
+      });
+      console.log(cardId, stateValue);
+      return cardId;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 export const cardsSlice = createSlice({
   name: "cards",
   initialState: {
@@ -111,6 +129,15 @@ export const cardsSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(deleteCard.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(updateRepetitionInterval.fulfilled, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(updateRepetitionInterval.pending, (state) => {
+        state.loading = "pending";
+      })
+      .addCase(updateRepetitionInterval.rejected, (state) => {
         state.loading = "idle";
       });
   },
