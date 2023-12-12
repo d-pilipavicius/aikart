@@ -97,7 +97,7 @@ const DeckReview = () => {
   };
 
   const handleFinish = () => {
-    dispatch(incrementSolveCount({ userId: user, deckId: deckId }));
+    dispatch(incrementSolveCount({ userId: user.id, deckId: deckId }));
     navigate("/home");
   };
 

@@ -83,7 +83,7 @@ const Home = () => {
                       <CardBody>
                         <CardText>{deck.description}</CardText>
                         <div className="text-muted mt-3">
-                          Daily review: {filterCards(deck.cards).length} cards
+                          Daily review: {filterCards(deck.cards).length} card(s)
                         </div>
                       </CardBody>
                     </Card>

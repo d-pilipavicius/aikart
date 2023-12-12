@@ -78,7 +78,7 @@ namespace aiKart.Services
         public bool IncrementDeckSolves(int userId, int deckId, int count)
         {
             var userDeck = _userDeckRepository.GetUserDeck(userId, deckId);
-            userDeck.TimesSolved = 0;
+            userDeck.TimesSolved += count;
 
             return _userDeckRepository.UpdateUserDeck(userDeck);
         }

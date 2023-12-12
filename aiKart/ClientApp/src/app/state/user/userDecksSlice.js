@@ -96,7 +96,7 @@ export const incrementSolveCount = createAsyncThunk(
   async ({ userId, deckId }) => {
     try {
       await axios.put(
-        `/api/userdeck/increment-answer-count/${userId}/${deckId}`,
+        `/api/userdeck/increment-deck-solves/${userId}/${deckId}`,
         null,
         {
           params: {
