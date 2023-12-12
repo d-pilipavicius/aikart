@@ -66,7 +66,7 @@ const NavMenu = ({ disableNavMenu }) => {
                   to="/home"
                   activeClassName="active"
                 >
-                  Home
+                  Review
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -95,9 +95,6 @@ const NavMenu = ({ disableNavMenu }) => {
                     <FaUserCircle size={25} /> {currentUser && currentUser.name}
                   </DropdownToggle>
                   <DropdownMenu end>
-                    <DropdownItem tag={Link} to="/Statistics">
-                      <IoStatsChartSharp /> Statistics
-                    </DropdownItem>
                     <DropdownItem onClick={handleLogout}>
                       <FaUser className="mr-2" /> Log out
                     </DropdownItem>

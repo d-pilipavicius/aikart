@@ -11,6 +11,7 @@ axios.defaults.baseURL = "https://localhost:7006";
 export default class App extends Component {
   static displayName = App.name;
 
+
   render() {
     return (
       <Provider store={store}>

@@ -1,3 +1,4 @@
+using System;
 using aiKart.Dtos.CardDtos;
 using aiKart.Interfaces;
 using aiKart.Models;
@@ -176,6 +177,7 @@ namespace aiKart.Controllers
             {
                 return StatusCode(400, "State value is invalid");
             }
+            Console.WriteLine(state);
 
             if (!_cardService.CardExists(cardId))
                 return NotFound();

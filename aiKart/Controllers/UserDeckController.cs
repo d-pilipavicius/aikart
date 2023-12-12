@@ -130,7 +130,7 @@ public class UserDeckController : Controller
         if (!_userDeckService.UserDeckExists(userId, deckId))
             return NotFound();
 
-        UserDeck userDeck = _userDeckService.GetUserDeckStatisctics(userId, deckId);
+        UserDeck userDeck = _userDeckService.GetUserDeckStatistics(userId, deckId);
         var dto = _mapper.Map<UserDeckStatisticsDto>(userDeck);
 
         return Ok(dto);

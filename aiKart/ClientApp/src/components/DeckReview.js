@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Container } from "reactstrap";
 import { fetchDeckById } from "../app/state/deck/decksSlice";
-import './DeckPractice.css';
+import { updateRepetitionInterval } from "../app/state/card/cardsSlice";
+import "./DeckPractice.css";
 
-const DeckPractice = () => {
+const DeckReview = () => {
   const { deckId } = useParams();
   const decks = useSelector((state) => state.userDecks.userDecks);
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ const DeckPractice = () => {
   const [isAnswered, setAnswered] = useState(false);
 
   const deck = decks.find((deck) => deck.id === parseInt(deckId));
-  
+
   const currentCardObject = deck && deck.cards[currentCard];
 
   const [isFlipped, setIsFlipped] = useState(false);
@@ -39,7 +40,9 @@ const DeckPractice = () => {
     ));
   };
 
-  const handleNextCard = (difficulty) => {
+  const handleNextCard = (difficulty) => () => {
+    dispatch(updateRepetitionInterval({ cardId: currentCardObject.id, stateValue: difficulty}));
+
     // First, unflip the card
     setIsFlipped(false);
 
@@ -55,23 +58,23 @@ const DeckPractice = () => {
     }, 500); // Adjust this duration to match your flip animation time
   };
 
-
-
   if (!deck) {
     // Handle the case where deck is not loaded yet
     return <div>Loading...</div>;
   }
-
 
   return (
     <div
       style={{ minHeight: "60vh", display: "flex", flexDirection: "column" }}
     >
       {currentCardObject && (
-        <div className="card-container" onClick={() => {
-          toggleFlip();
-          setAnswered(true);
-        }}>
+        <div
+          className="card-container"
+          onClick={() => {
+            toggleFlip();
+            setAnswered(true);
+          }}
+        >
           <div className={`card-flipper ${isFlipped ? "flip" : ""}`}>
             <div className="card-face card-front">
               <h1>{renderTextWithNewLines(currentCardObject.question)}</h1>
@@ -110,10 +113,20 @@ const DeckPractice = () => {
           <div>
             <Button
               style={{ marginRight: "5px" }}
-              color="primary"
-              onClick={handleNextCard}
+              color="danger"
+              onClick={handleNextCard("Unanswered")}
             >
-              Next
+              Hard
+            </Button>
+            <Button
+              style={{ marginRight: "5px" }}
+              color="warning"
+              onClick={handleNextCard("PartiallyAnswered")}
+            >
+              Decent
+            </Button>
+            <Button color="success" onClick={handleNextCard("Answered")}>
+              Easy
             </Button>
           </div>
         )}
@@ -131,4 +144,4 @@ const DeckPractice = () => {
   );
 };
 
-export default DeckPractice;
+export default DeckReview;

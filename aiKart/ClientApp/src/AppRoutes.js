@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import ManageDecks from "./components/deck/ManageDecks";
 import DeckView from "./components/deck/DeckView";
 import DeckPractice from "./components/DeckPractice";
+import DeckReview from "./components/DeckReview";
 import Store from "./components/Store";
 
 const AppRoutes = [
@@ -33,6 +34,14 @@ const AppRoutes = [
   {
     path: "/store",
     element: <Store />,
+  },
+  {
+    path: "/review",
+    element: <DeckReview />,
+  },
+  {
+    path: "/review/:deckId",
+    element: <DeckReview />,
   }
 ];
 

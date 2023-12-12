@@ -68,7 +68,7 @@ namespace aiKart.Services
             return _userDeckRepository.UpdateUserDeck(userDeck);
         }
 
-        public UserDeck GetUserDeckStatisctics(int userId, int deckId)
+        public UserDeck GetUserDeckStatistics(int userId, int deckId)
         {
             var userDeck = _userDeckRepository.GetUserDeck(userId, deckId);
 

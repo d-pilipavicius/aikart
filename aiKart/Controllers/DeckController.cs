@@ -97,19 +97,6 @@ namespace aiKart.Controllers
             return Ok(cardDtos);
         }
 
-        [HttpGet("cardlist/user/{deckId}")]
-        public IActionResult GetUserCardsInDeck(int deckId)
-        {
-            if (!_deckService.DeckExistsById(deckId))
-            {
-                return NotFound();
-            }
-            var cards = _deckService.GetUserCardsInDeck(deckId);
-            var cardDtos = _mapper.Map<IEnumerable<UserCardDto>>(cards);
-            return Ok(cardDtos);
-        }
-
-
         [HttpPost]
         public IActionResult AddDeck([FromBody] AddDeckDto deckDto)
         {

@@ -52,29 +52,29 @@ const DeckView = () => {
     toggleAddModal();
   };
 
-   const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
 
-   useEffect(() => {
-     if (deck) {
+  useEffect(() => {
+    if (deck) {
       console.log(deck.isPublic);
-       setIsPublic(deck.isPublic);
-     }
-   }, [deck]);
+      setIsPublic(deck.isPublic);
+    }
+  }, [deck]);
 
-   const togglePrivacy = () => {
-     const newPrivacyStatus = !isPublic;
-     setIsPublic(newPrivacyStatus);
+  const togglePrivacy = () => {
+    const newPrivacyStatus = !isPublic;
+    setIsPublic(newPrivacyStatus);
 
-     const updatedDeckDto = {
-       name: deck.name,
-       description: deck.description,
-       creatorName: user.name,
-       cards: deck.cards,
-       isPublic: newPrivacyStatus,
-     };
+    const updatedDeckDto = {
+      name: deck.name,
+      description: deck.description,
+      creatorName: user.name,
+      cards: deck.cards,
+      isPublic: newPrivacyStatus,
+    };
 
-     dispatch(updateDeck({ deckId: deck.id, deckDto: updatedDeckDto }));
-   };
+    dispatch(updateDeck({ deckId: deck.id, deckDto: updatedDeckDto }));
+  };
 
   const editCard = (index, question, answer) => {
     const cardId = deck.cards[index].id;
@@ -127,6 +127,18 @@ const DeckView = () => {
               <CardText>{card.question}</CardText>
               <CardTitle tag="h5">Answer</CardTitle>
               <CardText>{card.answer}</CardText>
+              <hr />
+              <div className="row text-muted mb-1">
+                <div className="col-md-6">
+                  <div>Card state: {card.state}</div>
+                  {card.lastRepetition && (
+                    <>
+                      <div>Review in {card.intervalInDays} day(s)</div>
+                      <div>Last time answered: {card.lastRepetition}</div>
+                    </>
+                  )}
+                </div>
+              </div>
             </CardBody>
             <CardFooter>
               <Button
