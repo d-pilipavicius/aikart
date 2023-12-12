@@ -113,3 +113,4 @@ aiKart.Tests/tools/.store/dotnet-reportgenerator-globaltool/5.2.0/dotnet-reportg
 aiKart.Tests/tools/.store/dotnet-reportgenerator-globaltool/5.2.0/dotnet-reportgenerator-globaltool/5.2.0/tools/net7.0/any/ReportGenerator.exe
 aiKart.Tests/tools/.store/dotnet-reportgenerator-globaltool/5.2.0/restore.csproj.nuget.g.props
 aiKart.Tests/tools/.store/dotnet-reportgenerator-globaltool/5.2.0/dotnet-reportgenerator-globaltool/5.2.0/tools/net8.0/any/ReportGenerator.exe
+aiKart/performance.log

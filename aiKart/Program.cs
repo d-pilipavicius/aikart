@@ -6,6 +6,7 @@ using aiKart.Models;
 using aiKart.Repositories;
 using aiKart.Services;
 using aiKart.Utils;
+using aiKart.Middleware;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,6 +85,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseRequestTiming();
 app.UseExceptionHandler(appBuilder =>
 {
     appBuilder.Run(async context =>
