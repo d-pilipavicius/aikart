@@ -1,0 +1,7 @@
+
+[2023-12-11 23:36:00] class:aiKart.Controllers.DeckController method:GetCardsInDeck (aiKart) took 661 ms, response code:Microsoft.AspNetCore.Mvc.NotFoundResult
+[2023-12-11 23:36:19] class:aiKart.Controllers.DeckController method:GetDeck (aiKart) took 154 ms, response code:Microsoft.AspNetCore.Mvc.OkObjectResult
+[2023-12-11 23:36:41] class:aiKart.Controllers.UserDeckController method:GetUserDeckStatistics (aiKart) took 86 ms, response code:Microsoft.AspNetCore.Mvc.OkObjectResult
+[2023-12-11 23:43:19] class:aiKart.Controllers.UserDeckController method:GetUserDeckStatistics (aiKart) took 738 ms, response code:Microsoft.AspNetCore.Mvc.OkObjectResult
+[2023-12-11 23:43:28] class:aiKart.Controllers.UserDeckController method:GetUserDeckStatistics (aiKart) took 50 ms, response code:Microsoft.AspNetCore.Mvc.OkObjectResult
+[2023-12-11 23:43:36] class:aiKart.Controllers.DeckController method:GetDeck (aiKart) took 152 ms, response code:Microsoft.AspNetCore.Mvc.OkObjectResult
