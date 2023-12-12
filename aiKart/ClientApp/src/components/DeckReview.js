@@ -4,11 +4,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Container } from "reactstrap";
 import { fetchDeckById } from "../app/state/deck/decksSlice";
 import { updateRepetitionInterval } from "../app/state/card/cardsSlice";
+import {
+  incrementAnswerCount,
+  incrementSolveCount,
+} from "../app/state/user/userDecksSlice";
 import "./DeckPractice.css";
 
 const DeckReview = () => {
   const { deckId } = useParams();
   const decks = useSelector((state) => state.userDecks.userDecks);
+  const user = useSelector((state) => state.users.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,12 +22,11 @@ const DeckReview = () => {
   }, [dispatch, deckId]);
 
   const [currentCard, setCurrentCard] = useState(0);
+  const [counter, setCounter] = useState(0);
 
   const [isAnswered, setAnswered] = useState(false);
 
   const deck = decks.find((deck) => deck.id === parseInt(deckId));
-
-  const currentCardObject = deck && deck.cards[currentCard];
 
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -40,26 +44,64 @@ const DeckReview = () => {
     ));
   };
 
+  const filteredCards = deck?.cards.filter((card) => {
+    return (
+      card.state === "Unanswered" ||
+      Date.now() -
+        (card.intervalInDays * 24 * 60 * 60 * 1000 +
+          new Date(card.lastRepetition).getTime()) >
+        0
+    );
+  });
+
+  const [remainingUnansweredCards, setRemainingUnansweredCards] = useState(
+    filteredCards || []
+  );
+
+  const currentCardObject =
+    remainingUnansweredCards && remainingUnansweredCards[currentCard];
+
   const handleNextCard = (difficulty) => () => {
-    dispatch(updateRepetitionInterval({ cardId: currentCardObject.id, stateValue: difficulty}));
+    if (remainingUnansweredCards.length > 0) {
+      dispatch(
+        updateRepetitionInterval({
+          cardId: currentCardObject.id,
+          stateValue: difficulty,
+        })
+      );
+      dispatch(
+        incrementAnswerCount({
+          userId: user.id,
+          deckId: deckId,
+          stateValue: difficulty,
+        })
+      );
+      setIsFlipped(false);
 
-    // First, unflip the card
-    setIsFlipped(false);
+      setTimeout(() => {
+        // If "Hard" is selected, move the card to the back of the list
+        if (difficulty === "Unanswered") {
+          setRemainingUnansweredCards((prevCards) => [
+            ...prevCards.slice(1),
+            prevCards[0],
+          ]);
+        } else {
+          setRemainingUnansweredCards((prevCards) => prevCards.slice(1));
+        }
 
-    // Wait for the flip animation to complete
-    setTimeout(() => {
-      // Update to the next card
-      if (currentCard < deck.cards.length - 1) {
-        setCurrentCard(currentCard + 1);
-      }
+        setCurrentCard(0);
+        setCounter(counter + 1);
+        setAnswered(false);
+      }, 500);
+    }
+  };
 
-      // Reset the answered state for the next card
-      setAnswered(false);
-    }, 500); // Adjust this duration to match your flip animation time
+  const handleFinish = () => {
+    dispatch(incrementSolveCount({ userId: user, deckId: deckId }));
+    navigate("/home");
   };
 
   if (!deck) {
-    // Handle the case where deck is not loaded yet
     return <div>Loading...</div>;
   }
 
@@ -88,16 +130,16 @@ const DeckReview = () => {
       <Container className="stats-container">
         <div className="stat-box">
           <i className="fas fa-check icon"></i>
-          <p>Answered: {currentCard}</p>
+          <p>Answered: {counter}</p>
         </div>
         <div className="stat-box">
           <i className="fas fa-layer-group icon"></i>
-          <p>Remaining: {deck.cards.length - currentCard}</p>
+          <p>Remaining: {remainingUnansweredCards.length}</p>
         </div>
       </Container>
 
       <Container className="d-flex justify-content-center">
-        {!isAnswered && (
+        {remainingUnansweredCards.length > 0 && !isAnswered && (
           <Button
             style={{ marginRight: "5px" }}
             color="primary"
@@ -109,7 +151,7 @@ const DeckReview = () => {
             Show answer
           </Button>
         )}
-        {currentCard < deck.cards.length - 1 && isAnswered && (
+        {remainingUnansweredCards.length > 0 && isAnswered && (
           <div>
             <Button
               style={{ marginRight: "5px" }}
@@ -130,11 +172,11 @@ const DeckReview = () => {
             </Button>
           </div>
         )}
-        {currentCard === deck.cards.length - 1 && isAnswered && (
+        {remainingUnansweredCards.length === 0 && (
           <Button
             style={{ marginRight: "5px" }}
             color="primary"
-            onClick={() => navigate("/home")}
+            onClick={handleFinish}
           >
             Finish
           </Button>

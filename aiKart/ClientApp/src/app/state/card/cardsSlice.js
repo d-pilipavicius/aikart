@@ -50,6 +50,7 @@ export const updateRepetitionInterval = createAsyncThunk(
           stateValue: stateValue,
         }
       });
+      console.log(cardId, stateValue);
       return cardId;
     } catch (error) {
       throw error;

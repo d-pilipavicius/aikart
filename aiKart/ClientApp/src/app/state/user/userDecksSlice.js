@@ -60,11 +60,55 @@ export const deleteUserFromDeck = createAsyncThunk(
     return { deckId, userId };
   }
 );
+
 export const cloneDeck = createAsyncThunk(
   "userDecks/cloneDeck",
   async ({ deckId, userId }) => {
     const response = await axios.post(`/api/deck/${deckId}/clone`, { userId });
     return response.data;
+  }
+);
+
+export const incrementAnswerCount = createAsyncThunk(
+  "userDecks/incrementAnswerCount",
+  async ({ userId, deckId, stateValue }) => {
+    try {
+      await axios.put(
+        `/api/userdeck/increment-answer-count/${userId}/${deckId}`,
+        null,
+        {
+          params: {
+            stateValue: stateValue,
+            count: 1,
+          },
+        }
+      );
+      console.log(userId, deckId, stateValue);
+      return userId;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const incrementSolveCount = createAsyncThunk(
+  "userDecks/incrementSolveCount",
+  async ({ userId, deckId }) => {
+    try {
+      await axios.put(
+        `/api/userdeck/increment-answer-count/${userId}/${deckId}`,
+        null,
+        {
+          params: {
+            count: 1,
+          },
+        }
+      );
+      console.log(userId, deckId);
+      return userId;
+    } catch (error) {
+      throw error;
+    }
   }
 );
 
@@ -155,6 +199,24 @@ const userDeckSlice = createSlice({
         state.loading = "pending";
       })
       .addCase(addUserToDeck.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementAnswerCount.fulfilled, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementAnswerCount.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(incrementAnswerCount.rejected, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementSolveCount.fulfilled, (state, action) => {
+        state.loading = "idle";
+      })
+      .addCase(incrementSolveCount.pending, (state, action) => {
+        state.loading = "pending";
+      })
+      .addCase(incrementSolveCount.rejected, (state, action) => {
         state.loading = "idle";
       });
   },

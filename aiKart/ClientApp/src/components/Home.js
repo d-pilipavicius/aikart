@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Card, CardText, CardBody, CardHeader, CardFooter, Button } from "reactstrap";
+import {
+  Card,
+  CardText,
+  CardBody,
+  CardHeader,
+  CardFooter,
+  Button,
+} from "reactstrap";
 import { fetchDecksByUser } from "../app/state/user/userDecksSlice";
 
 const Home = () => {
@@ -33,10 +40,11 @@ const Home = () => {
     const now = new Date().getTime();
     return cards.filter(
       (card) =>
+        card.state === "Unanswered" ||
         now -
           (card.intervalInDays * 24 * 60 * 60 * 1000 +
             new Date(card.lastRepetition).getTime()) >
-        0
+          0
     );
   };
 
@@ -62,7 +70,7 @@ const Home = () => {
           <div className="row">
             {decks.map(
               (deck, index) =>
-              filterCards(deck.cards).length > 0 && (
+                filterCards(deck.cards).length > 0 && (
                   <div className="col-md-6" key={index}>
                     <Card
                       className="mb-4"

@@ -51,21 +51,22 @@ namespace aiKart.Services
 
             if (card == null) return false;
 
-            if (card.LastRepetition != null)
-            {
-                int stateValue = (int)state;
-                double EFPrime = card.EFactor + (0.1 - (5 - stateValue) * (0.08 + (5 - stateValue) * 0.02));
-                card.EFactor = Math.Max(EFPrime, 1.3);
 
-                if (stateValue < 3)
-                {
-                    card.IntervalInDays = 1;
-                }
-                else
-                {
-                    card.IntervalInDays *= (int)Math.Round(EFPrime);
-                }
+            int stateValue = (int)state;
+            double EFPrime = card.EFactor + (0.1 - (5 - stateValue) * (0.08 + (5 - stateValue) * 0.02));
+            card.EFactor = Math.Max(EFPrime, 1.3);
+
+            if (stateValue < 3)
+            {
+                card.IntervalInDays = 1;
             }
+            else
+            {
+                card.IntervalInDays *= (int)Math.Round(EFPrime);
+            }
+
+            card.State = state;
+
 
             card.LastRepetition = DateTime.UtcNow;
 

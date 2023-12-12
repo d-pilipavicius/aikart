@@ -5,3 +5,4 @@ public enum CardState
     Unanswered = 1,
     PartiallyAnswered = 3,
 }
+
