@@ -180,16 +180,9 @@ const ManageDecks = () => {
                 </Button>
                 <Button
                   color="secondary"
-                  style={{ marginRight: "3rem" }}
                   onClick={() => navigate(`/practice/${deck.id}`)}
                 >
                   Practice without tracking
-                </Button>
-                <Button
-                  color="secondary"
-                  onClick={() => () => dispatch(resetRepetitionIntervalForDeck(deck.id))}
-                >
-                  Reset stats
                 </Button>
               </CardFooter>
             </Card>
