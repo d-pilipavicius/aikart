@@ -51,7 +51,7 @@ namespace aiKart.Tests.Controllers
             var cardId = 1;
             _mockCardService.Setup(service => service.CardExists(cardId)).Returns(true);
             _mockCardService.Setup(service => service.GetCardById(cardId)).Returns(new Card());
-            _mockMapper.Setup(mapper => mapper.Map<CardDto>(It.IsAny<Card>())).Returns(new CardDto(1, 1, "Question", "Answer", CardState.Answered));
+            _mockMapper.Setup(mapper => mapper.Map<CardDto>(It.IsAny<Card>())).Returns(new CardDto(1, 1, "Question", "Answer", "Answered", 1, null));
 
             var result = _controller.GetCard(cardId);
 

@@ -84,7 +84,7 @@ namespace aiKart.Tests
             mockDeckService.Setup(s => s.DeckExistsById(It.IsAny<int>())).Returns(true);
             mockDeckService.Setup(s => s.GetCardsInDeck(It.IsAny<int>())).Returns(new List<Card>());
             mockMapper.Setup(m => m.Map<IEnumerable<CardDto>>(It.IsAny<IEnumerable<Card>>()))
-                .Returns(new List<CardDto> { new CardDto(1, 1, "Question", "Answer", CardState.Answered) });
+                .Returns(new List<CardDto> { new CardDto(1, 1, "Question", "Answer", "Answered", 1, null) });
             var result = deckController.GetCardsInDeck(1);
             Assert.IsType<OkObjectResult>(result);
         }
